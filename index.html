@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotto Draw 開獎機</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* 滾動條樣式 */
+        .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(30,41,59,0.5); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(245,158,11,0.5); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(245,158,11,0.8); }
+
+        /* 動畫定義 */
+        @keyframes popIn {
+            0% { transform: translateY(50px) scale(0.5); opacity: 0; }
+            70% { transform: translateY(-10px) scale(1.05); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes bounceText {
+            0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+            50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+        }
+
+        .animate-pulse-custom { animation: pulseText 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .animate-bounce-custom { animation: bounceText 1s infinite; }
+        .winner-card { animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white font-sans antialiased overflow-hidden min-h-screen">
+
+    <!-- === 第一階段：設定介面 === -->
+    <div id="setup-view" class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-5xl w-full bg-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-slate-700">
+            <!-- 左側資訊區 -->
+            <div class="w-full md:w-1/3 bg-slate-800 p-8 border-r border-slate-700 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 text-amber-400 mb-8">
+                        <i data-lucide="settings" class="w-8 h-8"></i>
+                        <h1 class="text-3xl font-black">開獎機設定</h1>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 shadow-inner">
+                            <div class="flex items-center gap-2 text-slate-400 mb-2">
+                                <i data-lucide="users" class="w-[18px] h-[18px]"></i>
+                                <span class="font-semibold">名單統計</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-slate-800">
+                                <span class="text-slate-400">總人數</span>
+                                <span id="stat-total" class="text-xl font-bold">0</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-slate-800">
+                                <span class="text-slate-400">豁免人數</span>
+                                <span id="stat-exempt" class="text-xl font-bold text-red-400">0</span>
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="text-slate-400">可抽人數</span>
+                                <span id="stat-valid" class="text-2xl font-black text-green-400">0</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-bold mb-2">設定抽出人數</label>
+                            <div class="flex items-center bg-slate-900 rounded-lg border border-slate-600 focus-within:border-amber-400 p-2 transition-colors">
+                                <i data-lucide="trophy" class="text-slate-400 mx-2 w-5 h-5"></i>
+                                <input
+                                    id="draw-count-input"
+                                    type="number"
+                                    min="1"
+                                    value="1"
+                                    class="w-full bg-transparent text-2xl font-bold text-white focus:outline-none text-center"
+                                />
+                                <span class="text-slate-500 font-bold mx-2">人</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button
+                    id="btn-go-machine"
+                    class="mt-8 w-full py-4 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-900 font-black text-lg rounded-xl shadow-lg flex justify-center items-center gap-2 transform transition hover:scale-105 active:scale-95"
+                >
+                    進入開獎會場 <i data-lucide="play" fill="currentColor" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- 右側輸入與豁免勾選區 -->
+            <div class="w-full md:w-2/3 p-8 bg-slate-800/50 flex flex-col gap-6">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                    <label class="text-xl font-bold text-slate-200">參與者與豁免名單</label>
+                    <button id="btn-edit-list" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-slate-600 shadow-sm">
+                        <i data-lucide="edit" class="w-4 h-4"></i> 編輯抽籤名單
+                    </button>
+                </div>
+
+                <!-- 豁免勾選清單 -->
+                <div class="flex flex-col gap-3 flex-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-semibold text-slate-400">請勾選不參與本次抽獎的人員（畫刪除線）：</span>
+                    </div>
+                    <div id="exempt-list-container" class="flex-1 min-h-[300px] bg-slate-900 border border-slate-700 rounded-xl p-4 shadow-inner overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 content-start custom-scrollbar">
+                        <!-- 動態產生 Checkbox -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === 名單編輯跳窗 (Modal) === -->
+    <div id="list-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-2xl flex flex-col shadow-2xl overflow-hidden transform transition-all">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="list-edit" class="w-5 h-5 text-amber-400"></i> 編輯抽籤名單
+                </h3>
+                <button id="btn-close-modal" class="text-slate-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="p-6 flex-1 flex flex-col gap-3">
+                 <span class="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-700 self-start">
+                    支援換行、頓號、逗號分隔
+                </span>
+                <textarea
+                    id="list-input"
+                    class="w-full h-[300px] bg-slate-900 border border-slate-700 rounded-xl p-4 text-slate-300 font-mono focus:outline-none focus:border-amber-500 resize-none shadow-inner custom-scrollbar"
+                    placeholder="例如：王大明、陳小美、林阿呆"
+                ></textarea>
+            </div>
+            <div class="p-4 border-t border-slate-700 flex justify-end gap-3 bg-slate-900/50">
+                <button id="btn-cancel-modal" class="px-6 py-2 rounded-lg font-bold text-slate-300 hover:bg-slate-700 transition-colors">取消</button>
+                <button id="btn-save-modal" class="px-6 py-2 rounded-lg font-bold bg-amber-500 hover:bg-amber-400 text-slate-900 transition-colors">儲存名單</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- === 第二階段：樂透機介面 === -->
+    <div id="machine-view" class="hidden min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-700 via-slate-900 to-black flex-col font-sans overflow-hidden">
+        
+        <!-- 頂部導覽 -->
+        <div class="p-4 flex justify-between items-center z-10 relative">
+            <button 
+                id="btn-back-setup"
+                class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-700 backdrop-blur-md"
+            >
+                <i data-lucide="arrow-left" class="w-5 h-5"></i> 返回設定
+            </button>
+            <div class="text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500 drop-shadow-lg">
+                LOTTERY DRAW
+            </div>
+            <div class="w-24"></div>
+        </div>
+
+        <!-- 狀態提示 -->
+        <div class="text-center h-12 mt-4 z-20 relative">
+            <h2 id="machine-status" class="text-3xl font-black drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] tracking-wide">
+                機台準備就緒
+            </h2>
+        </div>
+
+        <!-- 中央機台區 -->
+        <div class="flex-1 flex flex-col items-center justify-center p-4 relative z-10">
+            
+            <!-- 樂透機容器 (340x450) -->
+            <div class="relative w-[340px] h-[450px]">
+                
+                <!-- 底部機台基座 -->
+                <div class="absolute top-[320px] left-[20px] w-[300px] h-[130px] bg-gradient-to-b from-slate-700 to-slate-900 rounded-t-3xl border-t-4 border-slate-500 shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-0 flex justify-center">
+                     <!-- 機台裝飾線條 -->
+                     <div class="w-[200px] h-2 bg-slate-900 mt-6 rounded-full opacity-50"></div>
+                </div>
+
+                <!-- 開獎出球管 (後方黑色內壁) -->
+                <div class="absolute top-[325px] left-[145px] w-[50px] h-[90px] bg-black/80 shadow-inner z-0 border-x border-slate-800"></div>
+
+                <!-- 玻璃球池底部陰影 (後方) -->
+                <div class="absolute top-0 left-0 w-[340px] h-[340px] rounded-full bg-gradient-to-b from-slate-800/30 to-slate-900/90 shadow-[inset_0_-20px_50px_rgba(0,0,0,0.8)] z-0"></div>
+
+                <!-- 彩球層 (動態生成) z-10 -->
+                <div id="balls-container" class="absolute top-0 left-0 w-[340px] h-[340px] overflow-visible z-10"></div>
+
+                <!-- 前景：玻璃球池反光與邊框 (指針穿透) z-20 -->
+                <div class="absolute top-0 left-0 w-[340px] h-[340px] rounded-full border-[8px] border-slate-400/40 pointer-events-none z-20 shadow-[inset_0_15px_40px_rgba(255,255,255,0.2),0_0_30px_rgba(0,0,0,0.6)]">
+                    <!-- 玻璃高光反光 -->
+                    <div class="absolute top-6 left-12 w-32 h-16 bg-white/10 rounded-[100px] rotate-[-35deg] blur-md"></div>
+                    <!-- 出球孔 (位於球體底部) -->
+                    <div class="absolute bottom-[-4px] left-[137px] w-[50px] h-[12px] bg-black/90 rounded-[50%] shadow-inner border border-white/10"></div>
+                </div>
+
+                <!-- 前景：開獎出球管 (前方玻璃反光) z-[60] 確保蓋過彩球產生掉入管內的視覺 -->
+                <div class="absolute top-[335px] left-[145px] w-[50px] h-[80px] bg-gradient-to-r from-white/20 via-transparent to-white/10 border-x-2 border-white/30 z-[60] pointer-events-none backdrop-blur-[2px]">
+                     <!-- 裝飾環 -->
+                     <div class="absolute bottom-0 w-[46px] left-[0px] h-2 bg-slate-400/50 rounded-[50%]"></div>
+                </div>
+
+                <!-- START 按鈕 -->
+                <button
+                    id="btn-start-draw"
+                    class="absolute top-[110px] left-[110px] z-50 bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-900 font-black rounded-full w-[120px] h-[120px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(245,158,11,0.6),inset_0_4px_10px_rgba(255,255,255,0.5)] transform hover:scale-110 active:scale-95 transition-all border-4 border-amber-300"
+                >
+                    <i data-lucide="dices" class="w-9 h-9 mb-1"></i>
+                    <span class="text-xl">START</span>
+                </button>
+            </div>
+
+            <!-- 底部開獎結果軌道 (加寬 max-w-6xl 以容納 6 張卡片) -->
+            <div class="mt-8 w-full max-w-6xl bg-slate-900/80 rounded-2xl border-2 border-slate-700 shadow-2xl relative p-6 pt-8 z-40 backdrop-blur-md">
+                <div id="winner-count-badge" class="absolute left-6 -top-4 bg-amber-500 text-slate-900 border-2 border-slate-800 px-4 py-1.5 rounded-full text-sm font-black shadow-lg flex items-center gap-2">
+                    <i data-lucide="trophy" class="w-4 h-4"></i> 開獎結果 (0/0)
+                </div>
+                
+                <div id="winners-track" class="flex gap-3 overflow-x-auto items-center min-h-[100px] pb-2 custom-scrollbar">
+                    <div id="waiting-msg" class="w-full text-center text-slate-600 font-black tracking-widest text-xl opacity-50">
+                        等待開獎中...
+                    </div>
+                    <!-- 贏家卡片會動態插入這裡 -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- === 核心邏輯腳本 === -->
+    <script>
+        // 初始化 Lucide 圖示
+        lucide.createIcons();
+
+        // 共用工具函式
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        // --- 狀態變數 ---
+        let parsedData = [];
+        let drawCount = 1;
+        let ballsData = []; // 物理引擎用的陣列
+        let requestRef = null; // 動畫幀 ID
+        let currentRawText = "徐倫賢、黃韋翔、謝明峰、江俞萱、何奕樊、吳宗興、吳建逸、呂潤庭、林世軒、孫培正、張覺文、粘為棠、郭諺勳、陳韡、辜泓叡、楊文軒、劉奕欣";
+
+        // --- DOM 元素取得 ---
+        const setupView = document.getElementById('setup-view');
+        const machineView = document.getElementById('machine-view');
+        
+        const listModal = document.getElementById('list-modal');
+        const listInput = document.getElementById('list-input');
+        const btnEditList = document.getElementById('btn-edit-list');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+        const btnCancelModal = document.getElementById('btn-cancel-modal');
+        const btnSaveModal = document.getElementById('btn-save-modal');
+
+        const exemptListContainer = document.getElementById('exempt-list-container');
+        const drawCountInput = document.getElementById('draw-count-input');
+        const statTotal = document.getElementById('stat-total');
+        const statExempt = document.getElementById('stat-exempt');
+        const statValid = document.getElementById('stat-valid');
+        const btnGoMachine = document.getElementById('btn-go-machine');
+        const btnBackSetup = document.getElementById('btn-back-setup');
+        
+        const ballsContainer = document.getElementById('balls-container');
+        const btnStartDraw = document.getElementById('btn-start-draw');
+        const machineStatus = document.getElementById('machine-status');
+        const winnersTrack = document.getElementById('winners-track');
+        const waitingMsg = document.getElementById('waiting-msg');
+        const winnerCountBadge = document.getElementById('winner-count-badge');
+
+        // --- 階段 1：設定邏輯 ---
+
+        // 開啟編輯跳窗
+        btnEditList.addEventListener('click', () => {
+            listInput.value = currentRawText;
+            listModal.classList.replace('hidden', 'flex');
+        });
+
+        // 關閉編輯跳窗
+        const closeModal = () => {
+            listModal.classList.replace('flex', 'hidden');
+        };
+        btnCloseModal.addEventListener('click', closeModal);
+        btnCancelModal.addEventListener('click', closeModal);
+
+        // 儲存名單
+        btnSaveModal.addEventListener('click', () => {
+            currentRawText = listInput.value;
+            parseList();
+            closeModal();
+        });
+
+        // 解析名單與渲染 Checkbox
+        function parseList() {
+            // 紀錄目前各名字的豁免狀態，避免重新解析時被洗掉
+            const oldExemptMap = new Map(parsedData.map(p => [p.name, p.exempt]));
+
+            const raw = currentRawText;
+            // 支援使用換行、逗號或頓號分隔名單
+            const names = raw.split(/[\n,、\t]+/).map(n => n.trim()).filter(n => n !== '');
+            
+            // 過濾重複的姓名
+            const uniqueNames = [...new Set(names)];
+
+            parsedData = uniqueNames.map((name, index) => {
+                return { 
+                    uid: `u_${index}`, 
+                    name: name, 
+                    exempt: oldExemptMap.get(name) || false 
+                };
+            });
+
+            updateStats();
+            renderCheckboxes();
+        }
+
+        // 渲染下方的核取方塊
+        function renderCheckboxes() {
+            exemptListContainer.innerHTML = '';
+            
+            if (parsedData.length === 0) {
+                exemptListContainer.innerHTML = '<div class="col-span-full text-center text-slate-500 mt-4">請先貼入名單資料</div>';
+                return;
+            }
+
+            parsedData.forEach((p, idx) => {
+                const label = document.createElement('label');
+                label.className = `flex items-center gap-2 p-2 rounded-lg border ${p.exempt ? 'bg-slate-800/80 border-slate-600' : 'bg-slate-800 border-transparent'} hover:bg-slate-700 cursor-pointer transition-colors`;
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = p.exempt;
+                checkbox.className = 'w-4 h-4 accent-amber-500 rounded border-slate-600 bg-slate-700 cursor-pointer';
+                
+                const span = document.createElement('span');
+                span.textContent = p.name;
+                span.className = `text-sm font-bold truncate ${p.exempt ? 'line-through text-slate-500' : 'text-slate-200'}`;
+
+                // 綁定點擊事件改變狀態
+                checkbox.addEventListener('change', (e) => {
+                    parsedData[idx].exempt = e.target.checked;
+                    updateStats();
+                    renderCheckboxes(); // 重新渲染以更新樣式
+                });
+
+                label.appendChild(checkbox);
+                label.appendChild(span);
+                exemptListContainer.appendChild(label);
+            });
+        }
+
+        // 更新統計數字
+        function updateStats() {
+            const total = parsedData.length;
+            const exempt = parsedData.filter(p => p.exempt).length;
+            const valid = total - exempt;
+
+            statTotal.textContent = total;
+            statExempt.textContent = exempt;
+            statValid.textContent = valid;
+
+            drawCountInput.max = valid > 0 ? valid : 1;
+        }
+
+        // 畫面載入時先解析一次預設資料
+        parseList();
+
+        // 進入開獎機
+        btnGoMachine.addEventListener('click', () => {
+            const valid = parsedData.filter(p => !p.exempt).length;
+            drawCount = parseInt(drawCountInput.value) || 1;
+
+            if (valid === 0) {
+                alert('沒有可抽獎的人員！');
+                return;
+            }
+            if (drawCount <= 0 || drawCount > valid) {
+                alert('抽獎人數設定錯誤！');
+                return;
+            }
+
+            initMachine();
+            setupView.classList.replace('flex', 'hidden');
+            machineView.classList.replace('hidden', 'flex');
+        });
+
+        // 返回設定
+        btnBackSetup.addEventListener('click', () => {
+            if (requestRef) cancelAnimationFrame(requestRef);
+            machineView.classList.replace('flex', 'hidden');
+            setupView.classList.replace('hidden', 'flex');
+        });
+
+        // --- 階段 2：樂透機與物理邏輯 ---
+
+        function setStatus(phase) {
+            if (phase === 'INIT') {
+                machineStatus.innerHTML = '機台準備就緒';
+            } else if (phase === 'DISSOLVING') {
+                machineStatus.innerHTML = '<span class="text-red-400 animate-pulse-custom">排除豁免名單中...</span>';
+            } else if (phase === 'BOUNCING') {
+                machineStatus.innerHTML = '<span class="text-cyan-300">彩球高速洗牌中！</span>';
+            } else if (phase === 'DRAWING') {
+                machineStatus.innerHTML = '<span class="text-amber-400 animate-bounce-custom block">★ 開獎中 ★</span>';
+            } else if (phase === 'DONE') {
+                machineStatus.innerHTML = '<span class="text-green-400">🎉 開獎完成 🎉</span>';
+            }
+        }
+
+        function initMachine() {
+            // 重置 UI
+            setStatus('INIT');
+            btnStartDraw.style.display = 'flex';
+            winnersTrack.innerHTML = '';
+            winnersTrack.appendChild(waitingMsg);
+            waitingMsg.style.display = 'block';
+            winnerCountBadge.innerHTML = `<i data-lucide="trophy" class="w-4 h-4"></i> 開獎結果 (0/${drawCount})`;
+            lucide.createIcons();
+            ballsContainer.innerHTML = '';
+
+            // 樂透機常數設定
+            const GLOBE_CENTER = 170; // 340px / 2
+            const BALL_RADIUS = 28;   // 放大了彩球 56px / 2
+            const MAX_DIST = GLOBE_CENTER - BALL_RADIUS - 8; 
+
+            // 建立物理球體陣列與 DOM
+            ballsData = parsedData.map(p => {
+                let initX = GLOBE_CENTER + (Math.random() - 0.5) * 120;
+                let initY = 260 + Math.random() * 40;
+                
+                if (Math.hypot(initX - GLOBE_CENTER, initY - GLOBE_CENTER) > MAX_DIST) {
+                    initX = GLOBE_CENTER; initY = 280;
+                }
+
+                const ballObj = {
+                    ...p,
+                    x: initX, y: initY,
+                    vx: 0, vy: 0,
+                    scale: 1, opacity: 1,
+                    state: 'init'
+                };
+
+                // 建立 DOM 節點
+                const el = document.createElement('div');
+                el.className = 'absolute rounded-full flex items-center justify-center font-black transition-colors will-change-transform';
+                el.style.width = '56px'; // 放大的尺寸
+                el.style.height = '56px';
+                el.style.backgroundColor = p.exempt ? '#64748b' : '#38bdf8'; // slate-500 or sky-400
+                el.style.color = p.exempt ? '#e2e8f0' : '#0f172a';
+                el.style.boxShadow = 'inset -5px -5px 15px rgba(0,0,0,0.4), inset 5px 5px 10px rgba(255,255,255,0.4)';
+                
+                // 移除 truncate 並設定多行斷行顯示
+                el.innerHTML = `<span class="w-full text-center leading-[1.1] px-1 pointer-events-none select-none break-words text-[13px] drop-shadow-sm">${p.name}</span>`;
+                
+                ballsContainer.appendChild(el);
+                ballObj.node = el;
+
+                return ballObj;
+            });
+
+            // 啟動 60fps 物理引擎
+            if (requestRef) cancelAnimationFrame(requestRef);
+            
+            const updatePhysics = () => {
+                ballsData.forEach(ball => {
+                    if (ball.state === 'drawn') return;
+
+                    if (ball.state === 'exempt_dissolving') {
+                        ball.opacity = Math.max(0, ball.opacity - 0.015);
+                        ball.scale = Math.max(0, ball.scale - 0.015);
+                    } 
+                    
+                    if (ball.state === 'tumbling' || ball.state === 'exempt_dissolving') {
+                        // 1. 重力
+                        ball.vy += 0.4; 
+
+                        // 2. 底部風扇強風
+                        if (ball.y > GLOBE_CENTER + 60) {
+                            ball.vy -= (Math.random() * 4 + 4.5); 
+                            ball.vx += (Math.random() - 0.5) * 6;   
+                        }
+
+                        // 3. 移動與阻力
+                        ball.x += ball.vx;
+                        ball.y += ball.vy;
+                        ball.vx *= 0.99;
+                        ball.vy *= 0.99;
+
+                        // 4. 碰撞偵測
+                        const dx = ball.x - GLOBE_CENTER;
+                        const dy = ball.y - GLOBE_CENTER;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist > MAX_DIST) {
+                            const nx = dx / dist;
+                            const ny = dy / dist;
+                            const dot = ball.vx * nx + ball.vy * ny;
+                            
+                            ball.vx = (ball.vx - 2 * dot * nx) * 0.7;
+                            ball.vy = (ball.vy - 2 * dot * ny) * 0.7;
+                            
+                            ball.x = GLOBE_CENTER + nx * MAX_DIST;
+                            ball.y = GLOBE_CENTER + ny * MAX_DIST;
+                        }
+                    } 
+                    else if (ball.state === 'sucking_center') {
+                        // 準備開獎：移動到出球孔上方定格
+                        ball.x += (GLOBE_CENTER - ball.x) * 0.15;
+                        ball.y += (280 - ball.y) * 0.15;
+                        ball.scale += (1.2 - ball.scale) * 0.15; 
+                    } 
+                    else if (ball.state === 'sucking_down') {
+                        // 掉入出球管中：向下掉落並縮小以適應管徑
+                        ball.x += (GLOBE_CENTER - ball.x) * 0.3;
+                        if (ball.y < 390) { ball.y += 15; } // 直線下落速度
+                        ball.scale += (0.6 - ball.scale) * 0.2; 
+                    }
+
+                    // 套用樣式到 DOM
+                    if (ball.node) {
+                        ball.node.style.transform = `translate(${ball.x - BALL_RADIUS}px, ${ball.y - BALL_RADIUS}px) scale(${ball.scale})`;
+                        ball.node.style.opacity = ball.opacity;
+                        
+                        // 中獎時的高光
+                        if (ball.state.startsWith('sucking')) {
+                            ball.node.style.backgroundColor = '#fbbf24'; 
+                            ball.node.style.boxShadow = '0 0 40px #f59e0b';
+                            ball.node.style.color = '#78350f';
+                            ball.node.style.zIndex = '50';
+                            ball.node.style.border = '2px solid white';
+                        }
+                    }
+                });
+
+                requestRef = requestAnimationFrame(updatePhysics);
+            };
+
+            requestRef = requestAnimationFrame(updatePhysics);
+        }
+
+        // 執行抽獎
+        btnStartDraw.addEventListener('click', async () => {
+            btnStartDraw.style.display = 'none';
+
+            // 1. 啟動樂透機 (所有彩球一起吹起)
+            setStatus('BOUNCING');
+            ballsData.forEach(b => {
+                b.state = 'tumbling';
+                b.vx = (Math.random() - 0.5) * 40;
+                b.vy = (Math.random() - 0.5) * 40 - 20;
+            });
+            await sleep(2000); 
+
+            // 2. 演出排除豁免名單 (在空中溶解)
+            const hasExempt = ballsData.some(b => b.exempt);
+            if (hasExempt) {
+                setStatus('DISSOLVING');
+                ballsData.forEach(b => {
+                    if (b.exempt) b.state = 'exempt_dissolving';
+                });
+                await sleep(1500); // 讓豁免球在空中漸漸消失
+                
+                setStatus('BOUNCING');
+                await sleep(1000); // 剩下的球繼續洗牌一下
+            }
+
+            let pool = ballsData.filter(b => !b.exempt);
+            let currentWinnersCount = 0;
+
+            setStatus('DRAWING');
+
+            // 3. 逐一抽出
+            for (let i = 0; i < drawCount; i++) {
+                await sleep(1000); 
+
+                const winnerIdx = Math.floor(Math.random() * pool.length);
+                const winner = pool[winnerIdx];
+                
+                // 演出
+                winner.state = 'sucking_center';
+                await sleep(600);
+                
+                winner.state = 'sucking_down';
+                await sleep(400);
+                
+                // 隱藏彩球
+                winner.state = 'drawn';
+                if (winner.node) winner.node.style.display = 'none';
+                
+                // 增加到軌道
+                currentWinnersCount++;
+                addWinnerToTrack(winner, currentWinnersCount);
+                
+                // 從池子剔除
+                pool.splice(winnerIdx, 1);
+            }
+
+            setStatus('DONE');
+        });
+
+        function addWinnerToTrack(winner, index) {
+            waitingMsg.style.display = 'none';
+            
+            winnerCountBadge.innerHTML = `<i data-lucide="trophy" class="w-4 h-4"></i> 開獎結果 (${index}/${drawCount})`;
+            lucide.createIcons();
+
+            const card = document.createElement('div');
+            // 改為固定寬度 170px，移除 flex-1 避免自動縮放，確保寬度足以並排 6 張不被壓縮
+            card.className = "winner-card w-[170px] shrink-0 bg-gradient-to-br from-amber-300 via-amber-500 to-amber-600 p-[3px] rounded-xl shadow-[0_5px_20px_rgba(245,158,11,0.4)]";
+            card.innerHTML = `
+                <div class="bg-slate-900 h-full w-full rounded-lg p-3 flex flex-col justify-center items-center relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-amber-400/5 transition-colors"></div>
+                    <span class="text-amber-400 font-bold text-xs tracking-wider mb-2 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/20">
+                        [主持人#${index}]
+                    </span>
+                    <span class="text-white font-black text-xl sm:text-2xl tracking-wide drop-shadow-md truncate w-full text-center px-1">
+                        ${winner.name}
+                    </span>
+                </div>
+            `;
+            
+            winnersTrack.appendChild(card);
+        }
+
+    </script>
+</body>
+</html>
