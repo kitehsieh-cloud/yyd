@@ -24,6 +24,7 @@ const GITHUB_REPO = "yyd";
 const GITHUB_BRANCH = "main";
 const GITHUB_RAW_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}`;
 const ALBUM_MANIFEST_PATH = "photos/index.json";
+const PUBLIC_ALBUM_MANIFEST_URL = `${import.meta.env.BASE_URL}${ALBUM_MANIFEST_PATH}`;
 const STORAGE_KEYS = {
   token: "tokyoTrip.githubToken",
   photosByDay: "tokyoTrip.photosByDay",
@@ -242,6 +243,18 @@ async function readManifest(token) {
     throw error;
   }
 }
+async function readPublicManifest() {
+  let response;
+  try {
+    response = await fetch(`${PUBLIC_ALBUM_MANIFEST_URL}?t=${Date.now()}`, { cache: "no-store" });
+  } catch {
+    return { sha: null, photosByDay: emptyPhotosByDay() };
+  }
+  if (response.status === 404) return { sha: null, photosByDay: emptyPhotosByDay() };
+  if (!response.ok) return { sha: null, photosByDay: emptyPhotosByDay() };
+  const json = await response.json();
+  return { sha: null, photosByDay: manifestListToPhotosByDay(json.photos || []) };
+}
 async function writeManifest(photosByDay, token, sha = null) {
   if (!token) throw new Error("請先填入可寫入 repo contents 的 GitHub Fine-grained PAT。");
   const body = {
@@ -267,6 +280,10 @@ async function fetchTreePhotos(token) {
   return result;
 }
 async function fetchSyncedAlbum(token) {
+  if (!token) {
+    const manifest = await readPublicManifest();
+    return { photosByDay: manifest.photosByDay, manifestSha: null };
+  }
   const manifest = await readManifest(token);
   const tree = await fetchTreePhotos(token);
   const merged = mergePhotosById(manifest.photosByDay, tree);
@@ -436,7 +453,7 @@ export default function App() {
       return synced.photosByDay;
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
-      setSyncError(msg);
+      setSyncError(token ? msg : "");
       return null;
     } finally {
       setAlbumLoading(false);

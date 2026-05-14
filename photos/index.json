@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "updatedAt": "2026-05-15T00:00:00.000Z",
+  "photos": [
+    {
+      "dayId": "0517",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260514222602-1-h8f4w9-飯店A／飯店B-→-JR池袋站.png",
+      "githubPath": "photos/day3/20260514222602-1-h8f4w9-飯店A／飯店B-→-JR池袋站.png",
+      "createdAt": "2026-05-14T22:26:02.000Z"
+    },
+    {
+      "dayId": "0519",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260514222744-1-gazph0-飯店A／B-→-JR石川町／橫濱.png",
+      "githubPath": "photos/day5/20260514222744-1-gazph0-飯店A／B-→-JR石川町／橫濱.png",
+      "createdAt": "2026-05-14T22:27:44.000Z"
+    }
+  ]
+}
