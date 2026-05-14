@@ -15,7 +15,7 @@ const TABS = {
 
 const PHOTO_TARGETS = { "0515": 10, "0516": 30, "0517": 30, "0518": 30, "0519": 30, "0520": 30, "0521": 10 };
 const DEFAULT_PHOTO_TARGET = 30;
-const ASSET_BASE_URL = "https://raw.githubusercontent.com/kitehsieh-cloud/yyd/refs/heads/main";
+const ASSET_BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
 const DEFAULT_COMMON_HEADER_BG = `${ASSET_BASE_URL}/Title.png`;
 const PHOTO_ICON_URL = `${ASSET_BASE_URL}/photo.png`;
 const OMAMORI_ICON_URL = `${ASSET_BASE_URL}/ess.png`;
@@ -387,6 +387,11 @@ function PhotoModal({ day, photos, onUpload, onClose, uploading, uploadStatus })
   return <div className="modal" onMouseDown={onClose}>
     <div className="modalCard card" onMouseDown={(event) => event.stopPropagation()}>
       <div className="modalTop"><div><h2>Day{day.dayNo}｜照片蒐集</h2><p className="small muted">{photos.length}/{dayPhotoTarget(day.id)} 張</p></div><button className="button" onClick={onClose}>關閉</button></div>
+      <div className="silhouettePanel">
+        <img src={partnerImageUrl(day.dayNo)} alt={`Day${day.dayNo} 小夥伴剪影`} />
+        <strong>?</strong>
+        <p>小夥伴等待照片能量喚醒</p>
+      </div>
       <div className="grid two">
         <label className="field"><span>選擇行程點</span><select value={item?.id || ""} onChange={(event) => setItemId(event.target.value)}>{day.items.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.time}｜{candidate.title}</option>)}</select></label>
         <label className="field"><span>上傳照片</span><input type="file" accept="image/*" multiple disabled={uploading} onChange={(event) => { const files = Array.from(event.target.files || []); if (item && files.length) onUpload(day.id, item, files); event.target.value = ""; }} /></label>
@@ -410,7 +415,7 @@ function FortuneModal({ day, onClose }) {
   const fortune = buildFortune(day);
   return <div className="modal" onMouseDown={onClose}>
     <div className="modalCard card" style={{ backgroundImage: `url(${DEFAULT_FORTUNE_BG[day.id]})`, backgroundSize: "cover" }} onMouseDown={(event) => event.stopPropagation()}>
-      <div style={{ textAlign: "center" }}><img src={partnerImageUrl(day.dayNo)} alt="" style={{ width: 150 }} /><h2>{fortune.title}</h2><p>{fortune.target}</p></div>
+      <div className="fortuneMascot"><img src={partnerImageUrl(day.dayNo)} alt={`Day${day.dayNo} 小夥伴`} /><h2>{fortune.title}</h2><p>{fortune.target}</p></div>
       <Info label="籤文" value={fortune.main} />
       <button className="button primary" style={{ width: "100%", marginTop: 14 }} onClick={onClose}>收下大吉簽</button>
     </div>
