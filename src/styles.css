@@ -246,6 +246,63 @@ button {
   box-shadow: 0 10px 22px #1e293b12;
 }
 
+.dayMap {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #f8fafc;
+}
+
+.dayMapHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dayMapHeader h3 {
+  margin: 0 0 4px;
+}
+
+.dayMapHeader p {
+  margin: 0;
+}
+
+.mapFrame {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #e2e8f0;
+  aspect-ratio: 16 / 9;
+}
+
+.mapFrame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.mapPlaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mapPlaces span {
+  max-width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #dbeafe;
+  border-radius: 999px;
+  color: #1e3a8a;
+  background: #eff6ff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .icon {
   display: inline-grid;
   place-items: center;
@@ -432,5 +489,13 @@ button {
 
   .photos {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dayMapHeader {
+    display: grid;
+  }
+
+  .mapFrame {
+    aspect-ratio: 4 / 3;
   }
 }

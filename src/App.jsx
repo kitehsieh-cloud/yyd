@@ -48,6 +48,7 @@ const HEADER_COMPANION_LAYOUT = {
 
 const DEFAULT_DAY_BG = Object.fromEntries(Object.keys(TABS).map((id, index) => [id, `${ASSET_BASE_URL}/D${index + 1}.png`]));
 const DEFAULT_FORTUNE_BG = Object.fromEntries(Object.keys(TABS).map((id) => [id, `${ASSET_BASE_URL}/7BG.png`]));
+const TRIP_MAP_EMBED_URL = "https://www.google.com/maps/d/u/4/embed?mid=1bQy9sYK-Pn4s6oWAgtslttWcWG-T8Dg&ehbc=2E312F";
 
 function attraction(hours, summary, ticket = "免費／無門票", stay = "60-90 分") { return { hours, summary, ticket, stay }; }
 function restaurant(hours, recommended, avgCost, stay = "60-90 分") { return { hours, recommended, avgCost, stay }; }
@@ -354,7 +355,33 @@ function DayCard({ day, open, onToggle, onItemClick, photoCount, onOpenFortune, 
       {day.items.map((item) => <button key={item.id} type="button" className="item" onClick={() => onItemClick(day, item)}>
         <b>{item.time}</b>{mark(item.type)}<span><b>{item.title}</b><br /><span className="small muted">{typeLabel(item.type)}｜{item.stay}</span></span>
       </button>)}
+      <DayMap day={day} />
     </div>}
+  </section>;
+}
+
+function DayMap({ day }) {
+  const placeItems = day.items.filter((item) => !["transfer", "flight"].includes(item.type));
+  return <section className="dayMap">
+    <div className="dayMapHeader">
+      <div>
+        <h3>本日地圖｜{TABS[day.id]}</h3>
+        <p className="small muted">使用 Google My Maps 顯示行程地點；下方列出本日主要停留點。</p>
+      </div>
+      <a className="button" href={TRIP_MAP_EMBED_URL.replace("/embed?", "/viewer?")} target="_blank" rel="noreferrer">開啟大地圖</a>
+    </div>
+    <div className="mapFrame">
+      <iframe
+        src={TRIP_MAP_EMBED_URL}
+        title={`Day${day.dayNo} ${day.title} 地圖`}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        allowFullScreen
+      />
+    </div>
+    <div className="mapPlaces">
+      {placeItems.map((item) => <span key={item.id}>{item.time}｜{item.title}</span>)}
+    </div>
   </section>;
 }
 
