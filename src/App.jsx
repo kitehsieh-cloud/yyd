@@ -185,7 +185,10 @@ const DAYS = [
       { id: "0515-f1", time: "08:55-13:15", type: "flight", title: "桃園 → 成田，團一航班", stay: "4 小時 20 分", detail: { summary: "使用者提供航班資訊。" } },
       { id: "0515-a1", time: "13:15-14:30", type: "airport", title: "成田出關、領行李、整理票券", stay: "60-75 分", detail: attraction("機場全天運作", "抵達後先處理入境、領行李、購買／啟用 IC 卡或機場交通票。", "無門票") },
       { id: "0515-t1", time: "14:30-16:15", type: "transfer", title: "成田機場 → 飯店", stay: "90-105 分", detail: transfer("成田機場 → 新宿／東京市區，再前往飯店A或飯店B。", "90-105 分", "N'EX 來回票約 ¥5,200；市區短程另計。") },
+      { id: "0515-h1", time: "16:15-17:10", type: "hotel", title: "飯店 Check-in／放行李", stay: "55 分", detail: { summary: "飯店A Stay SAKURA Tokyo 新宿 百蔵、飯店B Hostel DEN 各自 Check-in。確認隔天集合方式與交通卡餘額。" } },
+      { id: "0515-t2", time: "17:10-17:40", type: "transfer", title: "飯店 → 牛炸豬排Motomura", stay: "25-45 分", detail: transfer("飯店A／B 各自前往新宿南口方向；晚餐優先，避免購物後提著戰利品排隊。", "25-45 分", "IC 約 ¥150-300") },
       { id: "0515-r1", time: "17:40-19:30", type: "restaurant", title: "晚餐：牛炸豬排Motomura", stay: "110 分", detail: restaurant("常見 11:00-22:00", "牛かつ定食、麥飯、山藥泥、明太子搭配。", "約 ¥1,800-3,000／人", "90-120 分") },
+      { id: "0515-t2b", time: "19:30-19:45", type: "transfer", title: "牛炸豬排Motomura → 新宿購物區", stay: "15 分", detail: transfer("晚餐後步行或短程移動到新宿東南口、唐吉訶德與新宿站周邊。", "10-20 分", "步行免費；短程電車另計") },
       { id: "0515-s1", time: "19:45-21:15", type: "attraction", title: "新宿購物｜唐吉訶德 新宿東南口店", stay: "90 分", detail: attraction("多為長時間營業；以現場為準", "首日補買旅用品、藥妝、零食與伴手禮。", "免費入店，購物另計", "60-90 分") },
       { id: "0515-t3", time: "21:15-22:00", type: "transfer", title: "新宿購物區 → 飯店", stay: "30-45 分", detail: transfer("購物後直接回飯店放戰利品、整理行李。", "30-45 分", "IC 約 ¥150-350") },
     ],
@@ -198,20 +201,34 @@ const DAYS = [
     items: [
       { id: "0516-t1", time: "07:30-08:15", type: "transfer", title: "飯店A／飯店B → 淺草車站", stay: "35-45 分", detail: transfer("兩組各自從飯店出發，到淺草站集合。", "飯店A 約 35-45 分；飯店B 約 20-30 分", "IC 約 ¥250-400") },
       { id: "0516-a1", time: "08:15-09:15", type: "attraction", title: "淺草寺、雷門", stay: "60 分", detail: attraction("本堂約 6:00-17:00", "早上人潮較少，適合作為第一站。", "免費") },
+      { id: "0516-a2", time: "09:15-10:00", type: "attraction", title: "浅草 新仲見世商店街／仲見世周邊", stay: "45 分", detail: attraction("多數商店約 10:00 前後營業", "伴手禮、小吃、拍照與商店街散策；若店家尚未全開，可把時間挪給晴空塔。", "免費，購物另計") },
+      { id: "0516-t2", time: "10:00-10:30", type: "transfer", title: "淺草 → 東京晴空塔", stay: "20-30 分", detail: transfer("可步行沿隅田川方向前往，或搭電車到押上／晴空塔。", "20-30 分", "步行免費；電車另計") },
       { id: "0516-a3", time: "10:30-12:00", type: "attraction", title: "東京晴空塔／東京ソラマチ", stay: "90 分", detail: attraction("多數商店 10:00-21:00", "不登塔則逛商場與拍外觀；登塔需額外時間。", "商場免費；展望台另計") },
+      { id: "0516-t3", time: "12:00-12:45", type: "transfer", title: "晴空塔 → 東京站／KITTE", stay: "35-45 分", detail: transfer("押上／晴空塔站轉乘至東京站，午餐往 KITTE 丸之內。", "35-45 分", "IC 約 ¥250-400") },
       { id: "0516-r1", time: "12:45-14:15", type: "restaurant", title: "午餐：迴轉壽司 根室花丸", stay: "90 分", detail: restaurant("常見 11:00-22:00，可能需取號", "花咲蟹、炙燒系列、季節魚、湯品。", "約 ¥2,500-4,500／人") },
       { id: "0516-a4", time: "14:15-16:00", type: "attraction", title: "東京動漫人物街／東京車站一番街", stay: "105 分", detail: attraction("常見 10:00-20:30", "動漫、角色商品與伴手禮。本日時間壓力大，可刪減。", "免費，購物另計") },
+      { id: "0516-t4", time: "16:00-16:40", type: "transfer", title: "東京站 → 中野『萬喜』", stay: "30-40 分", detail: transfer("JR 中央線快速到中野；團二、團三若從成田直接會合，晚餐地點作為集合點。", "30-40 分", "IC 約 ¥230-320") },
       { id: "0516-r2", time: "18:30-20:30", type: "restaurant", title: "晚餐：萬喜-串燒居酒屋", stay: "120 分", detail: restaurant("晚間營業，以預約為準", "串燒、雞肉料理、小菜與飲料。", "約 ¥3,000-5,000／人") },
+      { id: "0516-w1", time: "20:30-20:40", type: "transfer", title: "萬喜 → Karaoke Big Echo Nakano Dori", stay: "10 分", detail: transfer("中野站周邊步行移動。", "5-10 分", "步行免費") },
       { id: "0516-k1", time: "20:40-22:40", type: "restaurant", title: "KTV：Karaoke Big Echo Nakano Dori", stay: "120 分", detail: restaurant("夜間營業與方案依店鋪公告", "包廂唱歌、飲料方案。注意最短使用時間、延長費與末班車。", "約 ¥1,500-4,000／人") },
+      { id: "0516-t5", time: "22:40-23:40", type: "transfer", title: "中野 → 飯店", stay: "45-60 分", detail: transfer("飯店A 回新宿北側；飯店B 回小傳馬町／日本橋東側。", "45-60 分", "IC 約 ¥180-450") },
     ],
   },
   {
     id: "0517", dayNo: 3, date: "05/17", weekday: "日", title: "池袋‧澀谷", level: 2,
     meals: { lunch: "Denny's 親子餐廳／或原宿周邊", dinner: "[19:00] THE SLICE 和牛壽喜燒" },
-    note: "上午分成自由團與吉伊卡哇團；[10:30] 吉伊卡哇樂園有定位，必須優先滿足。",
+    note: "上午 07:30 從飯店A／B 各自出發到 JR 池袋站，10:30 吉伊卡哇樂園為定位優先。自由團可留在池袋 PARCO／太陽城，之後再一起往原宿、表參道、澀谷推進。",
     items: [
-      { id: "0517-a1", time: "10:30-12:00", type: "attraction", title: "吉伊卡哇團：[10:30] 吉伊卡哇樂園10:30", stay: "90 分", detail: attraction("依整理券／入場時間", "10:30 定位優先，不可壓縮。", "免費入店，購物另計") },
-      { id: "0517-a2", time: "14:00-15:30", type: "attraction", title: "原宿／竹下通／表參道周邊", stay: "90 分", detail: attraction("多數店 10:00/11:00-19:00/20:00", "逛街、甜點、服飾與拍照。", "免費，購物另計") },
+      { id: "0517-t0", time: "07:30-10:10", type: "transfer", title: "飯店A／飯店B → JR池袋站", stay: "30-45 分", detail: transfer("飯店A 從新大久保／新宿北側出發；飯店B 從小傳馬町／日本橋東側出發，到 JR 池袋站集合或分流。", "30-45 分", "IC 約 ¥180-450") },
+      { id: "0517-a1", time: "10:30-12:00", type: "attraction", title: "吉伊卡哇團：[10:30] 吉伊卡哇樂園10:30", stay: "90 分", detail: attraction("依整理券／入場時間", "10:30 定位優先，不可壓縮；購物與拍照都以入場時間為核心安排。", "免費入店，購物另計") },
+      { id: "0517-a1b", time: "10:30-12:00", type: "attraction", title: "自由團：池袋PARCO 本館／太陽城", stay: "90 分", detail: attraction("多數店約 10:00/11:00 起營業", "自由團可逛池袋 PARCO、太陽城、角色商品、扭蛋與雜貨；12:00 前後再與吉伊卡哇團會合。", "免費入館，購物另計") },
+      { id: "0517-t1", time: "12:00-12:40", type: "transfer", title: "池袋 → 原宿／Denny's 親子餐廳", stay: "30-40 分", detail: transfer("JR 山手線由池袋往原宿，午餐點以 Denny's Shibuya Koen-dori 或原宿周邊替代餐廳為主。", "30-40 分", "IC 約 ¥180-230") },
+      { id: "0517-r1", time: "12:40-13:40", type: "restaurant", title: "午餐：Denny's 親子餐廳／原宿周邊", stay: "60 分", detail: restaurant("依分店公告", "家庭餐廳類：漢堡排、蛋包飯、兒童餐、甜點飲料；若排隊過長就改原宿周邊。", "約 ¥1,200-2,500／人") },
+      { id: "0517-a2", time: "14:00-15:15", type: "attraction", title: "原宿／竹下通散策", stay: "75 分", detail: attraction("多數店 10:00/11:00-19:00/20:00", "竹下通甜點、服飾、拍照與小物店集中；人潮多，建議先訂集合點。", "免費，購物另計") },
+      { id: "0517-a3", time: "15:15-16:00", type: "attraction", title: "表參道／哈利波特旗艦店", stay: "45 分", detail: attraction("依店鋪公告", "從原宿往表參道移動，哈利波特旗艦店以主題商品採買與拍照為主。", "免費入店，購物另計") },
+      { id: "0517-t2", time: "16:00-16:30", type: "transfer", title: "原宿／表參道 → 澀谷區", stay: "15-30 分", detail: transfer("可步行往澀谷，或搭 JR 山手線一站；若腳累就直接搭車。", "15-30 分", "IC 約 ¥150-180；步行免費") },
+      { id: "0517-a4", time: "16:30-18:00", type: "attraction", title: "澀谷PARCO／澀谷區周邊", stay: "90 分", detail: attraction("多數店約 11:00-21:00", "Nintendo、Pokemon、JUMP、Capcom 等角色商品集中；18:00 前要開始往晚餐移動。", "免費入館，購物另計") },
+      { id: "0517-t3", time: "18:00-18:50", type: "transfer", title: "澀谷 → THE SLICE 和牛壽喜燒", stay: "40-60 分", detail: transfer("19:00 晚餐定位優先，建議 18:00 就離開澀谷購物區。", "40-60 分", "IC 約 ¥200-500") },
       { id: "0517-r2", time: "19:00-21:00", type: "restaurant", title: "晚餐：[19:00] THE SLICE 和牛壽喜燒 日式和牛火鍋", stay: "120 分", detail: restaurant("19:00 定位優先", "和牛壽喜燒、日式和牛火鍋套餐。", "約 ¥4,000-8,000／人以上") },
     ],
   },
@@ -220,10 +237,17 @@ const DAYS = [
     meals: { lunch: "鎌倉小町通", dinner: "江之島／藤澤，或回東京後吃" },
     note: "鎌倉取捨：大佛與長谷寺都深逛會壓縮海邊與江之島，建議擇一深逛。",
     items: [
+      { id: "0518-t0", time: "07:30-09:00", type: "transfer", title: "飯店A／B → JR鐮倉", stay: "75-105 分", detail: transfer("飯店A 可走新宿系統；飯店B 可走東京／新橋轉橫須賀線，到 JR 鐮倉站集合。", "75-105 分", "IC 約 ¥950-1,200；周遊券另計") },
       { id: "0518-a1", time: "09:00-10:30", type: "attraction", title: "鎌倉小町通／鶴岡八幡宮方向", stay: "90 分", detail: attraction("小町通店家多約 10:00 前後開", "上午走鎌倉站周邊最順。", "多數免費，購物另計") },
+      { id: "0518-r1", time: "11:30-12:30", type: "restaurant", title: "午餐：鎌倉小町通周邊", stay: "60 分", detail: restaurant("多數餐廳約 11:00 起", "鎌倉蔬菜、吻仔魚丼、咖哩、釜飯、街邊小吃。", "約 ¥1,500-3,000／人") },
+      { id: "0518-t1", time: "12:30-13:00", type: "transfer", title: "鎌倉站 → 長谷站", stay: "20-30 分", detail: transfer("江之電移動到長谷站，依序安排大佛與長谷寺。", "20-30 分", "IC 約 ¥260") },
       { id: "0518-a2", time: "13:00-14:00", type: "attraction", title: "鎌倉大佛殿高德院", stay: "60 分", detail: attraction("約 8:00-17:30", "鎌倉代表景點。", "成人約 ¥300") },
       { id: "0518-a3", time: "14:00-15:00", type: "attraction", title: "長谷寺", stay: "60 分", detail: attraction("約 8:00-17:30", "庭園、觀音堂、海景平台。", "成人約 ¥400") },
-      { id: "0518-a5", time: "17:45-18:45", type: "attraction", title: "江之島傍晚散策", stay: "60 分", detail: attraction("戶外可散步；設施另有時間", "傍晚收尾；完整上島需 2-3 小時。", "上島免費；設施另購") },
+      { id: "0518-t2", time: "15:00-15:40", type: "transfer", title: "長谷 → 七里濱／鐮倉高校前", stay: "30-40 分", detail: transfer("江之電往七里濱、鐮倉高校前；拍照時間視天氣與人潮調整。", "30-40 分", "IC 約 ¥260") },
+      { id: "0518-a4", time: "15:40-17:00", type: "attraction", title: "七里濱／鐮倉高校前海邊拍照", stay: "80 分", detail: attraction("戶外開放", "海邊、平交道與湘南景色；請注意車流、人潮與安全。", "免費") },
+      { id: "0518-t3", time: "17:00-17:45", type: "transfer", title: "七里濱／鐮倉高校前 → 江之島", stay: "30-45 分", detail: transfer("江之電至江之島站，再步行往江之島方向。", "30-45 分", "IC 約 ¥260") },
+      { id: "0518-a5", time: "17:45-18:45", type: "attraction", title: "江之島傍晚散策／小吃候選", stay: "60 分", detail: attraction("戶外可散步；店家依現場營業", "可視體力選江之島小屋、ALOHA TABLE、とびっちょ、章魚仙貝、紀之國屋本店等點位。完整上島需 2-3 小時。", "上島免費；餐飲另計") },
+      { id: "0518-t4", time: "19:00-21:00", type: "transfer", title: "江之島／藤澤 → 飯店", stay: "90-120 分", detail: transfer("JR 或小田急回東京市區；若體力不足可提早從藤澤回程。", "90-120 分", "約 ¥700-1,200") },
     ],
   },
   {
@@ -231,10 +255,15 @@ const DAYS = [
     meals: { lunch: "橫濱中華街", dinner: "橫濱港區／中華街" },
     note: "橫濱預設步行＋IC 卡；雨天或腳累再考慮 Minato Burari Ticket Wide。",
     items: [
-      { id: "0519-a0", time: "10:00-11:00", type: "attraction", title: "港見丘公園／山下公園散步", stay: "60 分", detail: attraction("戶外開放", "港區公園、海邊步道與拍照。", "免費") },
+      { id: "0519-t0", time: "07:30-09:45", type: "transfer", title: "飯店A／B → JR石川町／橫濱", stay: "45-75 分", detail: transfer("兩組各自前往橫濱集合，上午以 JR 石川町較順，晚上可從 JR 橫濱回程。", "45-75 分", "IC 約 ¥550-750") },
+      { id: "0519-a0", time: "10:00-11:00", type: "attraction", title: "港見丘公園／山下公園散步", stay: "60 分", detail: attraction("戶外開放", "先走港見丘公園，再往山下公園與海邊步道；拍照點多，雨天可縮短。", "免費") },
       { id: "0519-r1", time: "11:30-13:00", type: "restaurant", title: "午餐：橫濱中華街", stay: "90 分", detail: restaurant("多數餐廳約 11:00 起", "小籠包、燒賣、炒飯、擔擔麵、吃到飽或單點。", "約 ¥1,500-4,500／人") },
+      { id: "0519-t1", time: "13:00-13:30", type: "transfer", title: "中華街 → 橫濱紅磚倉庫", stay: "20-30 分", detail: transfer("可步行經港區，或搭港未來線／公車縮短移動。", "20-30 分", "步行免費；電車/公車另計") },
       { id: "0519-a2", time: "13:30-15:00", type: "attraction", title: "橫濱紅磚倉庫1號館", stay: "90 分", detail: attraction("多數店約 10:00/11:00-20:00", "購物、甜點、拍照與港區散步。", "免費入館，購物另計") },
-      { id: "0519-a3", time: "15:00-17:30", type: "attraction", title: "橫濱 COSMOWORLD／港未來自由活動", stay: "150 分", detail: attraction("依日期，可能休園或天候調整", "摩天輪、遊樂設施與夜景區。", "入園免費；設施券另計") },
+      { id: "0519-a3", time: "15:00-17:20", type: "attraction", title: "橫濱 COSMOWORLD／港未來自由活動", stay: "140 分", detail: attraction("依日期，可能休園或天候調整", "摩天輪、遊樂設施與夜景區；港未來可視體力自由散策。", "入園免費；設施券另計") },
+      { id: "0519-a4", time: "17:20-18:00", type: "attraction", title: "空中纜車 YOKOHAMA AIR CABIN Unga Park Station", stay: "40 分", detail: attraction("依營業公告", "港未來移動體驗與夜景視角；若排隊太長可改步行。", "票價另計") },
+      { id: "0519-r2", time: "18:00-19:30", type: "restaurant", title: "晚餐：港未來／中華街擇一", stay: "90 分", detail: restaurant("依餐廳", "中華街二刷、港區洋食、拉麵、甜點咖啡皆可；以回程動線決定。", "約 ¥1,500-4,000／人") },
+      { id: "0519-t2", time: "20:00-21:30", type: "transfer", title: "JR橫濱／港未來 → 飯店", stay: "70-90 分", detail: transfer("從 JR 橫濱或港未來線回東京市區，飯店A／B 各自回程。", "70-90 分", "IC 約 ¥550-750") },
     ],
   },
   {
@@ -243,8 +272,12 @@ const DAYS = [
     splitNote: "芷馨不會與大家一起去迪士尼。這天直接分成迪士尼組與芷馨回程組。",
     note: "芷馨直接去成田最穩；迪士尼組需早到並先處理 App 與熱門設施。",
     items: [
+      { id: "0520-t0", time: "07:00-08:15", type: "transfer", title: "迪士尼組：飯店 → 東京迪士尼樂園", stay: "60-75 分", detail: transfer("飯店A／B 各自前往舞濱，再步行或搭 Disney Resort Line 視當日入口安排。", "60-75 分", "IC 約 ¥450-650；園區交通另計") },
+      { id: "0520-t0b", time: "07:00-09:15", type: "transfer", title: "芷馨：飯店 → 成田機場", stay: "90-135 分", detail: transfer("12:30 起飛建議 09:00-09:30 到機場，直接走成田最穩。", "90-135 分", "N'EX 或 Skyliner＋JR") },
       { id: "0520-a1", time: "09:00-21:00", type: "attraction", title: "東京迪士尼樂園", stay: "全天", detail: attraction("官方日曆顯示約 9:00-21:00", "先處理 App、熱門設施、Premier Access、Priority Pass、Mobile Order。", "成人票價依日期變動") },
       { id: "0520-r1", time: "12:00-13:00", type: "restaurant", title: "午餐：迪士尼園區內", stay: "60 分", detail: restaurant("依園區餐廳", "建議避開 12:00 尖峰或使用 Mobile Order。", "約 ¥1,500-3,500／人") },
+      { id: "0520-r2", time: "17:00-18:00", type: "restaurant", title: "晚餐：迪士尼園區內", stay: "60 分", detail: restaurant("依園區餐廳", "建議 17:00 前後先吃，避開晚間遊行與閉園人潮。", "約 ¥1,500-4,000／人") },
+      { id: "0520-t1", time: "21:00-22:30", type: "transfer", title: "迪士尼 → 飯店", stay: "75-90 分", detail: transfer("舞濱回東京市區；閉園後人潮多，回程要抓排隊與轉乘緩衝。", "75-90 分", "IC 約 ¥450-650") },
     ],
   },
   {
@@ -252,8 +285,12 @@ const DAYS = [
     meals: { lunch: "11:30 牛舌檸檬 新宿", dinner: "成田機場／機上" },
     note: "返程停損：牛舌檸檬若 11:30 未入店就改機場午餐，避免影響航班。",
     items: [
+      { id: "0521-h1", time: "07:00-09:30", type: "hotel", title: "整理行李、退房、寄放行李", stay: "150 分", detail: { summary: "確認飯店是否可寄放行李；整理護照、機票、現金、伴手禮與行李重量。" } },
       { id: "0521-a1", time: "09:30-10:30", type: "attraction", title: "唐吉訶德 新大久保／新宿最後採買", stay: "60 分", detail: attraction("多數店長時間營業", "最後採買，注意托運限制。", "免費入店，購物另計") },
+      { id: "0521-t1", time: "10:30-11:15", type: "transfer", title: "飯店／新大久保 → 牛舌檸檬 新宿", stay: "30-45 分", detail: transfer("帶大行李需預留電梯、寄物與步行時間；11:30 定位不可壓縮。", "30-45 分", "IC 約 ¥150-180") },
       { id: "0521-r1", time: "11:30-12:20", type: "restaurant", title: "午餐：[11:30] 牛舌檸檬 新宿", stay: "50 分", detail: restaurant("11:30 定位優先", "厚切牛舌、牛舌定食、檸檬風味搭配。", "約 ¥2,000-4,500／人") },
+      { id: "0521-t2", time: "12:30-14:00", type: "transfer", title: "新宿 → 成田機場", stay: "90 分", detail: transfer("推薦 N'EX 回成田；若 11:30 無法準時入店，午餐改機場避免影響航班。", "90-110 分", "N'EX 來回票或單程票") },
+      { id: "0521-a2", time: "14:00-16:00", type: "airport", title: "成田機場報到、托運、安檢、採買", stay: "120 分", detail: attraction("機場依航班運作", "先報到托運再採買；注意液體、電池與伴手禮托運限制。", "無門票；購物餐飲另計") },
       { id: "0521-f1", time: "16:50-20:35", type: "flight", title: "團二／團一 成田 → 桃園", stay: "依航班", detail: { summary: "團二 16:50-19:40；團一 17:55-20:35。" } },
     ],
   },
@@ -598,51 +635,6 @@ function DayCard({ day, open, onToggle, onItemClick, photoCount, onOpenFortune, 
       <DayMap day={day} />
     </div>}
   </section>;
-}
-
-function buildDayMapHtml(points) {
-  const safePoints = JSON.stringify(points);
-  return `<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    html, body, #map { height: 100%; margin: 0; }
-    .leaflet-popup-content { font: 700 13px/1.4 system-ui, -apple-system, "Noto Sans TC", sans-serif; }
-    .pin { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; color: #fff; background: #2563eb; border: 3px solid #fff; box-shadow: 0 4px 14px #0f172a55; font: 900 12px/1 system-ui; }
-  </style>
-</head>
-<body>
-  <div id="map"></div>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    const points = ${safePoints};
-    const map = L.map("map", { scrollWheelZoom: false });
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: "&copy; OpenStreetMap"
-    }).addTo(map);
-
-    const bounds = [];
-    points.forEach((point, index) => {
-      const latLng = [point.lat, point.lng];
-      bounds.push(latLng);
-      const icon = L.divIcon({ className: "", html: '<div class="pin">' + (index + 1) + '</div>', iconSize: [28, 28], iconAnchor: [14, 14] });
-      L.marker(latLng, { icon }).addTo(map).bindPopup((index + 1) + ". " + point.name);
-    });
-
-    if (bounds.length === 1) {
-      map.setView(bounds[0], 15);
-    } else if (bounds.length > 1) {
-      map.fitBounds(bounds, { padding: [34, 34], maxZoom: 15 });
-    } else {
-      map.setView([35.681236, 139.767125], 11);
-    }
-  </script>
-</body>
-</html>`;
 }
 
 function DayMap({ day }) {
