@@ -882,7 +882,7 @@ export default function App() {
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
   const [syncError, setSyncError] = useState("");
-  const [showAlbum, setShowAlbum] = useState(false);
+  const [viewMode, setViewMode] = useState("itinerary");
   const [tokenSettingsOpen, setTokenSettingsOpen] = useState(() => !localStorage.getItem(STORAGE_KEYS.token));
 
   const unlocked = useMemo(() => DAYS.filter((day) => dayFortuneUnlocked(day.id, (photosByDay[day.id] || []).length)).length, [photosByDay]);
@@ -984,12 +984,11 @@ export default function App() {
   return <div className="app">
     <MainHeader photosByDay={photosByDay} />
     <div className="toolbar">
-      <button className="tab active" type="button">行程</button>
-      <button className="tab" type="button" onClick={() => { setShowAlbum((value) => !value); refreshGitHubAlbum(); }}>相簿 {totalPhotoCount(photosByDay)} 張</button>
+      <button className={`tab${viewMode === "itinerary" ? " active" : ""}`} type="button" onClick={() => setViewMode("itinerary")}>行程</button>
+      <button className={`tab${viewMode === "album" ? " active" : ""}`} type="button" onClick={() => { setViewMode("album"); refreshGitHubAlbum(); }}>相簿 {totalPhotoCount(photosByDay)} 張</button>
       <span className="tab">已解鎖 {unlocked}/7</span>
     </div>
-    {showAlbum && <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} />}
-    {DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => Object.fromEntries(DAYS.map((candidate) => [candidate.id, candidate.id === day.id ? !prev[day.id] : false])))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
+    {viewMode === "album" ? <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} /> : DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => Object.fromEntries(DAYS.map((candidate) => [candidate.id, candidate.id === day.id ? !prev[day.id] : false])))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
     {syncError && <p className="status error">同步錯誤：{syncError}</p>}
     <Settings token={token} forceOpen={tokenSettingsOpen} onSaveToken={saveToken} onClearToken={clearToken} />
     {activeDay && activeItem && <DetailModal day={activeDay} item={activeItem} onClose={() => { setActiveDay(null); setActiveItem(null); }} />}
