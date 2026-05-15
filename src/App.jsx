@@ -659,12 +659,18 @@ function buildFortune(day) {
   };
 }
 
+function companionPreviewMode() {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).get("companions") === "1";
+}
+
 function MainHeader({ photosByDay }) {
   const unlocked = DAYS.filter((day) => dayFortuneUnlocked(day.id, (photosByDay[day.id] || []).length)).map((day) => day.dayNo);
+  const companionIds = companionPreviewMode() ? Object.keys(HEADER_COMPANION_LAYOUT).map(Number) : [0, ...unlocked];
   return <header className="hero card">
     <div style={{ position: "relative" }}>
       <img src={DEFAULT_COMMON_HEADER_BG} alt="2026 東京自由行" />
-      {[0, ...unlocked].map((dayNo) => {
+      {[...new Set(companionIds)].map((dayNo) => {
         const pos = HEADER_COMPANION_LAYOUT[dayNo];
         return pos ? <img key={dayNo} className={`heroCompanion heroCompanion-${dayNo}`} src={partnerImageUrl(dayNo)} alt={pos.label} style={{ left: `${pos.left}%`, top: `${pos.top}%`, width: `${pos.width}%` }} /> : null;
       })}
