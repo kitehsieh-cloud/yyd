@@ -119,6 +119,58 @@ const DAY_MAP_POINTS = {
     { name: "牛舌檸檬 新宿", lat: 35.6961364, lng: 139.6978751 },
   ],
 };
+const AREA_RESTAURANT_RECOMMENDATIONS = [
+  {
+    match: ["橫濱中華街"],
+    items: [
+      { name: "萬珍樓 本店", type: "廣東料理／老字號", pick: "燒賣、叉燒、廣東點心", why: "橫濱中華街代表性老店，適合想坐下來吃正式中華餐的人" },
+      { name: "重慶飯店 新館", type: "四川料理", pick: "麻婆豆腐、擔擔麵、四川套餐", why: "想吃辣味與重口味時的穩定選擇" },
+      { name: "謝甜記 貮号店", type: "中式粥／輕食", pick: "海鮮粥、油條、梅味雞", why: "排隊名店，適合想吃不太油膩的一餐" },
+      { name: "菜香新館", type: "飲茶／點心", pick: "蝦餃、燒賣、叉燒包", why: "點心選擇多，適合多人分食" },
+      { name: "MeetFresh 鮮芋仙 横浜中華街店", type: "甜品", pick: "芋圓、仙草、豆花", why: "飯後甜點或下午休息很方便" },
+    ],
+  },
+  {
+    match: ["迪士尼園區內", "東京迪士尼樂園"],
+    items: [
+      { name: "Hungry Bear Restaurant", type: "咖哩／快速用餐", pick: "咖哩飯、兒童餐", why: "份量穩、翻桌快，適合避開尖峰快速補體力" },
+      { name: "Queen of Hearts Banquet Hall", type: "主題餐廳", pick: "漢堡排、甜點、主題造型餐", why: "愛麗絲主題感強，適合拍照與坐下休息" },
+      { name: "Center Street Coffeehouse", type: "西式套餐／咖啡廳", pick: "套餐、甜點、飲料", why: "比速食型餐廳更適合慢慢吃" },
+      { name: "Pan Galactic Pizza Port", type: "披薩／輕食", pick: "披薩、甜點、飲料", why: "動線簡單，適合多人快速分散點餐" },
+      { name: "Grandma Sara's Kitchen", type: "舒適餐／家庭餐", pick: "蛋包飯、焗烤、套餐", why: "室內座位感較舒服，適合晚餐或雨天" },
+    ],
+  },
+  {
+    match: ["鎌倉小町通"],
+    items: [
+      { name: "キャラウェイ Caraway", type: "咖哩", pick: "歐風咖哩", why: "小町通周邊人氣排隊店，適合想吃飽" },
+      { name: "秋本", type: "日式定食／鎌倉蔬菜", pick: "鎌倉蔬菜、吻仔魚料理", why: "想吃在地感午餐時很合適" },
+      { name: "鎌倉釜飯 かまかま", type: "釜飯", pick: "吻仔魚釜飯、海鮮釜飯", why: "鎌倉代表性食材，適合坐下慢吃" },
+      { name: "もみじ茶屋 小町通り", type: "甜點／和風咖啡", pick: "抹茶甜點、蕨餅", why: "逛街中段休息點" },
+      { name: "さくらの夢見屋", type: "糰子／小吃", pick: "彩色糰子", why: "適合邊走邊吃與拍照" },
+    ],
+  },
+  {
+    match: ["原宿", "表參道", "竹下通"],
+    items: [
+      { name: "AFURI 原宿", type: "拉麵", pick: "柚子鹽拉麵", why: "清爽型拉麵，逛街途中容易安排" },
+      { name: "bills 表參道", type: "早午餐", pick: "鬆餅、蛋料理", why: "適合想坐下休息與吃甜鹹早午餐" },
+      { name: "THE GREAT BURGER", type: "美式漢堡", pick: "漢堡、薯條", why: "份量夠，適合不想吃日式餐的人" },
+      { name: "南国酒家 原宿本店", type: "中華料理", pick: "炒飯、點心、套餐", why: "多人分食友善" },
+      { name: "Ralph's Coffee Omotesando", type: "咖啡／甜點", pick: "咖啡、蛋糕", why: "逛表參道時好用的休息點" },
+    ],
+  },
+  {
+    match: ["江之島"],
+    items: [
+      { name: "とびっちょ 本店", type: "海鮮丼", pick: "吻仔魚丼、海鮮丼", why: "江之島代表性海鮮人氣店" },
+      { name: "江之島小屋", type: "海鮮定食", pick: "海鮮丼、魚料理", why: "想坐下吃正餐時適合" },
+      { name: "ALOHA TABLE 湘南", type: "夏威夷料理", pick: "漢堡排、夏威夷飯", why: "海邊感強，適合不吃海鮮的人" },
+      { name: "あさひ本店", type: "小吃", pick: "章魚仙貝", why: "江之島散策經典小吃" },
+      { name: "紀の国屋本店", type: "甜點", pick: "冰淇淋最中", why: "散步收尾的甜點選擇" },
+    ],
+  },
+];
 
 function attraction(hours, summary, ticket = "免費／無門票", stay = "60-90 分") { return { hours, summary, ticket, stay }; }
 function restaurant(hours, recommended, avgCost, stay = "60-90 分") { return { hours, recommended, avgCost, stay }; }
@@ -230,6 +282,11 @@ function mapPointForItem(day, item) {
   const points = DAY_MAP_POINTS[day.id] || [];
   const normalizedTitle = String(item.title || "").replace(/\s/g, "");
   return points.find((point) => normalizedTitle.includes(point.name.replace(/\s/g, "").slice(0, 5)) || point.name.replace(/\s/g, "").includes(normalizedTitle.slice(0, 5))) || points[0] || null;
+}
+function restaurantRecommendationsFor(item) {
+  const title = String(item.title || "");
+  if (item.type !== "restaurant") return [];
+  return AREA_RESTAURANT_RECOMMENDATIONS.find((group) => group.match.some((keyword) => title.includes(keyword)))?.items || [];
 }
 function totalPhotoCount(photosByDay) { return Object.values(photosByDay || {}).reduce((sum, photos) => sum + (Array.isArray(photos) ? photos.length : 0), 0); }
 function sortPhotosNewestFirst(photos) { return [...(photos || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); }
@@ -415,6 +472,7 @@ function RichDetailRows({ item, day }) {
   const title = item.title || "";
   const point = mapPointForItem(day, item);
   const reserved = isReservedItem(item);
+  const restaurantRecommendations = restaurantRecommendationsFor(item);
 
   if (reserved) rows.push({ label: "定位／預約優先", items: ["標題中含有時間，表示此段有定位或指定入場時間。前後交通、購物與拍照都要讓位給這個時間。"] });
   if (title.includes("飯店A／飯店B") || title.includes("飯店A／B") || title.includes("飯店")) {
@@ -431,6 +489,12 @@ function RichDetailRows({ item, day }) {
   }
   if (item.type === "restaurant") {
     rows.push({ label: "用餐提醒", items: ["營業時間與最後點餐以店鋪當日公告為準；熱門店請預留排隊、取號或入席緩衝。", d.recommended ? `推薦餐點：${d.recommended}` : "先確認招牌餐點、兒童/不吃生食選項與是否可分開結帳。", d.avgCost ? `消費估算：${d.avgCost}` : "消費規定以現場菜單、低消、服務費與付款方式為準。"] });
+  }
+  if (restaurantRecommendations.length > 0) {
+    rows.push({
+      label: "範圍內餐廳候選（5間不同類型）",
+      items: restaurantRecommendations.map((restaurant) => `${restaurant.name}｜${restaurant.type}：${restaurant.why}。可優先看 ${restaurant.pick}。`),
+    });
   }
   if (item.type === "attraction" || item.type === "airport") {
     rows.push({ label: "景點導覽", items: [d.summary || "以地圖標記點為核心，先完成必拍/必逛，再視體力延伸到周邊。", d.ticket ? `費用：${d.ticket}` : "戶外或商場型點位多為免費進入，消費另計。"] });
