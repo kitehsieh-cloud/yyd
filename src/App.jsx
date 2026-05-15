@@ -715,7 +715,7 @@ function DayCard({ day, open, onToggle, onItemClick, photoCount, onOpenFortune, 
   return <section className="day card">
     <div className="dayHero" style={{ backgroundImage: `url(${DEFAULT_DAY_BG[day.id]})` }}>
       <div className="dayBadge">Day.{day.dayNo}<br />{day.date}({day.weekday})</div>
-      <button className={`photoButton${available ? "" : " isFuture"}`} type="button" aria-disabled={!available} onClick={() => available ? (unlocked ? onOpenFortune(day) : onOpenPhotoTool(day)) : window.alert(`${TABS[day.id]} 尚未開放照片上傳。開放條件：日本時間 ${TRIP_YEAR}/${day.date} 當天起才可上傳。`)} title={photoButtonTitle}>
+      <button className={`photoButton${available ? "" : " isFuture"}${available && !unlocked ? " isReady" : ""}`} type="button" aria-disabled={!available} onClick={() => available ? (unlocked ? onOpenFortune(day) : onOpenPhotoTool(day)) : window.alert(`${TABS[day.id]} 尚未開放照片上傳。開放條件：日本時間 ${TRIP_YEAR}/${day.date} 當天起才可上傳。`)} title={photoButtonTitle}>
         <img src={unlocked ? OMAMORI_ICON_URL : PHOTO_ICON_URL} alt={unlocked ? "御守" : "相機"} />
       </button>
       <button className="dayToggle" type="button" onClick={onToggle}>{open ? "▲收合詳細行程▲" : `▼${day.title}▼`}</button>
@@ -826,8 +826,7 @@ function AlbumSection({ photosByDay, loading, onRefresh }) {
 }
 
 function PhotoModal({ day, photos, onUpload, onClose, uploading, uploadStatus }) {
-  const [itemId, setItemId] = useState(day.items[0]?.id || "");
-  const item = day.items.find((candidate) => candidate.id === itemId) || day.items[0];
+  const uploadItem = { id: `${day.id}-album`, title: `Day${day.dayNo}｜${day.title}`, type: "album" };
   return <div className="modal" onMouseDown={onClose}>
     <div className="modalCard card" onMouseDown={(event) => event.stopPropagation()}>
       <div className="modalTop"><div><h2>Day{day.dayNo}｜照片蒐集</h2><p className="small muted">{photos.length}/{dayPhotoTarget(day.id)} 張</p></div><button className="button" onClick={onClose}>關閉</button></div>
@@ -836,10 +835,11 @@ function PhotoModal({ day, photos, onUpload, onClose, uploading, uploadStatus })
         <strong>?</strong>
         <p>小夥伴等待照片能量喚醒</p>
       </div>
-      <div className="grid two">
-        <label className="field"><span>選擇行程點</span><select value={item?.id || ""} onChange={(event) => setItemId(event.target.value)}>{day.items.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.time}｜{candidate.title}</option>)}</select></label>
-        <label className="field"><span>上傳照片</span><input type="file" accept="image/*" multiple disabled={uploading} onChange={(event) => { const files = Array.from(event.target.files || []); if (item && files.length) onUpload(day.id, item, files); event.target.value = ""; }} /></label>
-      </div>
+      <label className={`uploadCta${uploading ? " disabled" : ""}`}>
+        <input type="file" accept="image/*" multiple disabled={uploading} onChange={(event) => { const files = Array.from(event.target.files || []); if (files.length) onUpload(day.id, uploadItem, files); event.target.value = ""; }} />
+        <span className="uploadCtaIcon">{mark("album")}</span>
+        <span><b>{uploading ? "照片上傳中..." : "選擇照片上傳"}</b><small>會自動存進 Day{day.dayNo} 相簿</small></span>
+      </label>
       {uploadStatus && <p className={`status ${uploadStatus.startsWith("失敗") ? "error" : ""}`}>{uploadStatus}</p>}
       <div className="photos">{sortPhotosNewestFirst(photos).map((photo) => <figure className="photoFigure" key={photo.id}><img src={photo.url} alt={photo.name} /><figcaption><b>{photo.itemTitle}</b><br />{photo.name}</figcaption></figure>)}</div>
     </div>
