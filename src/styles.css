@@ -161,6 +161,30 @@ button {
   background: #f8fafc;
 }
 
+.settingsStatus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.settingsStatus h2,
+.settingsStatus p {
+  margin: 0;
+}
+
+.settingActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.settingsStatus .settingActions {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+
 .day {
   overflow: hidden;
   margin-bottom: 18px;
@@ -489,6 +513,14 @@ button {
 
   .photos {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .settingsStatus {
+    display: grid;
+  }
+
+  .settingsStatus .settingActions {
+    margin-top: 0;
   }
 
   .dayMapHeader {

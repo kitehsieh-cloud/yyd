@@ -306,6 +306,10 @@ function DetailRows({ item }) {
 function Info({ label, value }) { return <div className="info"><b>{label}</b><div className="small muted">{value || "待確認"}</div></div>; }
 function typeLabel(type) { return { attraction: "景點", restaurant: "餐廳", transfer: "移動", hotel: "住宿", flight: "航班", airport: "機場" }[type] || type; }
 function mark(type) { return <span className="icon">{ICON[type] || "•"}</span>; }
+function isTokenError(error) {
+  const message = error instanceof Error ? error.message : String(error || "");
+  return error?.status === 401 || error?.status === 403 || /bad credentials|requires authentication|resource not accessible|fine-grained pat|token/i.test(message);
+}
 function buildFortune(day) {
   const next = DAYS[DAYS.findIndex((item) => item.id === day.id) + 1];
   return {
@@ -328,14 +332,39 @@ function MainHeader({ photosByDay }) {
   </header>;
 }
 
-function Settings({ token, setToken }) {
+function Settings({ token, forceOpen, onSaveToken, onClearToken }) {
+  const [open, setOpen] = useState(forceOpen || !token);
+  const [draftToken, setDraftToken] = useState("");
+
+  useEffect(() => {
+    setOpen(forceOpen || !token);
+    setDraftToken("");
+  }, [forceOpen, token]);
+
+  if (token && !open) {
+    return <section className="card section settingsStatus">
+      <div>
+        <h2>GitHub 相簿同步已設定</h2>
+        <p className="small muted">Token 已儲存在這台裝置的瀏覽器。只有上傳照片或同步失敗時才需要重新設定。</p>
+      </div>
+      <div className="settingActions">
+        <button className="button" type="button" onClick={() => setOpen(true)}>更換 token</button>
+        <button className="button" type="button" onClick={onClearToken}>移除</button>
+      </div>
+    </section>;
+  }
+
   return <section className="card section">
     <h2>GitHub 相簿同步設定</h2>
-    <p className="small muted">請填入只具備此 repo Contents 讀寫權限的 Fine-grained PAT。Token 只存在你的瀏覽器，不會被 commit 到 GitHub Pages 程式碼。</p>
+    <p className="small muted">請填入只具備此 repo Contents 讀寫權限的 Fine-grained PAT。按下儲存後，這個設定區會自動隱藏。</p>
     <label className="field">
       <span className="small">GitHub PAT</span>
-      <input type="password" value={token} onChange={(event) => setToken(event.target.value.trim())} placeholder="github_pat_..." />
+      <input type="password" value={draftToken} onChange={(event) => setDraftToken(event.target.value)} placeholder="github_pat_..." autoComplete="off" />
     </label>
+    <div className="settingActions">
+      <button className="button primary" type="button" disabled={!draftToken.trim()} onClick={() => onSaveToken(draftToken.trim())}>儲存 token</button>
+      {token && <button className="button" type="button" onClick={() => setOpen(false)}>取消</button>}
+    </div>
   </section>;
 }
 
@@ -466,12 +495,21 @@ export default function App() {
   const [uploadStatus, setUploadStatus] = useState("");
   const [syncError, setSyncError] = useState("");
   const [showAlbum, setShowAlbum] = useState(false);
+  const [tokenSettingsOpen, setTokenSettingsOpen] = useState(() => !localStorage.getItem(STORAGE_KEYS.token));
 
   const unlocked = useMemo(() => DAYS.filter((day) => dayFortuneUnlocked(day.id, (photosByDay[day.id] || []).length)).length, [photosByDay]);
 
-  function setToken(value) {
+  function saveToken(value) {
     setTokenState(value);
     localStorage.setItem(STORAGE_KEYS.token, value);
+    setTokenSettingsOpen(false);
+    setSyncError("");
+  }
+
+  function clearToken() {
+    setTokenState("");
+    localStorage.removeItem(STORAGE_KEYS.token);
+    setTokenSettingsOpen(true);
   }
 
   async function refreshGitHubAlbum() {
@@ -486,6 +524,7 @@ export default function App() {
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       setSyncError(token ? msg : "");
+      if (token && isTokenError(error)) setTokenSettingsOpen(true);
       return null;
     } finally {
       setAlbumLoading(false);
@@ -545,6 +584,7 @@ export default function App() {
       const msg = error instanceof Error ? error.message : String(error);
       setUploadStatus(`失敗：${msg}`);
       setSyncError(msg);
+      if (isTokenError(error)) setTokenSettingsOpen(true);
     } finally {
       setUploading(false);
     }
@@ -552,7 +592,7 @@ export default function App() {
 
   return <div className="app">
     <MainHeader photosByDay={photosByDay} />
-    <Settings token={token} setToken={setToken} />
+    <Settings token={token} forceOpen={tokenSettingsOpen} onSaveToken={saveToken} onClearToken={clearToken} />
     {syncError && <p className="status error">同步錯誤：{syncError}</p>}
     <div className="toolbar">
       <button className="tab active" type="button">行程</button>
