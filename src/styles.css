@@ -825,7 +825,7 @@ button {
 
 .albumCover {
   position: relative;
-  min-height: 220px;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   border: 6px solid #fff;
   border-radius: 26px;
@@ -1108,7 +1108,8 @@ button {
   }
 
   .albumCover {
-    min-height: 260px;
+    aspect-ratio: 16 / 9;
+    min-height: 0;
     transform: rotate(0deg);
   }
 
