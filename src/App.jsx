@@ -296,7 +296,17 @@ const DAYS = [
   },
 ];
 
-const ICON = { attraction: "📍", restaurant: "🍽️", transfer: "🚃", hotel: "🏨", flight: "✈️", airport: "🛄", album: "🖼️", route: "🧭", fortune: "🌟" };
+const ICON_LABELS = {
+  attraction: "景點",
+  restaurant: "用餐",
+  transfer: "移動",
+  hotel: "住宿",
+  flight: "航班",
+  airport: "機場",
+  album: "相簿",
+  route: "路線",
+  fortune: "大吉籤",
+};
 
 function emptyPhotosByDay() { return Object.fromEntries(DAYS.map((day) => [day.id, []])); }
 function dayPhotoTarget(dayId) { return PHOTO_TARGETS[dayId] || DEFAULT_PHOTO_TARGET; }
@@ -551,7 +561,69 @@ function RichDetailRows({ item, day }) {
   </div>;
 }
 function typeLabel(type) { return { attraction: "景點", restaurant: "餐廳", transfer: "移動", hotel: "住宿", flight: "航班", airport: "機場" }[type] || type; }
-function mark(type) { return <span className="icon">{ICON[type] || "•"}</span>; }
+function TravelIconSvg({ type }) {
+  const stroke = "#4b2f1d";
+  const common = { stroke, strokeWidth: 3.4, strokeLinecap: "round", strokeLinejoin: "round" };
+  if (type === "restaurant") return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <path d="M11 35l24-24" {...common} />
+    <circle cx="18" cy="28" r="6" fill="#fda4af" {...common} />
+    <circle cx="25" cy="21" r="6" fill="#fef3c7" {...common} />
+    <circle cx="32" cy="14" r="6" fill="#bbf7d0" {...common} />
+    <path d="M13 31c2 2 7 2 10-1" fill="none" stroke="#fff7ed" strokeWidth="2.3" strokeLinecap="round" />
+  </svg>;
+  if (type === "transfer") return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <rect x="11" y="9" width="26" height="29" rx="7" fill="#dbeafe" {...common} />
+    <path d="M16 15h16" {...common} />
+    <rect x="15" y="19" width="18" height="9" rx="3" fill="#fff7ed" {...common} />
+    <circle cx="18" cy="33" r="2.4" fill="#4b2f1d" />
+    <circle cx="30" cy="33" r="2.4" fill="#4b2f1d" />
+    <path d="M17 41h14" {...common} />
+  </svg>;
+  if (type === "hotel") return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <path d="M9 24L24 11l15 13v14a4 4 0 0 1-4 4H13a4 4 0 0 1-4-4z" fill="#fef3c7" {...common} />
+    <path d="M18 42V29h12v13" fill="#bbf7d0" {...common} />
+    <path d="M17 22h14" stroke="#fff7ed" strokeWidth="2.5" strokeLinecap="round" />
+    <circle cx="29" cy="35" r="1.3" fill="#4b2f1d" />
+  </svg>;
+  if (type === "flight") return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <path d="M8 27l31-16c2.6-1.3 4.8 1.9 2.7 4L31 26l4 12-5 2-8-10-10 3-4-6z" fill="#e0e7ff" {...common} />
+    <path d="M18 25l-6-9 4-2 10 7" fill="#fda4af" {...common} />
+    <path d="M31 26l-8-5" stroke="#fff7ed" strokeWidth="2.3" strokeLinecap="round" />
+  </svg>;
+  if (type === "airport") return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <rect x="12" y="16" width="25" height="23" rx="5" fill="#c7d2fe" {...common} />
+    <path d="M19 16v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3" fill="none" {...common} />
+    <path d="M18 23h13M18 29h13" stroke="#fff7ed" strokeWidth="2.5" strokeLinecap="round" />
+    <path d="M17 42h3M29 42h3" {...common} />
+  </svg>;
+  if (type === "album") return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <rect x="9" y="12" width="30" height="25" rx="5" fill="#e9d5ff" {...common} />
+    <circle cx="30" cy="21" r="3" fill="#fda4af" {...common} />
+    <path d="M13 33l8-8 6 6 4-4 5 6" fill="#bbf7d0" {...common} />
+  </svg>;
+  if (type === "route") return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <circle cx="24" cy="24" r="16" fill="#dbeafe" {...common} />
+    <path d="M28 13l-4 13-8 8 4-13z" fill="#fda4af" {...common} />
+    <circle cx="24" cy="24" r="2" fill="#4b2f1d" />
+  </svg>;
+  if (type === "fortune") return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <path d="M17 11h14l6 7-3 22H14l-3-22z" fill="#fda4af" {...common} />
+    <path d="M19 11c0-4 10-4 10 0" fill="none" {...common} />
+    <path d="M18 26h12M22 20h4M20 32h8" stroke="#fff7ed" strokeWidth="2.4" strokeLinecap="round" />
+    <path d="M37 9l1.3 3 3 1.3-3 1.3-1.3 3-1.3-3-3-1.3 3-1.3z" fill="#fde68a" stroke={stroke} strokeWidth="2" strokeLinejoin="round" />
+  </svg>;
+  return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <path d="M10 22h28" fill="none" {...common} />
+    <path d="M14 16h20v7H14z" fill="#fda4af" {...common} />
+    <path d="M19 23v15M29 23v15" fill="none" {...common} />
+    <path d="M16 38h16" fill="none" {...common} />
+    <circle cx="24" cy="10" r="4" fill="#fde68a" {...common} />
+  </svg>;
+}
+
+function mark(type) {
+  return <span className={`icon icon-${type}`} role="img" aria-label={ICON_LABELS[type] || "項目"}><TravelIconSvg type={type} /></span>;
+}
 function isTokenError(error) {
   const message = error instanceof Error ? error.message : String(error || "");
   return error?.status === 401 || error?.status === 403 || /bad credentials|requires authentication|resource not accessible|fine-grained pat|token/i.test(message);

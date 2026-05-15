@@ -344,13 +344,93 @@ button {
 }
 
 .icon {
+  position: relative;
   display: inline-grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
   border-radius: 999px;
-  background: white;
-  box-shadow: 0 3px 9px #0001;
+  color: #334155;
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 13%, transparent 14%),
+    linear-gradient(145deg, #ffffff, #eef2ff);
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 18px #1e293b18, inset 0 -3px 0 #0f172a0d;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.icon svg {
+  position: relative;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  filter: drop-shadow(0 2px 2px #4b2f1d18);
+}
+
+.icon::after {
+  content: "";
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #fff8;
+  box-shadow: 0 0 0 2px #ffffff66;
+}
+
+.icon-attraction {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 13%, transparent 14%),
+    linear-gradient(145deg, #ffe4e6, #fecdd3);
+  box-shadow: 0 8px 18px #e11d4824, inset 0 -3px 0 #be123c18;
+}
+
+.icon-restaurant {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 13%, transparent 14%),
+    linear-gradient(145deg, #fef3c7, #fed7aa);
+  box-shadow: 0 8px 18px #f9731624, inset 0 -3px 0 #c2410c18;
+}
+
+.icon-transfer,
+.icon-route {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 13%, transparent 14%),
+    linear-gradient(145deg, #dbeafe, #bfdbfe);
+  box-shadow: 0 8px 18px #2563eb22, inset 0 -3px 0 #1d4ed818;
+}
+
+.icon-hotel {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 13%, transparent 14%),
+    linear-gradient(145deg, #dcfce7, #bbf7d0);
+  box-shadow: 0 8px 18px #16a34a22, inset 0 -3px 0 #15803d18;
+}
+
+.icon-flight,
+.icon-airport {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 13%, transparent 14%),
+    linear-gradient(145deg, #e0e7ff, #c7d2fe);
+  box-shadow: 0 8px 18px #4f46e522, inset 0 -3px 0 #4338ca18;
+}
+
+.icon-album {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 13%, transparent 14%),
+    linear-gradient(145deg, #f5d0fe, #e9d5ff);
+  box-shadow: 0 8px 18px #a855f722, inset 0 -3px 0 #7e22ce18;
+}
+
+.icon-fortune {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 13%, transparent 14%),
+    linear-gradient(145deg, #fde68a, #fda4af);
+  box-shadow: 0 8px 18px #f59e0b2b, inset 0 -3px 0 #b4530918;
 }
 
 .progress {
