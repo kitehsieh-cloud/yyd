@@ -387,6 +387,14 @@ async function fetchSyncedAlbum(token) {
 
 function DetailRows({ item }) {
   const d = item.detail || {};
+  if (item.type === "transfer") {
+    return <div className="grid">
+      <Info label="交通轉乘方式" value={d.route} />
+      <Info label="使用票券" value={d.card} />
+      <Info label="票價" value={d.fare} />
+      <Info label="移動時間" value={d.duration || item.stay} />
+    </div>;
+  }
   return <div className="grid">
     {d.summary && <Info label="摘要" value={d.summary} />}
     {d.route && <Info label="轉乘資訊" value={d.route} />}
