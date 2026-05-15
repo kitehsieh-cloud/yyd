@@ -299,6 +299,8 @@ const DAYS = [
 const ICON_LABELS = {
   attraction: "景點",
   restaurant: "用餐",
+  shopping: "購物",
+  amusement: "樂園",
   transfer: "移動",
   hotel: "住宿",
   flight: "航班",
@@ -561,15 +563,34 @@ function RichDetailRows({ item, day }) {
   </div>;
 }
 function typeLabel(type) { return { attraction: "景點", restaurant: "餐廳", transfer: "移動", hotel: "住宿", flight: "航班", airport: "機場" }[type] || type; }
+function itemIconType(item) {
+  const title = String(item?.title || "");
+  if (item?.type === "restaurant") return "restaurant";
+  if (item?.type === "hotel") return "hotel";
+  if (/迪士尼|樂園|COSMOWORLD|摩天輪|AIR CABIN|纜車/.test(title)) return "amusement";
+  if (/購物|唐吉訶德|動漫|PARCO|太陽城|商店街|仲見世|竹下通|採買|旗艦店/.test(title)) return "shopping";
+  return item?.type || "attraction";
+}
 function TravelIconSvg({ type }) {
   const stroke = "#4b2f1d";
   const common = { stroke, strokeWidth: 3.4, strokeLinecap: "round", strokeLinejoin: "round" };
   if (type === "restaurant") return <svg viewBox="0 0 48 48" aria-hidden="true">
-    <path d="M11 35l24-24" {...common} />
-    <circle cx="18" cy="28" r="6" fill="#fda4af" {...common} />
-    <circle cx="25" cy="21" r="6" fill="#fef3c7" {...common} />
-    <circle cx="32" cy="14" r="6" fill="#bbf7d0" {...common} />
-    <path d="M13 31c2 2 7 2 10-1" fill="none" stroke="#fff7ed" strokeWidth="2.3" strokeLinecap="round" />
+    <path d="M16 9v13M11 9v10c0 3 2 5 5 5s5-2 5-5V9" fill="none" {...common} />
+    <path d="M16 24v15" {...common} />
+    <path d="M32 9c5 4 5 14 0 18v12" fill="#fda4af" {...common} />
+    <path d="M13 14h6M30 14c2 3 2 6 0 9" stroke="#fff7ed" strokeWidth="2.4" strokeLinecap="round" />
+  </svg>;
+  if (type === "shopping") return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <path d="M9 12h5l4 20h17l4-14H17" fill="#fef3c7" {...common} />
+    <path d="M20 22h15" stroke="#fff7ed" strokeWidth="2.5" strokeLinecap="round" />
+    <circle cx="21" cy="38" r="3" fill="#fda4af" {...common} />
+    <circle cx="34" cy="38" r="3" fill="#bbf7d0" {...common} />
+  </svg>;
+  if (type === "amusement") return <svg viewBox="0 0 48 48" aria-hidden="true">
+    <circle cx="24" cy="20" r="13" fill="#e9d5ff" {...common} />
+    <circle cx="24" cy="20" r="3" fill="#fef3c7" {...common} />
+    <path d="M24 23l-8 17M24 23l8 17M15 40h18" fill="none" {...common} />
+    <path d="M24 7v8M11 20h8M29 20h8M15 11l6 6M33 11l-6 6M15 29l6-6M33 29l-6-6" stroke="#fff7ed" strokeWidth="2.2" strokeLinecap="round" />
   </svg>;
   if (type === "transfer") return <svg viewBox="0 0 48 48" aria-hidden="true">
     <rect x="11" y="9" width="26" height="29" rx="7" fill="#dbeafe" {...common} />
@@ -580,10 +601,11 @@ function TravelIconSvg({ type }) {
     <path d="M17 41h14" {...common} />
   </svg>;
   if (type === "hotel") return <svg viewBox="0 0 48 48" aria-hidden="true">
-    <path d="M9 24L24 11l15 13v14a4 4 0 0 1-4 4H13a4 4 0 0 1-4-4z" fill="#fef3c7" {...common} />
-    <path d="M18 42V29h12v13" fill="#bbf7d0" {...common} />
-    <path d="M17 22h14" stroke="#fff7ed" strokeWidth="2.5" strokeLinecap="round" />
-    <circle cx="29" cy="35" r="1.3" fill="#4b2f1d" />
+    <path d="M9 18v20" fill="none" {...common} />
+    <path d="M9 28h30v10H9z" fill="#fef3c7" {...common} />
+    <path d="M13 20h11a5 5 0 0 1 5 5v3H13z" fill="#bbf7d0" {...common} />
+    <path d="M29 23h10v15" fill="none" {...common} />
+    <path d="M14 32h20" stroke="#fff7ed" strokeWidth="2.5" strokeLinecap="round" />
   </svg>;
   if (type === "flight") return <svg viewBox="0 0 48 48" aria-hidden="true">
     <path d="M8 27l31-16c2.6-1.3 4.8 1.9 2.7 4L31 26l4 12-5 2-8-10-10 3-4-6z" fill="#e0e7ff" {...common} />
@@ -613,11 +635,11 @@ function TravelIconSvg({ type }) {
     <path d="M37 9l1.3 3 3 1.3-3 1.3-1.3 3-1.3-3-3-1.3 3-1.3z" fill="#fde68a" stroke={stroke} strokeWidth="2" strokeLinejoin="round" />
   </svg>;
   return <svg viewBox="0 0 48 48" aria-hidden="true">
-    <path d="M10 22h28" fill="none" {...common} />
-    <path d="M14 16h20v7H14z" fill="#fda4af" {...common} />
-    <path d="M19 23v15M29 23v15" fill="none" {...common} />
-    <path d="M16 38h16" fill="none" {...common} />
-    <circle cx="24" cy="10" r="4" fill="#fde68a" {...common} />
+    <rect x="9" y="16" width="30" height="22" rx="6" fill="#fef3c7" {...common} />
+    <path d="M17 16l3-5h9l3 5" fill="#fda4af" {...common} />
+    <circle cx="24" cy="27" r="7" fill="#c7d2fe" {...common} />
+    <circle cx="24" cy="27" r="3" fill="#4b2f1d" />
+    <path d="M14 21h7M31 22h3" stroke="#fff7ed" strokeWidth="2.3" strokeLinecap="round" />
   </svg>;
 }
 
@@ -702,7 +724,7 @@ function DayCard({ day, open, onToggle, onItemClick, photoCount, onOpenFortune, 
       <div className="note"><b>行程摘要</b><br />{day.note}</div>
       {(day.joinNote || day.splitNote) && <p className="note">{day.joinNote || day.splitNote}</p>}
       {day.items.map((item) => <button key={item.id} type="button" className="item" onClick={() => onItemClick(day, item)}>
-        <b>{item.time}</b>{mark(item.type)}<span><b>{item.title}</b><br /><span className="small muted">{typeLabel(item.type)}｜{item.stay}</span></span>
+        <b>{item.time}</b>{mark(itemIconType(item))}<span><b>{item.title}</b><br /><span className="small muted">{typeLabel(item.type)}｜{item.stay}</span></span>
       </button>)}
       <DayMap day={day} />
     </div>}

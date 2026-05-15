@@ -396,6 +396,20 @@ button {
   box-shadow: 0 8px 18px #f9731624, inset 0 -3px 0 #c2410c18;
 }
 
+.icon-shopping {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 13%, transparent 14%),
+    linear-gradient(145deg, #fce7f3, #fbcfe8);
+  box-shadow: 0 8px 18px #db277722, inset 0 -3px 0 #be185d18;
+}
+
+.icon-amusement {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 13%, transparent 14%),
+    linear-gradient(145deg, #ede9fe, #ddd6fe);
+  box-shadow: 0 8px 18px #7c3aed22, inset 0 -3px 0 #6d28d918;
+}
+
 .icon-transfer,
 .icon-route {
   background:
