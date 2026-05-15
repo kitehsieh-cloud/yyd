@@ -599,27 +599,53 @@ button {
   font-weight: 900;
 }
 
+.photoGoal {
+  width: min(360px, 100%);
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: #ffffffb8;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 20px #1e293b0c;
+}
+
+.photoGoalTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.photoGoalTop b {
+  color: #ec4899;
+}
+
 .uploadCta {
   display: grid;
-  grid-template-columns: 54px 1fr;
-  gap: 12px;
+  justify-items: center;
+  gap: 8px;
   align-items: center;
   width: 100%;
   margin: 16px 0 12px;
-  padding: 15px 16px;
-  border: 0;
+  padding: 17px 18px;
+  text-align: center;
+  border: 2px solid #ffffff;
   border-radius: 22px;
-  color: white;
+  color: #4b2f1d;
   background:
-    radial-gradient(circle at 18% 20%, #ffffff80 0 10%, transparent 11%),
-    linear-gradient(135deg, #fb7185, #a855f7 58%, #38bdf8);
-  box-shadow: 0 18px 34px #ec48994a, inset 0 -5px 0 #4b2f1d1f;
+    radial-gradient(circle at 18% 20%, #ffffffb0 0 10%, transparent 11%),
+    linear-gradient(135deg, #fff7ed, #ffe4e6 54%, #e0f2fe);
+  box-shadow: 0 14px 28px #e11d4820, inset 0 -4px 0 #4b2f1d12;
   cursor: pointer;
 }
 
 .uploadCta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 22px 38px #ec489957, inset 0 -5px 0 #4b2f1d1f;
+  box-shadow: 0 18px 34px #e11d4826, inset 0 -4px 0 #4b2f1d12;
 }
 
 .uploadCta.disabled {
@@ -654,7 +680,7 @@ button {
 .uploadCta small {
   display: block;
   margin-top: 4px;
-  color: #fff7;
+  color: #7c5b4d;
   font-size: 13px;
   font-weight: 800;
 }
@@ -909,6 +935,28 @@ button {
   border: 1px solid #e2e8f0;
   font-size: 12px;
   font-weight: 900;
+}
+
+.albumUploadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 13px;
+  border: 1px solid #fecdd3;
+  border-radius: 999px;
+  color: #9f1239;
+  background: linear-gradient(135deg, #fff7ed, #ffe4e6);
+  box-shadow: 0 8px 18px #e11d4814;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.albumUploadButton[aria-disabled="true"] {
+  color: #64748b;
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  box-shadow: none;
 }
 
 .albumEmpty {

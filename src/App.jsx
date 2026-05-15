@@ -758,7 +758,7 @@ function DayMap({ day }) {
   </section>;
 }
 
-function AlbumSection({ photosByDay, loading, onRefresh }) {
+function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool }) {
   const total = totalPhotoCount(photosByDay);
   const firstPhotoDay = DAYS.find((day) => (photosByDay[day.id] || []).length > 0) || DAYS[0];
   const [selectedDayId, setSelectedDayId] = useState(firstPhotoDay.id);
@@ -768,6 +768,14 @@ function AlbumSection({ photosByDay, loading, onRefresh }) {
   const target = dayPhotoTarget(selectedDay.id);
   const progress = Math.min(100, Math.round((selectedPhotos.length / target) * 100));
   const coverPhoto = selectedPhotos[0] || null;
+  const selectedAvailable = dayHasArrived(selectedDay);
+  function openSelectedUpload() {
+    if (selectedAvailable) {
+      onOpenPhotoTool(selectedDay);
+      return;
+    }
+    window.alert(`${TABS[selectedDay.id]} 尚未開放照片上傳。開放條件：日本時間 ${TRIP_YEAR}/${selectedDay.date} 當天起才可上傳。`);
+  }
 
   return <section className="albumShowcase card section">
     <div className="albumHeader">
@@ -807,6 +815,7 @@ function AlbumSection({ photosByDay, loading, onRefresh }) {
           <div className="albumPageMeta">
             <span>{selectedPhotos.length}/{target}</span>
             <span>{dayFortuneUnlocked(selectedDay.id, selectedPhotos.length) ? "大吉籤已解鎖" : "照片蒐集中"}</span>
+            <button className="albumUploadButton" type="button" aria-disabled={!selectedAvailable} onClick={openSelectedUpload}>上傳照片</button>
           </div>
         </div>
       </div>
@@ -827,6 +836,8 @@ function AlbumSection({ photosByDay, loading, onRefresh }) {
 
 function PhotoModal({ day, photos, onUpload, onClose, uploading, uploadStatus }) {
   const uploadItem = { id: `${day.id}-album`, title: `Day${day.dayNo}｜${day.title}`, type: "album" };
+  const target = dayPhotoTarget(day.id);
+  const progress = Math.min(100, Math.round((photos.length / target) * 100));
   return <div className="modal" onMouseDown={onClose}>
     <div className="modalCard card" onMouseDown={(event) => event.stopPropagation()}>
       <div className="modalTop"><div><h2>Day{day.dayNo}｜照片蒐集</h2><p className="small muted">{photos.length}/{dayPhotoTarget(day.id)} 張</p></div><button className="button" onClick={onClose}>關閉</button></div>
@@ -834,6 +845,10 @@ function PhotoModal({ day, photos, onUpload, onClose, uploading, uploadStatus })
         <img src={partnerImageUrl(day.dayNo)} alt={`Day${day.dayNo} 小夥伴剪影`} />
         <strong>?</strong>
         <p>小夥伴等待照片能量喚醒</p>
+        <div className="photoGoal">
+          <div className="photoGoalTop"><span>任務目標</span><b>{photos.length}/{target}</b></div>
+          <div className="progress"><div className="bar" style={{ width: `${progress}%` }} /></div>
+        </div>
       </div>
       <label className={`uploadCta${uploading ? " disabled" : ""}`}>
         <input type="file" accept="image/*" multiple disabled={uploading} onChange={(event) => { const files = Array.from(event.target.files || []); if (files.length) onUpload(day.id, uploadItem, files); event.target.value = ""; }} />
@@ -988,7 +1003,7 @@ export default function App() {
       <button className={`tab${viewMode === "album" ? " active" : ""}`} type="button" onClick={() => { setViewMode("album"); refreshGitHubAlbum(); }}>相簿 {totalPhotoCount(photosByDay)} 張</button>
       <span className="tab">已解鎖 {unlocked}/7</span>
     </div>
-    {viewMode === "album" ? <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} /> : DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => Object.fromEntries(DAYS.map((candidate) => [candidate.id, candidate.id === day.id ? !prev[day.id] : false])))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
+    {viewMode === "album" ? <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} onOpenPhotoTool={setPhotoToolDay} /> : DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => Object.fromEntries(DAYS.map((candidate) => [candidate.id, candidate.id === day.id ? !prev[day.id] : false])))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
     {syncError && <p className="status error">同步錯誤：{syncError}</p>}
     <Settings token={token} forceOpen={tokenSettingsOpen} onSaveToken={saveToken} onClearToken={clearToken} />
     {activeDay && activeItem && <DetailModal day={activeDay} item={activeItem} onClose={() => { setActiveDay(null); setActiveItem(null); }} />}
