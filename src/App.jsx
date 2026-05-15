@@ -49,6 +49,67 @@ const HEADER_COMPANION_LAYOUT = {
 const DEFAULT_DAY_BG = Object.fromEntries(Object.keys(TABS).map((id, index) => [id, `${ASSET_BASE_URL}/D${index + 1}.png`]));
 const DEFAULT_FORTUNE_BG = Object.fromEntries(Object.keys(TABS).map((id) => [id, `${ASSET_BASE_URL}/7BG.png`]));
 const TRIP_MAP_EMBED_URL = "https://www.google.com/maps/d/u/4/embed?mid=1bQy9sYK-Pn4s6oWAgtslttWcWG-T8Dg&ehbc=2E312F";
+const DAY_MAP_POINTS = {
+  "0515": [
+    { name: "成田國際機場", lat: 35.770178, lng: 140.3843215 },
+    { name: "牛炸豬排Motomura", lat: 35.6899806, lng: 139.7038098 },
+    { name: "新宿購物", lat: 35.688847, lng: 139.7010294 },
+    { name: "唐吉訶德 新宿東南口店", lat: 35.6900987, lng: 139.7019999 },
+  ],
+  "0516": [
+    { name: "淺草車站", lat: 35.7139657, lng: 139.7927248 },
+    { name: "淺草寺 雷門", lat: 35.7111163, lng: 139.7963656 },
+    { name: "浅草 新仲見世商店街", lat: 35.7121273, lng: 139.7944908 },
+    { name: "東京晴空塔", lat: 35.7100627, lng: 139.8107004 },
+    { name: "迴轉壽司 根室花丸", lat: 35.6795237, lng: 139.7649491 },
+    { name: "東京動漫人物街", lat: 35.6820335, lng: 139.7686549 },
+    { name: "萬喜-串燒居酒屋", lat: 35.7086166, lng: 139.6654565 },
+    { name: "KTV-Karaoke Big Echo Nakano Dori", lat: 35.7072981, lng: 139.6654339 },
+  ],
+  "0517": [
+    { name: "吉伊卡哇樂園10:30", lat: 35.7298877, lng: 139.7173039 },
+    { name: "池袋PARCO 本館", lat: 35.7308568, lng: 139.7123844 },
+    { name: "太陽城", lat: 35.7289709, lng: 139.7195415 },
+    { name: "Denny's 親子餐廳", lat: 35.6630445, lng: 139.6994924 },
+    { name: "澀谷區", lat: 35.6619707, lng: 139.703795 },
+    { name: "澀谷PARCO", lat: 35.6620484, lng: 139.6987767 },
+    { name: "原宿", lat: 35.671599, lng: 139.7029143 },
+    { name: "哈利波特旗艦", lat: 35.6686494, lng: 139.7044101 },
+    { name: "THE SLICE 和牛壽喜燒", lat: 35.665288, lng: 139.709951 },
+    { name: "JR池袋站", lat: 35.7295028, lng: 139.7109001 },
+  ],
+  "0518": [
+    { name: "JR鐮倉", lat: 35.3190156, lng: 139.5504157 },
+    { name: "鎌倉小町通", lat: 35.3230716, lng: 139.553122 },
+    { name: "鎌倉大佛殿高德院", lat: 35.3168145, lng: 139.5357442 },
+    { name: "長谷寺", lat: 35.3124645, lng: 139.5330634 },
+    { name: "七里濱", lat: 35.3043891, lng: 139.513901 },
+    { name: "鐮倉高校前", lat: 35.3067242, lng: 139.5005569 },
+    { name: "江之島", lat: 35.2991449, lng: 139.4809269 },
+    { name: "海鮮 江之島小屋", lat: 35.3076745, lng: 139.4825353 },
+    { name: "夏威夷漢堡飯ALOHA TABLE", lat: 35.3082011, lng: 139.482677 },
+    { name: "海鮮丼 とびっちょ 本店", lat: 35.3013114, lng: 139.4822319 },
+    { name: "章魚仙貝Asahi Honten", lat: 35.3009385, lng: 139.480545 },
+    { name: "紀之國屋本店", lat: 35.301499, lng: 139.4806189 },
+  ],
+  "0519": [
+    { name: "JR石川町", lat: 35.4387746, lng: 139.6430494 },
+    { name: "港見丘公園", lat: 35.4403169, lng: 139.6546505 },
+    { name: "山下公園", lat: 35.4457655, lng: 139.6497793 },
+    { name: "橫濱中華街", lat: 35.4430883, lng: 139.6441001 },
+    { name: "橫濱 COSMOWORLD", lat: 35.4551474, lng: 139.6369763 },
+    { name: "橫濱紅磚倉庫1號館", lat: 35.4521384, lng: 139.6433961 },
+    { name: "YOKOHAMA AIR CABIN Unga Park Station", lat: 35.453251, lng: 139.6383187 },
+    { name: "JR横滨", lat: 35.4659811, lng: 139.622062 },
+    { name: "JR橫濱", lat: 35.4656638, lng: 139.6229037 },
+  ],
+  "0520": [
+    { name: "東京迪士尼樂園", lat: 35.6328964, lng: 139.8803943 },
+  ],
+  "0521": [
+    { name: "牛舌檸檬 新宿", lat: 35.6961364, lng: 139.6978751 },
+  ],
+};
 
 function attraction(hours, summary, ticket = "免費／無門票", stay = "60-90 分") { return { hours, summary, ticket, stay }; }
 function restaurant(hours, recommended, avgCost, stay = "60-90 分") { return { hours, recommended, avgCost, stay }; }
@@ -389,27 +450,71 @@ function DayCard({ day, open, onToggle, onItemClick, photoCount, onOpenFortune, 
   </section>;
 }
 
+function buildDayMapHtml(points) {
+  const safePoints = JSON.stringify(points);
+  return `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    html, body, #map { height: 100%; margin: 0; }
+    .leaflet-popup-content { font: 700 13px/1.4 system-ui, -apple-system, "Noto Sans TC", sans-serif; }
+    .pin { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; color: #fff; background: #2563eb; border: 3px solid #fff; box-shadow: 0 4px 14px #0f172a55; font: 900 12px/1 system-ui; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const points = ${safePoints};
+    const map = L.map("map", { scrollWheelZoom: false });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap"
+    }).addTo(map);
+
+    const bounds = [];
+    points.forEach((point, index) => {
+      const latLng = [point.lat, point.lng];
+      bounds.push(latLng);
+      const icon = L.divIcon({ className: "", html: '<div class="pin">' + (index + 1) + '</div>', iconSize: [28, 28], iconAnchor: [14, 14] });
+      L.marker(latLng, { icon }).addTo(map).bindPopup((index + 1) + ". " + point.name);
+    });
+
+    if (bounds.length === 1) {
+      map.setView(bounds[0], 15);
+    } else if (bounds.length > 1) {
+      map.fitBounds(bounds, { padding: [34, 34], maxZoom: 15 });
+    } else {
+      map.setView([35.681236, 139.767125], 11);
+    }
+  </script>
+</body>
+</html>`;
+}
+
 function DayMap({ day }) {
-  const placeItems = day.items.filter((item) => !["transfer", "flight"].includes(item.type));
+  const points = DAY_MAP_POINTS[day.id] || [];
   return <section className="dayMap">
     <div className="dayMapHeader">
       <div>
         <h3>本日地圖｜{TABS[day.id]}</h3>
-        <p className="small muted">使用 Google My Maps 顯示行程地點；下方列出本日主要停留點。</p>
+        <p className="small muted">只顯示 KML 當日圖層中的點，地圖會自動縮放到剛好看見全部點位。</p>
       </div>
       <a className="button" href={TRIP_MAP_EMBED_URL.replace("/embed?", "/viewer?")} target="_blank" rel="noreferrer">開啟大地圖</a>
     </div>
     <div className="mapFrame">
       <iframe
-        src={TRIP_MAP_EMBED_URL}
-        title={`Day${day.dayNo} ${day.title} 地圖`}
+        srcDoc={buildDayMapHtml(points)}
+        title={`Day${day.dayNo} ${day.title} 當日點位地圖`}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
-        allowFullScreen
       />
     </div>
     <div className="mapPlaces">
-      {placeItems.map((item) => <span key={item.id}>{item.time}｜{item.title}</span>)}
+      {points.map((point, index) => <span key={`${point.name}-${index}`}>{index + 1}. {point.name}</span>)}
     </div>
   </section>;
 }
