@@ -1,8 +1,19 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-15T00:00:00.000Z",
+  "updatedAt": "2026-05-15T00:12:02.730Z",
   "photos": [
     {
+      "id": "github-0515-photos/day1/20260515001159-1-9fva03-桃園-→-成田，團一航班.png",
+      "dayId": "0515",
+      "itemId": "0515-f1",
+      "itemTitle": "桃園 → 成田，團一航班",
+      "type": "flight",
+      "name": "D7.png",
+      "githubPath": "photos/day1/20260515001159-1-9fva03-桃園-→-成田，團一航班.png",
+      "createdAt": "2026-05-15T00:11:59.000Z"
+    },
+    {
+      "id": "github-0517-photos/day3/20260514222602-1-h8f4w9-飯店A／飯店B-→-JR池袋站.png",
       "dayId": "0517",
       "itemId": "github",
       "itemTitle": "GitHub 相簿",
@@ -12,6 +23,7 @@
       "createdAt": "2026-05-14T22:26:02.000Z"
     },
     {
+      "id": "github-0519-photos/day5/20260514222744-1-gazph0-飯店A／B-→-JR石川町／橫濱.png",
       "dayId": "0519",
       "itemId": "github",
       "itemTitle": "GitHub 相簿",
