@@ -666,8 +666,9 @@ function companionPreviewMode() {
 
 function MainHeader({ photosByDay }) {
   const unlocked = DAYS.filter((day) => dayFortuneUnlocked(day.id, (photosByDay[day.id] || []).length)).map((day) => day.dayNo);
-  const companionIds = companionPreviewMode() ? Object.keys(HEADER_COMPANION_LAYOUT).map(Number) : [0, ...unlocked];
-  return <header className="hero card">
+  const previewMode = companionPreviewMode();
+  const companionIds = previewMode ? Object.keys(HEADER_COMPANION_LAYOUT).map(Number) : [0, ...unlocked];
+  return <header className={`hero card${previewMode ? " companionPreview" : ""}`}>
     <div style={{ position: "relative" }}>
       <img src={DEFAULT_COMMON_HEADER_BG} alt="2026 東京自由行" />
       {[...new Set(companionIds)].map((dayNo) => {

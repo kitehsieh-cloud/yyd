@@ -74,37 +74,37 @@ button {
 }
 
 .heroCompanion-1 {
-  animation: companionJelly 4.6s ease-in-out infinite;
+  animation: companionJelly 3.8s ease-in-out infinite;
   animation-delay: -0.7s;
 }
 
 .heroCompanion-2 {
-  animation: companionSway 5.2s ease-in-out infinite;
+  animation: companionSway 4.1s ease-in-out infinite;
   animation-delay: -1.1s;
 }
 
 .heroCompanion-3 {
-  animation: companionHop 4.9s ease-in-out infinite;
+  animation: companionHop 4.2s ease-in-out infinite;
   animation-delay: -1.6s;
 }
 
 .heroCompanion-4 {
-  animation: companionFloat 4.4s ease-in-out infinite;
+  animation: companionFloat 3.9s ease-in-out infinite;
   animation-delay: -2s;
 }
 
 .heroCompanion-5 {
-  animation: companionJelly 5.1s ease-in-out infinite;
+  animation: companionJelly 4s ease-in-out infinite;
   animation-delay: -2.5s;
 }
 
 .heroCompanion-6 {
-  animation: companionSway 4.7s ease-in-out infinite;
+  animation: companionSway 4.2s ease-in-out infinite;
   animation-delay: -3s;
 }
 
 .heroCompanion-7 {
-  animation: companionHop 5.6s ease-in-out infinite;
+  animation: companionHop 4.4s ease-in-out infinite;
   animation-delay: -3.3s;
 }
 
@@ -114,7 +114,7 @@ button {
     transform: translate(-50%, -50%) translateY(0) rotate(0deg);
   }
   50% {
-    transform: translate(-50%, -50%) translateY(-8px) rotate(1.5deg);
+    transform: translate(-50%, -50%) translateY(-11px) rotate(2deg);
   }
 }
 
@@ -156,7 +156,7 @@ button {
     transform: translate(-50%, -50%) rotate(-2deg);
   }
   50% {
-    transform: translate(-50%, -50%) rotate(3deg) translateY(-5px);
+    transform: translate(-50%, -50%) rotate(4.5deg) translateY(-8px);
   }
 }
 
@@ -166,10 +166,10 @@ button {
     transform: translate(-50%, -50%) scale(1);
   }
   38% {
-    transform: translate(-50%, -50%) translateY(-6px) scale(1.05, 0.96);
+    transform: translate(-50%, -50%) translateY(-9px) scale(1.07, 0.94);
   }
   54% {
-    transform: translate(-50%, -50%) translateY(1px) scale(0.97, 1.04);
+    transform: translate(-50%, -50%) translateY(2px) scale(0.96, 1.06);
   }
   70% {
     transform: translate(-50%, -50%) scale(1.01, 0.99);
@@ -182,15 +182,15 @@ button {
     transform: translate(-50%, -50%) translateY(0) scale(1);
   }
   42% {
-    transform: translate(-50%, -50%) translateY(-10px) scale(1.03, 0.97);
+    transform: translate(-50%, -50%) translateY(-14px) scale(1.05, 0.96);
   }
   56% {
-    transform: translate(-50%, -50%) translateY(2px) scale(0.98, 1.03);
+    transform: translate(-50%, -50%) translateY(3px) scale(0.97, 1.04);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .heroCompanion:not(.heroCompanion-0) {
+  .hero:not(.companionPreview) .heroCompanion:not(.heroCompanion-0) {
     animation: none;
   }
 }
