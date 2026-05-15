@@ -760,23 +760,67 @@ function DayMap({ day }) {
 
 function AlbumSection({ photosByDay, loading, onRefresh }) {
   const total = totalPhotoCount(photosByDay);
-  return <section className="card section">
-    <div className="modalTop">
-      <div><h2>{mark("album")} 旅程相簿總集</h2><p className="small muted">跨裝置資料來源：GitHub `photos/index.json`。</p></div>
-      <button className="button primary" type="button" onClick={onRefresh} disabled={loading}>{loading ? "同步中..." : "同步 GitHub 相簿"}</button>
+  const firstPhotoDay = DAYS.find((day) => (photosByDay[day.id] || []).length > 0) || DAYS[0];
+  const [selectedDayId, setSelectedDayId] = useState(firstPhotoDay.id);
+  const selectedDay = DAYS.find((day) => day.id === selectedDayId) || firstPhotoDay;
+  const selectedPhotos = sortPhotosNewestFirst(photosByDay[selectedDay.id] || []);
+  const allPhotos = sortPhotosNewestFirst(DAYS.flatMap((day) => photosByDay[day.id] || []));
+  const coverPhoto = selectedPhotos[0] || allPhotos[0] || null;
+  const unlockedCount = DAYS.filter((day) => dayFortuneUnlocked(day.id, (photosByDay[day.id] || []).length)).length;
+
+  return <section className="albumShowcase card section">
+    <div className="albumHero">
+      <div className="albumHeroCopy">
+        <div className="albumKicker">{mark("album")} Tokyo 2026 Memory Book</div>
+        <h2>旅程相簿</h2>
+        <p>把每天的照片變成回憶膠卷，集滿照片就解鎖小夥伴的大吉籤。</p>
+        <div className="albumStats">
+          <span><b>{total}</b> 張照片</span>
+          <span><b>{unlockedCount}</b>/7 大吉籤</span>
+        </div>
+      </div>
+      <div className="albumCover">
+        {coverPhoto ? <img src={coverPhoto.url} alt={coverPhoto.name} /> : <img src={DEFAULT_COMMON_HEADER_BG} alt="2026 東京自由行" />}
+        <div className="albumCoverBadge">Day{selectedDay.dayNo}｜{selectedDay.title}</div>
+      </div>
+      <button className="button primary albumSync" type="button" onClick={onRefresh} disabled={loading}>{loading ? "同步中..." : "同步相簿"}</button>
     </div>
-    <p><b>總照片：</b>{total} 張</p>
-    <div className="grid seven">
+
+    <div className="albumDayRail" aria-label="選擇每日相簿">
       {DAYS.map((day) => {
-        const photos = photosByDay[day.id] || [];
+        const photos = sortPhotosNewestFirst(photosByDay[day.id] || []);
         const target = dayPhotoTarget(day.id);
-        return <div className="info" key={day.id}>
-          <b>Day{day.dayNo}</b><div className="small muted">{TABS[day.id]}</div>
-          <div className="progress"><div className="bar" style={{ width: `${Math.min(100, Math.round((photos.length / target) * 100))}%` }} /></div>
-          <div className="small">{photos.length}/{target}{photos.length >= target ? " 大吉簽" : ""}</div>
-          <div className="thumbs">{sortPhotosNewestFirst(photos).slice(0, 6).map((photo) => <div className="thumb" key={photo.id}><img src={photo.url} alt={photo.name} /></div>)}</div>
-        </div>;
+        const progress = Math.min(100, Math.round((photos.length / target) * 100));
+        return <button className={`albumDayCard${day.id === selectedDay.id ? " active" : ""}`} type="button" key={day.id} onClick={() => setSelectedDayId(day.id)}>
+          <div className="albumDayImage">{photos[0] ? <img src={photos[0].url} alt={photos[0].name} /> : <img src={DEFAULT_DAY_BG[day.id]} alt={`Day${day.dayNo}`} />}</div>
+          <div className="albumDayInfo">
+            <b>Day{day.dayNo}</b>
+            <span>{day.title}</span>
+            <div className="progress"><div className="bar" style={{ width: `${progress}%` }} /></div>
+            <small>{photos.length}/{target}{photos.length >= target ? " 已解鎖" : ""}</small>
+          </div>
+        </button>;
       })}
+    </div>
+
+    <div className="albumSelected">
+      <div className="albumSelectedTop">
+        <div>
+          <h3>Day{selectedDay.dayNo}｜{TABS[selectedDay.id]}</h3>
+          <p className="small muted">{selectedPhotos.length} 張照片，目標 {dayPhotoTarget(selectedDay.id)} 張</p>
+        </div>
+        <span className="albumPill">{dayFortuneUnlocked(selectedDay.id, selectedPhotos.length) ? "大吉籤已解鎖" : "照片蒐集中"}</span>
+      </div>
+      {selectedPhotos.length === 0 ? <div className="albumEmpty">
+        <img src={partnerImageUrl(selectedDay.dayNo)} alt={`Day${selectedDay.dayNo} 小夥伴`} />
+        <b>這一天還沒有照片</b>
+        <p>從每日相機按鈕上傳照片後，這裡會變成當天的回憶拼貼。</p>
+      </div> : <div className="albumMosaic">
+        {selectedPhotos.slice(0, 12).map((photo, index) => <figure className={index === 0 ? "albumPhoto featured" : "albumPhoto"} key={photo.id}>
+          <img src={photo.url} alt={photo.name} />
+          <figcaption><b>{photo.itemTitle}</b><span>{photo.name}</span></figcaption>
+        </figure>)}
+      </div>}
     </div>
   </section>;
 }
