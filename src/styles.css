@@ -61,6 +61,7 @@ button {
 .heroCompanion {
   position: absolute;
   z-index: 2;
+  pointer-events: none;
   transform: translate(-50%, -50%);
   transform-origin: 50% 82%;
   filter: drop-shadow(0 12px 18px #0004);
@@ -69,7 +70,7 @@ button {
 }
 
 .heroCompanion-0 {
-  animation: companionFloat 5.4s ease-in-out infinite;
+  animation: companionGreet 3.6s ease-in-out infinite;
 }
 
 .heroCompanion-1 {
@@ -114,6 +115,25 @@ button {
   }
   50% {
     transform: translate(-50%, -50%) translateY(-8px) rotate(1.5deg);
+  }
+}
+
+@keyframes companionGreet {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translateY(0) rotate(0deg) scale(1);
+  }
+  18% {
+    transform: translate(-50%, -50%) translateY(-12px) rotate(-3deg) scale(1.05, 0.96);
+  }
+  34% {
+    transform: translate(-50%, -50%) translateY(2px) rotate(2deg) scale(0.97, 1.04);
+  }
+  48% {
+    transform: translate(-50%, -50%) translateY(-5px) rotate(-1deg) scale(1.02, 0.99);
+  }
+  64% {
+    transform: translate(-50%, -50%) translateY(0) rotate(0deg) scale(1);
   }
 }
 
