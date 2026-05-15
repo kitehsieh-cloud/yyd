@@ -223,6 +223,14 @@ function dayDateValue(day) {
 function dayHasArrived(day) {
   return tokyoTodayValue() >= dayDateValue(day);
 }
+function isReservedItem(item) {
+  return /\[\d{1,2}:\d{2}\]/.test(item.title || "") || /\b\d{1,2}:\d{2}\b/.test(item.title || "");
+}
+function mapPointForItem(day, item) {
+  const points = DAY_MAP_POINTS[day.id] || [];
+  const normalizedTitle = String(item.title || "").replace(/\s/g, "");
+  return points.find((point) => normalizedTitle.includes(point.name.replace(/\s/g, "").slice(0, 5)) || point.name.replace(/\s/g, "").includes(normalizedTitle.slice(0, 5))) || points[0] || null;
+}
 function totalPhotoCount(photosByDay) { return Object.values(photosByDay || {}).reduce((sum, photos) => sum + (Array.isArray(photos) ? photos.length : 0), 0); }
 function sortPhotosNewestFirst(photos) { return [...(photos || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); }
 function encodePath(path) { return String(path || "").split("/").map(encodeURIComponent).join("/"); }
@@ -390,6 +398,49 @@ function DetailRows({ item }) {
   </div>;
 }
 function Info({ label, value }) { return <div className="info"><b>{label}</b><div className="small muted">{value || "待確認"}</div></div>; }
+function InfoList({ label, items }) {
+  return <div className="info"><b>{label}</b><ul className="infoList">{items.map((item) => <li key={item}>{item}</li>)}</ul></div>;
+}
+function RichDetailRows({ item, day }) {
+  const d = item.detail || {};
+  const rows = [];
+  const title = item.title || "";
+  const point = mapPointForItem(day, item);
+  const reserved = isReservedItem(item);
+
+  if (reserved) rows.push({ label: "定位／預約優先", items: ["標題中含有時間，表示此段有定位或指定入場時間。前後交通、購物與拍照都要讓位給這個時間。"] });
+  if (title.includes("飯店A／飯店B") || title.includes("飯店A／B") || title.includes("飯店")) {
+    rows.push({ label: "飯店出發規則", items: [`飯店A：${HOTEL_A.name}，出發時以新大久保／新宿北側動線估算。`, `飯店B：${HOTEL_B.name}，出發時以小傳馬町／日本橋東側動線估算。`, "每日早上預設兩組各自從 A、B 點出發；Day3 上午 07:30 左右出發，分成自由團與吉伊卡哇團。"] });
+  }
+  if (item.type === "transfer") {
+    rows.push({ label: "集合點與交通", items: [`集合點建議抓在「${point?.name || item.title}」250 公尺範圍內，優先選車站出口、商場正門、雷門/地標招牌等顯眼位置。`, "飯店A、飯店B 前往時間以行程卡估算為主；實際出門前用 Google Maps 重新確認月台與步行出口。"] });
+  }
+  if (title.includes("購物") || title.includes("唐吉訶德") || title.includes("動漫")) {
+    rows.push({ label: "購物重點", items: ["唐吉訶德適合補藥妝、零食、旅行用品與伴手禮；結帳前留意免稅排隊與包裝規定。", "角色商品街建議先鎖定必買清單，熱門店鋪容易因排隊與缺貨拉長時間。"] });
+  }
+  if (title.includes("散步") || title.includes("公園") || title.includes("小町通") || title.includes("原宿") || title.includes("江之島")) {
+    rows.push({ label: "散步觀察點", items: ["以 250 公尺內容易辨識的入口、橋、鳥居、商店街拱門、海景平台作為集合或折返點。", "邊走邊拍時先定一個回合時間，避免小吃、拍照與排隊讓後段行程被吃掉。"] });
+  }
+  if (item.type === "restaurant") {
+    rows.push({ label: "用餐提醒", items: ["營業時間與最後點餐以店鋪當日公告為準；熱門店請預留排隊、取號或入席緩衝。", d.recommended ? `推薦餐點：${d.recommended}` : "先確認招牌餐點、兒童/不吃生食選項與是否可分開結帳。", d.avgCost ? `消費估算：${d.avgCost}` : "消費規定以現場菜單、低消、服務費與付款方式為準。"] });
+  }
+  if (item.type === "attraction" || item.type === "airport") {
+    rows.push({ label: "景點導覽", items: [d.summary || "以地圖標記點為核心，先完成必拍/必逛，再視體力延伸到周邊。", d.ticket ? `費用：${d.ticket}` : "戶外或商場型點位多為免費進入，消費另計。"] });
+  }
+  if (title.includes("迪士尼")) {
+    rows.push({ label: "樂園攻略", items: ["入園後先用 Tokyo Disney Resort App 綁定全員票券，再處理 Disney Premier Access、40th Anniversary Priority Pass、Standby Pass、Entry Request 與 Mobile Order。", "熱門優先：美女與野獸、貝イマックス、Splash Mountain、遊行/城堡周邊卡位；實際營運與適用設施以官方 App 當天顯示為準。", "午晚餐避開 12:00 與遊行前後尖峰，能 Mobile Order 的餐廳優先使用。"] });
+  }
+
+  return <div className="grid richDetails">
+    <DetailRows item={item} />
+    {point && <div className="info landmarkCard">
+      <b>250 公尺地標參考</b>
+      <div className="small muted">以 KML 點位「{point.name}」為中心，建議找車站出口、正門、招牌或大型建築作為集合識別點。</div>
+      <a className="mapPreview" href={`https://www.google.com/maps/search/?api=1&query=${point.lat},${point.lng}`} target="_blank" rel="noreferrer">開啟地圖參考圖</a>
+    </div>}
+    {rows.map((row) => <InfoList key={row.label} label={row.label} items={row.items} />)}
+  </div>;
+}
 function typeLabel(type) { return { attraction: "景點", restaurant: "餐廳", transfer: "移動", hotel: "住宿", flight: "航班", airport: "機場" }[type] || type; }
 function mark(type) { return <span className="icon">{ICON[type] || "•"}</span>; }
 function isTokenError(error) {
@@ -461,7 +512,7 @@ function DayCard({ day, open, onToggle, onItemClick, photoCount, onOpenFortune, 
   return <section className="day card">
     <div className="dayHero" style={{ backgroundImage: `url(${DEFAULT_DAY_BG[day.id]})` }}>
       <div className="dayBadge">Day.{day.dayNo}<br />{day.date}({day.weekday})</div>
-      <button className={`photoButton${available ? "" : " isFuture"}`} type="button" disabled={!available} onClick={() => unlocked ? onOpenFortune(day) : onOpenPhotoTool(day)} title={photoButtonTitle}>
+      <button className={`photoButton${available ? "" : " isFuture"}`} type="button" aria-disabled={!available} onClick={() => available ? (unlocked ? onOpenFortune(day) : onOpenPhotoTool(day)) : window.alert(`${TABS[day.id]} 尚未開放照片上傳。開放條件：日本時間 ${TRIP_YEAR}/${day.date} 當天起才可上傳。`)} title={photoButtonTitle}>
         <img src={unlocked ? OMAMORI_ICON_URL : PHOTO_ICON_URL} alt={unlocked ? "御守" : "相機"} />
       </button>
       <button className="dayToggle" type="button" onClick={onToggle}>{open ? "▲收合詳細行程▲" : `▼${day.title}▼`}</button>
@@ -597,7 +648,7 @@ function DetailModal({ item, day, onClose }) {
   return <div className="modal" onMouseDown={onClose}>
     <div className="modalCard card" onMouseDown={(event) => event.stopPropagation()}>
       <div className="modalTop"><div><p className="small muted">{day.date}｜{item.time}</p><h2>{item.title}</h2></div><button className="button" onClick={onClose}>關閉</button></div>
-      <DetailRows item={item} />
+      <RichDetailRows item={item} day={day} />
     </div>
   </div>;
 }
@@ -736,7 +787,7 @@ export default function App() {
       <span className="tab">已解鎖 {unlocked}/7</span>
     </div>
     {showAlbum && <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} />}
-    {DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => ({ ...prev, [day.id]: !prev[day.id] }))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
+    {DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => Object.fromEntries(DAYS.map((candidate) => [candidate.id, candidate.id === day.id ? !prev[day.id] : false])))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
     {syncError && <p className="status error">同步錯誤：{syncError}</p>}
     <Settings token={token} forceOpen={tokenSettingsOpen} onSaveToken={saveToken} onClearToken={clearToken} />
     {activeDay && activeItem && <DetailModal day={activeDay} item={activeItem} onClose={() => { setActiveDay(null); setActiveItem(null); }} />}

@@ -227,13 +227,8 @@ button {
   filter: drop-shadow(0 10px 18px #0004);
 }
 
-.photoButton:disabled {
-  cursor: not-allowed;
-}
-
 .photoButton.isFuture img {
-  opacity: 0.42;
-  filter: grayscale(1) brightness(0.78) drop-shadow(0 6px 10px #0002);
+  filter: grayscale(1) brightness(0.82) contrast(1.08) drop-shadow(0 6px 10px #0002);
 }
 
 .photoButton.isFuture:hover {
@@ -478,6 +473,38 @@ button {
   border-radius: 16px;
   background: #f8fafc;
   border: 1px solid var(--line);
+}
+
+.richDetails {
+  margin-top: 12px;
+}
+
+.infoList {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.landmarkCard {
+  background: #eef6ff;
+  border-color: #bfdbfe;
+}
+
+.mapPreview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  padding: 8px 11px;
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: white;
+  border: 1px solid #bfdbfe;
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
 }
 
 .photos {
