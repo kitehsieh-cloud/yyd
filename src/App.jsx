@@ -666,7 +666,7 @@ function MainHeader({ photosByDay }) {
       <img src={DEFAULT_COMMON_HEADER_BG} alt="2026 東京自由行" />
       {[0, ...unlocked].map((dayNo) => {
         const pos = HEADER_COMPANION_LAYOUT[dayNo];
-        return pos ? <img key={dayNo} src={partnerImageUrl(dayNo)} alt={pos.label} style={{ position: "absolute", left: `${pos.left}%`, top: `${pos.top}%`, width: `${pos.width}%`, transform: "translate(-50%, -50%)", filter: "drop-shadow(0 12px 18px #0004)" }} /> : null;
+        return pos ? <img key={dayNo} className={`heroCompanion heroCompanion-${dayNo}`} src={partnerImageUrl(dayNo)} alt={pos.label} style={{ left: `${pos.left}%`, top: `${pos.top}%`, width: `${pos.width}%` }} /> : null;
       })}
     </div>
   </header>;

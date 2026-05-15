@@ -54,6 +54,114 @@ button {
   width: 100%;
 }
 
+.hero > div {
+  overflow: hidden;
+}
+
+.heroCompanion {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 82%;
+  filter: drop-shadow(0 12px 18px #0004);
+  animation: companionFloat 4.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.heroCompanion-0 {
+  animation: companionFloat 5.4s ease-in-out infinite;
+}
+
+.heroCompanion-1 {
+  animation: companionJelly 4.6s ease-in-out infinite;
+  animation-delay: -0.7s;
+}
+
+.heroCompanion-2 {
+  animation: companionSway 5.2s ease-in-out infinite;
+  animation-delay: -1.1s;
+}
+
+.heroCompanion-3 {
+  animation: companionHop 4.9s ease-in-out infinite;
+  animation-delay: -1.6s;
+}
+
+.heroCompanion-4 {
+  animation: companionFloat 4.4s ease-in-out infinite;
+  animation-delay: -2s;
+}
+
+.heroCompanion-5 {
+  animation: companionJelly 5.1s ease-in-out infinite;
+  animation-delay: -2.5s;
+}
+
+.heroCompanion-6 {
+  animation: companionSway 4.7s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+.heroCompanion-7 {
+  animation: companionHop 5.6s ease-in-out infinite;
+  animation-delay: -3.3s;
+}
+
+@keyframes companionFloat {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-8px) rotate(1.5deg);
+  }
+}
+
+@keyframes companionSway {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) rotate(-2deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(3deg) translateY(-5px);
+  }
+}
+
+@keyframes companionJelly {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  38% {
+    transform: translate(-50%, -50%) translateY(-6px) scale(1.05, 0.96);
+  }
+  54% {
+    transform: translate(-50%, -50%) translateY(1px) scale(0.97, 1.04);
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.01, 0.99);
+  }
+}
+
+@keyframes companionHop {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translateY(0) scale(1);
+  }
+  42% {
+    transform: translate(-50%, -50%) translateY(-10px) scale(1.03, 0.97);
+  }
+  56% {
+    transform: translate(-50%, -50%) translateY(2px) scale(0.98, 1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroCompanion {
+    animation: none;
+  }
+}
+
 .toolbar {
   position: sticky;
   top: 8px;
