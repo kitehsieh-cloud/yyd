@@ -263,7 +263,7 @@ function buildGitHubPhotoPath(dayId, item, file, index) {
   return `photos/day${day?.dayNo || dayId}/${stamp}-${index + 1}-${randomPart}-${safeFilePart(item.title)}.${ext}`;
 }
 function githubHeaders(token, extra = {}) {
-  const headers = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "Cache-Control": "no-cache", ...extra };
+  const headers = { Accept: "application/vnd.github+json", ...extra };
   if (token) headers.Authorization = `Bearer ${token}`;
   return headers;
 }
@@ -272,7 +272,8 @@ async function githubFetch(url, token, options = {}) {
   try {
     response = await fetch(url, { cache: "no-store", ...options, headers: githubHeaders(token, options.headers || {}) });
   } catch (error) {
-    throw new Error(`無法連線到 GitHub API：${error instanceof Error ? error.message : String(error)}`);
+    const origin = typeof window !== "undefined" ? window.location.origin : "目前網頁";
+    throw new Error(`無法連線到 GitHub API：${error instanceof Error ? error.message : String(error)}。這通常不是照片檔案問題，而是 ${origin} 這個瀏覽器環境連不到 api.github.com，或被瀏覽器外掛、VPN、公司/學校網路、行動網路防護、CORS 預檢擋下。請改用正式 GitHub Pages 網址並用 Chrome/Safari 測試。`);
   }
   const text = await response.text();
   let data = null;
@@ -284,6 +285,10 @@ async function githubFetch(url, token, options = {}) {
     throw error;
   }
   return data;
+}
+async function testGitHubApiAccess(token) {
+  if (!token) throw new Error("請先儲存可寫入 repo contents 的 GitHub Fine-grained PAT。");
+  await githubFetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}?t=${Date.now()}`, token);
 }
 async function uploadFileToGitHub(path, file, token) {
   if (!token) throw new Error("請先填入可寫入 repo contents 的 GitHub Fine-grained PAT。");
@@ -643,6 +648,9 @@ export default function App() {
     setUploading(true);
     setSyncError("");
     try {
+      setUploadStatus("正在檢查 GitHub API 連線與 token 權限...");
+      await testGitHubApiAccess(token);
+
       const uploaded = [];
       for (let index = 0; index < files.length; index += 1) {
         const file = files[index];
