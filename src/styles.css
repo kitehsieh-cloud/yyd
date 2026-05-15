@@ -70,7 +70,7 @@ button {
 }
 
 .heroCompanion-0 {
-  animation: companionGreet 3.6s ease-in-out infinite;
+  animation: companionGreet 1.8s ease-in-out infinite !important;
 }
 
 .heroCompanion-1 {
@@ -123,16 +123,19 @@ button {
   100% {
     transform: translate(-50%, -50%) translateY(0) rotate(0deg) scale(1);
   }
-  18% {
-    transform: translate(-50%, -50%) translateY(-12px) rotate(-3deg) scale(1.05, 0.96);
+  14% {
+    transform: translate(-50%, -50%) translate(-10px, -20px) rotate(-8deg) scale(1.08, 0.94);
   }
-  34% {
-    transform: translate(-50%, -50%) translateY(2px) rotate(2deg) scale(0.97, 1.04);
+  30% {
+    transform: translate(-50%, -50%) translate(9px, 3px) rotate(7deg) scale(0.95, 1.07);
   }
-  48% {
-    transform: translate(-50%, -50%) translateY(-5px) rotate(-1deg) scale(1.02, 0.99);
+  46% {
+    transform: translate(-50%, -50%) translate(-5px, -10px) rotate(-4deg) scale(1.04, 0.97);
   }
-  64% {
+  62% {
+    transform: translate(-50%, -50%) translate(3px, 0) rotate(3deg) scale(0.99, 1.02);
+  }
+  78% {
     transform: translate(-50%, -50%) translateY(0) rotate(0deg) scale(1);
   }
 }
@@ -177,7 +180,7 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .heroCompanion {
+  .heroCompanion:not(.heroCompanion-0) {
     animation: none;
   }
 }
