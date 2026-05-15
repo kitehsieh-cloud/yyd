@@ -13,6 +13,7 @@ const TABS = {
   "0521": "Day7 回台當社畜",
 };
 
+const TRIP_YEAR = 2026;
 const PHOTO_TARGETS = { "0515": 10, "0516": 30, "0517": 30, "0518": 30, "0519": 30, "0520": 30, "0521": 10 };
 const DEFAULT_PHOTO_TARGET = 30;
 const ASSET_BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -48,7 +49,15 @@ const HEADER_COMPANION_LAYOUT = {
 
 const DEFAULT_DAY_BG = Object.fromEntries(Object.keys(TABS).map((id, index) => [id, `${ASSET_BASE_URL}/D${index + 1}.png`]));
 const DEFAULT_FORTUNE_BG = Object.fromEntries(Object.keys(TABS).map((id) => [id, `${ASSET_BASE_URL}/7BG.png`]));
-const TRIP_MAP_EMBED_URL = "https://www.google.com/maps/d/u/4/embed?mid=1bQy9sYK-Pn4s6oWAgtslttWcWG-T8Dg&ehbc=2E312F";
+const DAY_MY_MAPS = {
+  "0515": { mid: "1mXllVJOQAF4Zr7_w2EObnPUkJdFN6U8", ll: "35.729263744835286%2C140.04267550000003", z: 11 },
+  "0516": { mid: "1ac7xSBnTigxiTyX1CmcTnhykGMZT47k", ll: "35.69673066958187%2C139.73806699999997", z: 13 },
+  "0517": { mid: "1FonATPxsIeWv105sdN9yVqb0fwCsnjM", ll: "35.696405248315415%2C139.7091595", z: 13 },
+  "0518": { mid: "1pU1QJUtYLlyUzta5DOwP4jWi0ZDUQjk", ll: "35.31110535595066%2C139.51683350000002", z: 14 },
+  "0519": { mid: "1lWviPUOT3maXinwyej2l4-dtWmFcThI", ll: "35.45237511410088%2C139.63835600000004", z: 14 },
+  "0520": { mid: "1Xc-YWVD-OcBs1oqdNjhVCP5RJgrMew4", ll: "35.6328959842015%2C139.88039399999997", z: 18 },
+  "0521": { mid: "1R86HJ-6ArWZ8diQdUkBiAJMX41rQTWw", ll: "35.73290645758658%2C140.04109824999998", z: 11 },
+};
 const DAY_MAP_POINTS = {
   "0515": [
     { name: "成田國際機場", lat: 35.770178, lng: 140.3843215 },
@@ -203,6 +212,17 @@ const ICON = { attraction: "📍", restaurant: "🍽️", transfer: "🚃", hote
 function emptyPhotosByDay() { return Object.fromEntries(DAYS.map((day) => [day.id, []])); }
 function dayPhotoTarget(dayId) { return PHOTO_TARGETS[dayId] || DEFAULT_PHOTO_TARGET; }
 function dayFortuneUnlocked(dayId, count) { return count >= dayPhotoTarget(dayId); }
+function tokyoTodayValue() {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+  const valueOf = (type) => Number(parts.find((part) => part.type === type)?.value || 0);
+  return valueOf("year") * 10000 + valueOf("month") * 100 + valueOf("day");
+}
+function dayDateValue(day) {
+  return TRIP_YEAR * 10000 + Number(day.id);
+}
+function dayHasArrived(day) {
+  return tokyoTodayValue() >= dayDateValue(day);
+}
 function totalPhotoCount(photosByDay) { return Object.values(photosByDay || {}).reduce((sum, photos) => sum + (Array.isArray(photos) ? photos.length : 0), 0); }
 function sortPhotosNewestFirst(photos) { return [...(photos || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); }
 function encodePath(path) { return String(path || "").split("/").map(encodeURIComponent).join("/"); }
@@ -436,10 +456,12 @@ function Settings({ token, forceOpen, onSaveToken, onClearToken }) {
 
 function DayCard({ day, open, onToggle, onItemClick, photoCount, onOpenFortune, onOpenPhotoTool }) {
   const unlocked = dayFortuneUnlocked(day.id, photoCount);
+  const available = dayHasArrived(day);
+  const photoButtonTitle = available ? (unlocked ? "查看大吉籤" : "上傳照片") : "尚未到來，當天才可上傳照片";
   return <section className="day card">
     <div className="dayHero" style={{ backgroundImage: `url(${DEFAULT_DAY_BG[day.id]})` }}>
       <div className="dayBadge">Day.{day.dayNo}<br />{day.date}({day.weekday})</div>
-      <button className="photoButton" type="button" onClick={() => unlocked ? onOpenFortune(day) : onOpenPhotoTool(day)} title={unlocked ? "查看大吉籤" : "上傳照片"}>
+      <button className={`photoButton${available ? "" : " isFuture"}`} type="button" disabled={!available} onClick={() => unlocked ? onOpenFortune(day) : onOpenPhotoTool(day)} title={photoButtonTitle}>
         <img src={unlocked ? OMAMORI_ICON_URL : PHOTO_ICON_URL} alt={unlocked ? "御守" : "相機"} />
       </button>
       <button className="dayToggle" type="button" onClick={onToggle}>{open ? "▲收合詳細行程▲" : `▼${day.title}▼`}</button>
@@ -501,22 +523,25 @@ function buildDayMapHtml(points) {
 }
 
 function DayMap({ day }) {
+  const map = DAY_MY_MAPS[day.id];
   const points = DAY_MAP_POINTS[day.id] || [];
+  const embedUrl = map ? `https://www.google.com/maps/d/u/4/embed?mid=${map.mid}&ll=${map.ll}&z=${map.z}&ehbc=2E312F` : "";
+  const viewerUrl = map ? `https://www.google.com/maps/d/u/4/viewer?mid=${map.mid}&ll=${map.ll}&z=${map.z}` : "";
   return <section className="dayMap">
     <div className="dayMapHeader">
       <div>
         <h3>本日地圖｜{TABS[day.id]}</h3>
-        <p className="small muted">只顯示 KML 當日圖層中的點，地圖會自動縮放到剛好看見全部點位。</p>
+        <p className="small muted">載入當日專用 Google My Maps，只顯示該日圖層中的點位。</p>
       </div>
-      <a className="button" href={TRIP_MAP_EMBED_URL.replace("/embed?", "/viewer?")} target="_blank" rel="noreferrer">開啟大地圖</a>
+      {viewerUrl && <a className="button" href={viewerUrl} target="_blank" rel="noreferrer">開啟大地圖</a>}
     </div>
     <div className="mapFrame">
-      <iframe
-        srcDoc={buildDayMapHtml(points)}
-        title={`Day${day.dayNo} ${day.title} 當日點位地圖`}
+      {embedUrl ? <iframe
+        src={embedUrl}
+        title={`Day${day.dayNo} ${day.title} My Maps`}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
-      />
+      /> : <div className="mapFallback">尚未設定本日地圖</div>}
     </div>
     <div className="mapPlaces">
       {points.map((point, index) => <span key={`${point.name}-${index}`}>{index + 1}. {point.name}</span>)}
@@ -705,8 +730,6 @@ export default function App() {
 
   return <div className="app">
     <MainHeader photosByDay={photosByDay} />
-    <Settings token={token} forceOpen={tokenSettingsOpen} onSaveToken={saveToken} onClearToken={clearToken} />
-    {syncError && <p className="status error">同步錯誤：{syncError}</p>}
     <div className="toolbar">
       <button className="tab active" type="button">行程</button>
       <button className="tab" type="button" onClick={() => { setShowAlbum((value) => !value); refreshGitHubAlbum(); }}>相簿 {totalPhotoCount(photosByDay)} 張</button>
@@ -714,6 +737,8 @@ export default function App() {
     </div>
     {showAlbum && <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} />}
     {DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => ({ ...prev, [day.id]: !prev[day.id] }))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
+    {syncError && <p className="status error">同步錯誤：{syncError}</p>}
+    <Settings token={token} forceOpen={tokenSettingsOpen} onSaveToken={saveToken} onClearToken={clearToken} />
     {activeDay && activeItem && <DetailModal day={activeDay} item={activeItem} onClose={() => { setActiveDay(null); setActiveItem(null); }} />}
     {photoToolDay && <PhotoModal day={photoToolDay} photos={photosByDay[photoToolDay.id] || []} onUpload={uploadPhotos} uploading={uploading} uploadStatus={uploadStatus} onClose={() => setPhotoToolDay(null)} />}
     {fortuneDay && <FortuneModal day={fortuneDay} onClose={() => setFortuneDay(null)} />}
