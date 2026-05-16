@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-16T02:35:53.098Z",
+  "updatedAt": "2026-05-16T14:49:07.047Z",
   "photos": [
     {
       "id": "github-0515-photos/day1/20260516021615-3-hkp0fa-Day1｜新宿.jpg",
@@ -31,6 +31,226 @@
       "name": "S__285589511_0.jpg",
       "githubPath": "photos/day1/20260516021611-1-zf91i4-Day1｜新宿.jpg",
       "createdAt": "2026-05-16T02:16:11.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132945-22-1pt5ye-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132945-22-1pt5ye-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132945-22-1pt5ye-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:45.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132942-21-awswkj-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132942-21-awswkj-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132942-21-awswkj-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:42.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132939-20-zsid5h-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132939-20-zsid5h-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132939-20-zsid5h-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:39.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132937-19-ozk4zd-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132937-19-ozk4zd-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132937-19-ozk4zd-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:37.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132935-18-otykqy-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132935-18-otykqy-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132935-18-otykqy-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:35.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132933-17-vymvjl-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132933-17-vymvjl-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132933-17-vymvjl-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:33.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132931-16-oinr41-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132931-16-oinr41-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132931-16-oinr41-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:31.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132929-15-em2iv9-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132929-15-em2iv9-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132929-15-em2iv9-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:29.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132927-14-d6kga4-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132927-14-d6kga4-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132927-14-d6kga4-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:27.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132925-13-t53pp4-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132925-13-t53pp4-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132925-13-t53pp4-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:25.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132922-12-x9wib8-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132922-12-x9wib8-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132922-12-x9wib8-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:22.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132919-11-h7jo2z-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132919-11-h7jo2z-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132919-11-h7jo2z-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:19.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132916-10-za9wwt-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132916-10-za9wwt-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132916-10-za9wwt-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:16.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132914-9-a199wp-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132914-9-a199wp-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132914-9-a199wp-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:14.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132912-8-mzzjtl-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132912-8-mzzjtl-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132912-8-mzzjtl-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:12.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132910-7-d8ho2i-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132910-7-d8ho2i-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132910-7-d8ho2i-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:10.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132908-6-mdjcwm-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132908-6-mdjcwm-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132908-6-mdjcwm-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:08.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132906-5-z6qb9j-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132906-5-z6qb9j-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132906-5-z6qb9j-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:06.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132904-4-d6v44n-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132904-4-d6v44n-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132904-4-d6v44n-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:04.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132902-3-x1lmyt-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132902-3-x1lmyt-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132902-3-x1lmyt-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:02.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132900-2-5w3ch6-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132900-2-5w3ch6-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132900-2-5w3ch6-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:29:00.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516132858-1-e1v7f0-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "dayId": "0516",
+      "itemId": "github",
+      "itemTitle": "GitHub 相簿",
+      "type": "github",
+      "name": "20260516132858-1-e1v7f0-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "githubPath": "photos/day2/20260516132858-1-e1v7f0-Day2｜淺草‧晴空塔‧東京一番街.jpeg",
+      "createdAt": "2026-05-16T13:28:58.000Z"
     },
     {
       "id": "github-0516-photos/day2/20260516023550-1-d6lt71-Day2｜淺草‧晴空塔‧東京一番街.jpg",
