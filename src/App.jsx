@@ -14,7 +14,7 @@ const TABS = {
 };
 
 const TRIP_YEAR = 2026;
-const PHOTO_TARGETS = { "0515": 10, "0516": 30, "0517": 30, "0518": 30, "0519": 30, "0520": 30, "0521": 10 };
+const PHOTO_TARGETS = { "0515": 5, "0516": 30, "0517": 30, "0518": 30, "0519": 30, "0520": 30, "0521": 5 };
 const DEFAULT_PHOTO_TARGET = 30;
 const ASSET_BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
 const DEFAULT_COMMON_HEADER_BG = `${ASSET_BASE_URL}/Title.png`;
