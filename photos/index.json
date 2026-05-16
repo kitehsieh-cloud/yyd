@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-16T02:35:30.492Z",
+  "updatedAt": "2026-05-16T02:35:53.098Z",
   "photos": [
     {
       "id": "github-0515-photos/day1/20260516021615-3-hkp0fa-Day1｜新宿.jpg",
@@ -31,6 +31,16 @@
       "name": "S__285589511_0.jpg",
       "githubPath": "photos/day1/20260516021611-1-zf91i4-Day1｜新宿.jpg",
       "createdAt": "2026-05-16T02:16:11.000Z"
+    },
+    {
+      "id": "github-0516-photos/day2/20260516023550-1-d6lt71-Day2｜淺草‧晴空塔‧東京一番街.jpg",
+      "dayId": "0516",
+      "itemId": "0516-album",
+      "itemTitle": "Day2｜淺草‧晴空塔‧東京一番街",
+      "type": "album",
+      "name": "S__285630468.jpg",
+      "githubPath": "photos/day2/20260516023550-1-d6lt71-Day2｜淺草‧晴空塔‧東京一番街.jpg",
+      "createdAt": "2026-05-16T02:35:50.000Z"
     },
     {
       "id": "github-0516-photos/day2/20260516023528-2-uajjjp-Day2｜淺草‧晴空塔‧東京一番街.jpg",
