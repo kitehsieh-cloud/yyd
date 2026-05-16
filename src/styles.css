@@ -108,7 +108,7 @@ button {
   content: "";
   position: absolute;
   inset: -30%;
-  z-index: -1;
+  z-index: 0;
   border-radius: 999px;
   background:
     repeating-conic-gradient(from 0deg, #ffe58acc 0deg 8deg, transparent 8deg 18deg),
@@ -116,6 +116,16 @@ button {
   filter: blur(0.2px);
   opacity: 0.95;
   animation: blessingHaloSpin 16s linear infinite;
+}
+
+.heroCompanion-4::after {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  z-index: 0;
+  border-radius: 999px;
+  background: radial-gradient(circle, #fff7ad99 0 18%, #facc1544 42%, transparent 66%);
+  animation: blessingGlowPulse 9.4s ease-in-out infinite;
 }
 
 .heroCompanion-5 {
@@ -168,6 +178,18 @@ button {
   }
   to {
     transform: rotate(360deg) scale(0.96);
+  }
+}
+
+@keyframes blessingGlowPulse {
+  0%,
+  100% {
+    opacity: 0.58;
+    transform: scale(0.96);
+  }
+  70% {
+    opacity: 0.95;
+    transform: scale(1.08);
   }
 }
 
@@ -330,6 +352,13 @@ button {
   }
   82% {
     transform: translate(-50%, -50%) translateY(0) rotate(0.9deg) scale(0.998, 1.006);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero:not(.companionPreview) .heroCompanion:not(.heroCompanion-0),
+  .hero:not(.companionPreview) .heroCompanion-4::before {
+    animation: none;
   }
 }
 
