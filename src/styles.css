@@ -1245,11 +1245,12 @@ button {
 .albumPhoto {
   position: relative;
   overflow: hidden;
-  min-height: 150px;
   margin: 0;
   border-radius: 18px;
   background: #e2e8f0;
   box-shadow: 0 10px 22px #1e293b12;
+  cursor: zoom-in;
+  aspect-ratio: 4 / 5;
 }
 
 .albumPhoto.selected {
@@ -1265,35 +1266,14 @@ button {
 .albumPhoto.featured {
   grid-column: span 2;
   grid-row: span 2;
-  min-height: 310px;
+  aspect-ratio: 4 / 5;
 }
 
 .albumPhoto img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.albumPhoto figcaption {
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-  display: grid;
-  gap: 2px;
-  padding: 8px 10px;
-  border-radius: 14px;
-  color: white;
-  background: #0f172abf;
-  font-size: 11px;
-  backdrop-filter: blur(8px);
-}
-
-.albumPhoto figcaption span {
-  overflow: hidden;
-  color: #e2e8f0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  object-position: center;
 }
 
 .photoSelect {
@@ -1319,6 +1299,77 @@ button {
   width: 16px;
   height: 16px;
   accent-color: #ec4899;
+}
+
+.photoViewer {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  padding: 14px;
+  background: #0f172ee8;
+  backdrop-filter: blur(10px);
+}
+
+.photoViewerTop,
+.photoViewerControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: min(980px, 100%);
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 18px;
+  background: #fffffff0;
+  box-shadow: 0 14px 32px #02061738;
+}
+
+.photoViewerTop div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.photoViewerTop b,
+.photoViewerTop span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.photoViewerTop span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.photoViewerStage {
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  width: min(980px, 100%);
+  min-height: 0;
+  margin: 0 auto;
+  border-radius: 20px;
+}
+
+.photoViewerStage img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transform-origin: center;
+  transition: transform 160ms ease;
+}
+
+.photoViewerControls {
+  justify-content: center;
+}
+
+.photoViewerControls input {
+  width: min(360px, 46vw);
 }
 
 .albumManageButton {
@@ -1408,17 +1459,13 @@ button {
   border-radius: 16px;
   background: #f8fafc;
   border: 1px solid var(--line);
+  aspect-ratio: 4 / 5;
 }
 
 .photoFigure img {
   width: 100%;
-  height: 118px;
+  height: 100%;
   object-fit: cover;
-}
-
-.photoFigure figcaption {
-  padding: 8px;
-  font-size: 11px;
 }
 
 .status {
@@ -1489,19 +1536,11 @@ button {
   }
 
   .albumPhoto {
-    min-height: 138px;
     border-radius: 16px;
   }
 
   .albumPhoto.featured {
     grid-column: span 2;
-    min-height: 260px;
-  }
-
-  .albumPhoto figcaption {
-    left: 6px;
-    right: 6px;
-    bottom: 6px;
   }
 
   .albumFooterActions {

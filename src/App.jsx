@@ -842,6 +842,7 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
   const [selectedDayId, setSelectedDayId] = useState(firstPhotoDay.id);
   const [selectedPhotoIds, setSelectedPhotoIds] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
+  const [viewerPhoto, setViewerPhoto] = useState(null);
   const selectedDay = DAYS.find((day) => day.id === selectedDayId) || firstPhotoDay;
   const selectedPhotos = sortPhotosNewestFirst(photosByDay[selectedDay.id] || []);
   const unlockedCount = DAYS.filter((day) => dayFortuneUnlocked(day.id, (photosByDay[day.id] || []).length)).length;
@@ -857,6 +858,13 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
   }
   function togglePhoto(photoId) {
     setSelectedPhotoIds((prev) => prev.includes(photoId) ? prev.filter((id) => id !== photoId) : [...prev, photoId]);
+  }
+  function handlePhotoClick(photo) {
+    if (deleteMode) {
+      togglePhoto(photo.id);
+      return;
+    }
+    setViewerPhoto(photo);
   }
   async function requestDeleteSelected() {
     const photos = selectedPhotos.filter((photo) => selectedPhotoIds.includes(photo.id));
@@ -908,13 +916,13 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
         <b>這一天還沒有照片</b>
         <p>從每日相機按鈕上傳照片後，這一整頁會切換成當天的回憶內容。</p>
       </div> : <div className={`albumGrid${deleteMode ? " deleteMode" : ""}`}>
-        {selectedPhotos.map((photo, index) => <figure className={`${index === 0 ? "albumPhoto featured" : "albumPhoto"}${selectedPhotoIds.includes(photo.id) ? " selected" : ""}`} key={photo.id}>
-          {deleteMode && <label className="photoSelect"><input type="checkbox" checked={selectedPhotoIds.includes(photo.id)} onChange={() => togglePhoto(photo.id)} />選取</label>}
+        {selectedPhotos.map((photo, index) => <figure className={`${index === 0 ? "albumPhoto featured" : "albumPhoto"}${selectedPhotoIds.includes(photo.id) ? " selected" : ""}`} key={photo.id} onClick={() => handlePhotoClick(photo)}>
+          {deleteMode && <label className="photoSelect" onClick={(event) => event.stopPropagation()}><input type="checkbox" checked={selectedPhotoIds.includes(photo.id)} onChange={() => togglePhoto(photo.id)} />選取</label>}
           <img src={photo.url} alt={photo.name} />
-          <figcaption><b>{photo.itemTitle}</b><span>{photo.name}</span></figcaption>
         </figure>)}
       </div>}
     </div>
+    {viewerPhoto && <PhotoViewerModal photo={viewerPhoto} onClose={() => setViewerPhoto(null)} />}
     {deleteMode && selectedPhotoIds.length > 0 && <button className="floatingDeleteButton" type="button" disabled={deleting} onClick={requestDeleteSelected}>
       <span>{deleting ? "刪" : selectedPhotoIds.length}</span>
       <small>{deleting ? "除中" : "刪除"}</small>
@@ -924,6 +932,29 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
       <button className="button primary albumSync" type="button" onClick={onRefresh} disabled={loading}>{loading ? "同步中..." : "同步相簿"}</button>
     </div>
   </section>;
+}
+
+function PhotoViewerModal({ photo, onClose }) {
+  const [zoom, setZoom] = useState(1);
+  useEffect(() => { setZoom(1); }, [photo?.id]);
+  return <div className="photoViewer" onMouseDown={onClose}>
+    <div className="photoViewerTop" onMouseDown={(event) => event.stopPropagation()}>
+      <div>
+        <b>{photo.itemTitle}</b>
+        <span>{photo.name}</span>
+      </div>
+      <button className="button" type="button" onClick={onClose}>關閉</button>
+    </div>
+    <div className="photoViewerStage" onMouseDown={(event) => event.stopPropagation()}>
+      <img src={photo.url} alt={photo.name} style={{ transform: `scale(${zoom})` }} />
+    </div>
+    <div className="photoViewerControls" onMouseDown={(event) => event.stopPropagation()}>
+      <button className="button" type="button" onClick={() => setZoom((value) => Math.max(1, Number((value - 0.25).toFixed(2))))}>-</button>
+      <input type="range" min="1" max="3" step="0.05" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} aria-label="照片縮放" />
+      <button className="button" type="button" onClick={() => setZoom((value) => Math.min(3, Number((value + 0.25).toFixed(2))))}>+</button>
+      <button className="button" type="button" onClick={() => setZoom(1)}>1x</button>
+    </div>
+  </div>;
 }
 
 function PhotoModal({ day, photos, onUpload, onClose, uploading, uploadStatus }) {
@@ -948,7 +979,7 @@ function PhotoModal({ day, photos, onUpload, onClose, uploading, uploadStatus })
         <span><b>{uploading ? "照片上傳中..." : "選擇照片上傳"}</b><small>會自動存進 Day{day.dayNo} 相簿</small></span>
       </label>
       {uploadStatus && <p className={`status ${uploadStatus.startsWith("失敗") ? "error" : ""}`}>{uploadStatus}</p>}
-      <div className="photos">{sortPhotosNewestFirst(photos).map((photo) => <figure className="photoFigure" key={photo.id}><img src={photo.url} alt={photo.name} /><figcaption><b>{photo.itemTitle}</b><br />{photo.name}</figcaption></figure>)}</div>
+      <div className="photos">{sortPhotosNewestFirst(photos).map((photo) => <figure className="photoFigure" key={photo.id}><img src={photo.url} alt={photo.name} /></figure>)}</div>
     </div>
   </div>;
 }
