@@ -878,7 +878,7 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
       </div>
 
       {selectedPhotos.length === 0 ? <div className="albumEmpty">
-        <img src={partnerImageUrl(selectedDay.dayNo)} alt={`Day${selectedDay.dayNo} 小夥伴`} />
+        <img src={partnerImageUrl(selectedDay.dayNo)} alt={`Day${selectedDay.dayNo} 小可愛`} />
         <b>這一天還沒有照片</b>
         <p>從每日相機按鈕上傳照片後，這一整頁會切換成當天的回憶內容。</p>
       </div> : <div className="albumGrid">
@@ -904,9 +904,9 @@ function PhotoModal({ day, photos, onUpload, onClose, uploading, uploadStatus })
     <div className="modalCard card" onMouseDown={(event) => event.stopPropagation()}>
       <div className="modalTop"><div><h2>Day{day.dayNo}｜照片蒐集</h2><p className="small muted">{photos.length}/{dayPhotoTarget(day.id)} 張</p></div><button className="button" onClick={onClose}>關閉</button></div>
       <div className="silhouettePanel">
-        <img src={partnerImageUrl(day.dayNo)} alt={`Day${day.dayNo} 小夥伴剪影`} />
+        <img src={partnerImageUrl(day.dayNo)} alt={`Day${day.dayNo} 小可愛剪影`} />
         <strong>?</strong>
-        <p>小夥伴等待照片能量喚醒</p>
+        <p>小可愛等待照片能量喚醒</p>
         <div className="photoGoal">
           <div className="photoGoalTop"><span>任務目標</span><b>{photos.length}/{target}</b></div>
           <div className="progress"><div className="bar" style={{ width: `${progress}%` }} /></div>
@@ -936,7 +936,7 @@ function FortuneModal({ day, onClose }) {
   const fortune = buildFortune(day);
   return <div className="modal" onMouseDown={onClose}>
     <div className="modalCard card" style={{ backgroundImage: `url(${DEFAULT_FORTUNE_BG[day.id]})`, backgroundSize: "cover" }} onMouseDown={(event) => event.stopPropagation()}>
-      <div className="fortuneMascot"><img src={partnerImageUrl(day.dayNo)} alt={`Day${day.dayNo} 小夥伴`} /><h2>{fortune.title}</h2><p>{fortune.target}</p></div>
+      <div className="fortuneMascot"><img src={partnerImageUrl(day.dayNo)} alt={`Day${day.dayNo} 小可愛`} /><h2>{fortune.title}</h2><p>{fortune.target}</p></div>
       <Info label="籤文" value={fortune.main} />
       <button className="button primary" style={{ width: "100%", marginTop: 14 }} onClick={onClose}>收下大吉簽</button>
     </div>
