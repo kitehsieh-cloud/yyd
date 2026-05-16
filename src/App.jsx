@@ -400,6 +400,10 @@ function mergePhotosById(a, b) {
   });
   return result;
 }
+function photosWithoutPaths(photosByDay, paths) {
+  const blocked = new Set(paths);
+  return Object.fromEntries(DAYS.map((day) => [day.id, sortPhotosNewestFirst((photosByDay?.[day.id] || []).filter((photo) => !blocked.has(photo.githubPath)))]));
+}
 function reconcileManifestWithTree(manifestPhotosByDay, treePhotosByDay) {
   const result = emptyPhotosByDay();
   DAYS.forEach((day) => {
@@ -500,6 +504,54 @@ async function deletePhotosFromGitHub(photos, token) {
   for (const photo of photos) {
     if (photo?.githubPath) await deleteFileFromGitHub(photo.githubPath, token);
   }
+}
+async function githubPathExists(path, token) {
+  try {
+    await githubFetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodePath(path)}?ref=${GITHUB_BRANCH}&t=${Date.now()}`, token);
+    return true;
+  } catch (error) {
+    if (error.status === 404) return false;
+    throw error;
+  }
+}
+function movedPhotoPath(photo, targetDay) {
+  const name = String(photo.githubPath || photo.name || "photo.jpg").split("/").pop();
+  return `photos/day${targetDay.dayNo}/${name}`;
+}
+function uniqueMovePath(path) {
+  const dot = path.lastIndexOf(".");
+  const stamp = new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
+  return dot > -1 ? `${path.slice(0, dot)}-move-${stamp}${path.slice(dot)}` : `${path}-move-${stamp}`;
+}
+async function movePhotoFileToGitHub(photo, targetDay, token) {
+  if (!token) throw new Error("請先填入可寫入 repo contents 的 GitHub Fine-grained PAT。");
+  if (!photo?.githubPath) return null;
+  const oldPath = photo.githubPath;
+  let newPath = movedPhotoPath(photo, targetDay);
+  if (oldPath === newPath) return { ...photo, dayId: targetDay.id };
+  const data = await githubFetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodePath(oldPath)}?ref=${GITHUB_BRANCH}&t=${Date.now()}`, token);
+  if (await githubPathExists(newPath, token)) newPath = uniqueMovePath(newPath);
+  await githubFetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodePath(newPath)}?t=${Date.now()}`, token, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: `Move trip photo ${oldPath} to ${newPath}`, content: String(data.content || "").replace(/\s/g, ""), branch: GITHUB_BRANCH }),
+  });
+  await githubFetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodePath(oldPath)}?t=${Date.now()}`, token, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: `Remove moved trip photo ${oldPath}`, sha: data.sha, branch: GITHUB_BRANCH }),
+  });
+  return { ...photo, id: `github-${targetDay.id}-${newPath}`, dayId: targetDay.id, githubPath: newPath, url: photoUrlFromGitHubPath(newPath) };
+}
+async function movePhotosInGitHub(photos, targetDayId, token) {
+  const targetDay = DAYS.find((day) => day.id === targetDayId);
+  if (!targetDay) throw new Error("找不到目標相簿。");
+  const moved = [];
+  for (const photo of photos) {
+    const nextPhoto = await movePhotoFileToGitHub(photo, targetDay, token);
+    if (nextPhoto) moved.push(nextPhoto);
+  }
+  return moved;
 }
 async function readManifest(token) {
   try {
@@ -836,13 +888,14 @@ function DayMap({ day }) {
   </section>;
 }
 
-function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDeletePhotos, deleting }) {
+function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDeletePhotos, deleting, onMovePhotos, moving }) {
   const total = totalPhotoCount(photosByDay);
   const firstPhotoDay = DAYS.find((day) => (photosByDay[day.id] || []).length > 0) || DAYS[0];
   const [selectedDayId, setSelectedDayId] = useState(firstPhotoDay.id);
   const [selectedPhotoIds, setSelectedPhotoIds] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
   const [viewerPhoto, setViewerPhoto] = useState(null);
+  const [moveTargetDayId, setMoveTargetDayId] = useState("");
   const selectedDay = DAYS.find((day) => day.id === selectedDayId) || firstPhotoDay;
   const selectedPhotos = sortPhotosNewestFirst(photosByDay[selectedDay.id] || []);
   const unlockedCount = DAYS.filter((day) => dayFortuneUnlocked(day.id, (photosByDay[day.id] || []).length)).length;
@@ -877,8 +930,25 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
     await onDeletePhotos(photos);
     setSelectedPhotoIds([]);
   }
+  async function requestMoveSelected() {
+    const photos = selectedPhotos.filter((photo) => selectedPhotoIds.includes(photo.id));
+    const targetDayId = moveTargetDayId || DAYS.find((day) => day.id !== selectedDay.id)?.id || "";
+    const targetDay = DAYS.find((day) => day.id === targetDayId);
+    if (photos.length === 0 || !targetDay) return;
+    if (targetDay.id === selectedDay.id) {
+      window.alert("請選擇不同的目標相簿。");
+      return;
+    }
+    if (!window.confirm(`要把 ${photos.length} 張照片移動到 Day${targetDay.dayNo}｜${targetDay.title} 嗎？`)) return;
+    await onMovePhotos(photos, targetDay.id);
+    setSelectedPhotoIds([]);
+  }
 
-  useEffect(() => { setSelectedPhotoIds([]); setDeleteMode(false); }, [selectedDayId]);
+  useEffect(() => {
+    setSelectedPhotoIds([]);
+    setDeleteMode(false);
+    setMoveTargetDayId(DAYS.find((day) => day.id !== selectedDayId)?.id || "");
+  }, [selectedDayId]);
 
   return <section className="albumShowcase card section">
     <div className="albumTabs" role="tablist" aria-label="每日相簿頁籤">
@@ -922,6 +992,13 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
         </figure>)}
       </div>}
     </div>
+    {deleteMode && selectedPhotoIds.length > 0 && <div className="albumMoveBar">
+      <span>已選 {selectedPhotoIds.length} 張</span>
+      <select value={moveTargetDayId || DAYS.find((day) => day.id !== selectedDay.id)?.id || ""} onChange={(event) => setMoveTargetDayId(event.target.value)}>
+        {DAYS.filter((day) => day.id !== selectedDay.id).map((day) => <option key={day.id} value={day.id}>Day{day.dayNo}｜{day.title}</option>)}
+      </select>
+      <button className="albumMoveButton" type="button" disabled={moving} onClick={requestMoveSelected}>{moving ? "移動中..." : "移動到此相簿"}</button>
+    </div>}
     {viewerPhoto && <PhotoViewerModal photo={viewerPhoto} onClose={() => setViewerPhoto(null)} />}
     {deleteMode && selectedPhotoIds.length > 0 && <button className="floatingDeleteButton" type="button" disabled={deleting} onClick={requestDeleteSelected}>
       <span>{deleting ? "刪" : selectedPhotoIds.length}</span>
@@ -1020,6 +1097,7 @@ export default function App() {
   const [albumLoading, setAlbumLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deletingPhotos, setDeletingPhotos] = useState(false);
+  const [movingPhotos, setMovingPhotos] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
   const [syncError, setSyncError] = useState("");
   const [viewMode, setViewMode] = useState("itinerary");
@@ -1079,6 +1157,41 @@ export default function App() {
       window.alert(`刪除照片失敗：${msg}`);
     } finally {
       setDeletingPhotos(false);
+    }
+  }
+
+  async function moveAlbumPhotos(photos, targetDayId) {
+    if (!photos.length) return;
+    setMovingPhotos(true);
+    setSyncError("");
+    try {
+      await testGitHubApiAccess(token);
+      const movedPhotos = await movePhotosInGitHub(photos, targetDayId, token);
+      const oldPaths = photos.map((photo) => photo.githubPath).filter(Boolean);
+      const withoutMoved = photosWithoutPaths(photosByDay, oldPaths);
+      const optimistic = mergePhotosById(withoutMoved, { ...emptyPhotosByDay(), [targetDayId]: movedPhotos });
+      setPhotosByDay(optimistic);
+      saveToStorage(STORAGE_KEYS.photosByDay, optimistic);
+
+      let remote = await readManifest(token);
+      const remoteWithoutMoved = photosWithoutPaths(remote.photosByDay, oldPaths);
+      let merged = mergePhotosById(remoteWithoutMoved, optimistic);
+      try {
+        await writeManifest(merged, token, remote.sha);
+      } catch (error) {
+        if (error.status !== 409 && error.status !== 422) throw error;
+        remote = await readManifest(token);
+        merged = mergePhotosById(photosWithoutPaths(remote.photosByDay, oldPaths), merged);
+        await writeManifest(merged, token, remote.sha);
+      }
+      await refreshGitHubAlbum();
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      setSyncError(msg);
+      if (isTokenError(error)) setTokenSettingsOpen(true);
+      window.alert(`移動照片失敗：${msg}`);
+    } finally {
+      setMovingPhotos(false);
     }
   }
 
@@ -1149,7 +1262,7 @@ export default function App() {
       <button className={`tab${viewMode === "album" ? " active" : ""}`} type="button" onClick={() => setViewMode("album")}>相簿 {totalPhotoCount(photosByDay)} 張</button>
       <span className="tab">已解鎖 {unlocked}/7</span>
     </div>
-    {viewMode === "album" ? <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} onOpenPhotoTool={setPhotoToolDay} onDeletePhotos={deleteAlbumPhotos} deleting={deletingPhotos} /> : DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => Object.fromEntries(DAYS.map((candidate) => [candidate.id, candidate.id === day.id ? !prev[day.id] : false])))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
+    {viewMode === "album" ? <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} onOpenPhotoTool={setPhotoToolDay} onDeletePhotos={deleteAlbumPhotos} deleting={deletingPhotos} onMovePhotos={moveAlbumPhotos} moving={movingPhotos} /> : DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => Object.fromEntries(DAYS.map((candidate) => [candidate.id, candidate.id === day.id ? !prev[day.id] : false])))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
     {syncError && <p className="status error">同步錯誤：{syncError}</p>}
     <Settings token={token} forceOpen={tokenSettingsOpen} onSaveToken={saveToken} onClearToken={clearToken} />
     {activeDay && activeItem && <DetailModal day={activeDay} item={activeItem} onClose={() => { setActiveDay(null); setActiveItem(null); }} />}
