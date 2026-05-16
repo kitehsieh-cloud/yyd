@@ -1125,6 +1125,7 @@ function UploadSpeedTest({ token }) {
   const [testing, setTesting] = useState(false);
   const [results, setResults] = useState([]);
   const [message, setMessage] = useState("");
+  const [viewerPhoto, setViewerPhoto] = useState(null);
   const cleanupTimers = useMemo(() => new Map(), []);
 
   function scheduleTestCleanup(path) {
@@ -1199,7 +1200,9 @@ function UploadSpeedTest({ token }) {
     {message && <p className={`status ${message.startsWith("測試失敗") ? "error" : ""}`}>{message}</p>}
     {results.length > 0 && <div className="uploadTestResults">
       {results.map((row) => <div className="uploadTestRow" key={row.path}>
-        <img src={row.url} alt={row.name} />
+        <button className="uploadTestPreview" type="button" onClick={() => setViewerPhoto({ url: row.url, name: row.name, itemTitle: "測試相簿" })}>
+          <img src={row.url} alt={row.name} />
+        </button>
         <div>
           <b>{row.name}</b>
           <span>原始 {formatBytes(row.originalSize)} → 上傳 {formatBytes(row.uploadSize)}</span>
@@ -1208,6 +1211,7 @@ function UploadSpeedTest({ token }) {
         </div>
       </div>)}
     </div>}
+    {viewerPhoto && <PhotoViewerModal photo={viewerPhoto} onClose={() => setViewerPhoto(null)} />}
   </section>;
 }
 
