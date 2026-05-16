@@ -375,10 +375,31 @@ function mergePhotosById(a, b) {
   });
   return result;
 }
+function reconcileManifestWithTree(manifestPhotosByDay, treePhotosByDay) {
+  const result = emptyPhotosByDay();
+  DAYS.forEach((day) => {
+    const manifestByPath = new Map((manifestPhotosByDay?.[day.id] || []).filter((photo) => photo.githubPath).map((photo) => [photo.githubPath, photo]));
+    result[day.id] = sortPhotosNewestFirst((treePhotosByDay?.[day.id] || []).map((treePhoto) => {
+      const manifestPhoto = manifestByPath.get(treePhoto.githubPath);
+      return manifestPhoto ? { ...treePhoto, ...manifestPhoto, url: treePhoto.url, dayId: day.id, githubPath: treePhoto.githubPath } : treePhoto;
+    }));
+  });
+  return result;
+}
 function photosToManifestList(photosByDay) {
   return DAYS.flatMap((day) => (photosByDay?.[day.id] || []).map((photo) => ({
     id: photo.id, dayId: day.id, itemId: photo.itemId, itemTitle: photo.itemTitle, type: photo.type, name: photo.name, githubPath: photo.githubPath, createdAt: photo.createdAt,
   }))).filter((photo) => photo.githubPath);
+}
+function manifestSignature(photosByDay) {
+  return JSON.stringify(photosToManifestList(photosByDay).map((photo) => ({
+    dayId: photo.dayId,
+    githubPath: photo.githubPath,
+    itemId: photo.itemId,
+    itemTitle: photo.itemTitle,
+    name: photo.name,
+    createdAt: photo.createdAt,
+  })).sort((a, b) => a.githubPath.localeCompare(b.githubPath)));
 }
 function manifestListToPhotosByDay(list) {
   const result = emptyPhotosByDay();
@@ -487,8 +508,11 @@ async function fetchSyncedAlbum(token) {
   }
   const manifest = await readManifest(token);
   const tree = await fetchTreePhotos(token);
-  const merged = mergePhotosById(manifest.photosByDay, tree);
-  return { photosByDay: merged, manifestSha: manifest.sha };
+  const reconciled = reconcileManifestWithTree(manifest.photosByDay, tree);
+  if (manifestSignature(manifest.photosByDay) !== manifestSignature(reconciled)) {
+    await writeManifest(reconciled, token, manifest.sha);
+  }
+  return { photosByDay: reconciled, manifestSha: manifest.sha };
 }
 
 function DetailRows({ item }) {
