@@ -455,6 +455,27 @@ async function uploadFileToGitHub(path, file, token) {
   });
   return photoUrlFromGitHubPath(path);
 }
+async function deleteFileFromGitHub(path, token) {
+  if (!token) throw new Error("請先填入可寫入 repo contents 的 GitHub Fine-grained PAT。");
+  let data = null;
+  try {
+    data = await githubFetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodePath(path)}?ref=${GITHUB_BRANCH}&t=${Date.now()}`, token);
+  } catch (error) {
+    if (error.status === 404) return;
+    throw error;
+  }
+  if (!data?.sha) return;
+  await githubFetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodePath(path)}?t=${Date.now()}`, token, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: `Delete trip photo ${path}`, sha: data.sha, branch: GITHUB_BRANCH }),
+  });
+}
+async function deletePhotosFromGitHub(photos, token) {
+  for (const photo of photos) {
+    if (photo?.githubPath) await deleteFileFromGitHub(photo.githubPath, token);
+  }
+}
 async function readManifest(token) {
   try {
     const data = await githubFetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodePath(ALBUM_MANIFEST_PATH)}?ref=${GITHUB_BRANCH}&t=${Date.now()}`, token);
@@ -789,10 +810,11 @@ function DayMap({ day }) {
   </section>;
 }
 
-function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool }) {
+function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDeletePhotos, deleting }) {
   const total = totalPhotoCount(photosByDay);
   const firstPhotoDay = DAYS.find((day) => (photosByDay[day.id] || []).length > 0) || DAYS[0];
   const [selectedDayId, setSelectedDayId] = useState(firstPhotoDay.id);
+  const [selectedPhotoIds, setSelectedPhotoIds] = useState([]);
   const selectedDay = DAYS.find((day) => day.id === selectedDayId) || firstPhotoDay;
   const selectedPhotos = sortPhotosNewestFirst(photosByDay[selectedDay.id] || []);
   const unlockedCount = DAYS.filter((day) => dayFortuneUnlocked(day.id, (photosByDay[day.id] || []).length)).length;
@@ -807,21 +829,24 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool }) {
     }
     window.alert(`${TABS[selectedDay.id]} 尚未開放照片上傳。開放條件：日本時間 ${TRIP_YEAR}/${selectedDay.date} 當天起才可上傳。`);
   }
+  function togglePhoto(photoId) {
+    setSelectedPhotoIds((prev) => prev.includes(photoId) ? prev.filter((id) => id !== photoId) : [...prev, photoId]);
+  }
+  async function requestDeleteSelected() {
+    const photos = selectedPhotos.filter((photo) => selectedPhotoIds.includes(photo.id));
+    if (photos.length === 0) return;
+    const password = window.prompt(`即將刪除 ${photos.length} 張照片。請輸入管理密碼：`);
+    if (password !== "0508") {
+      window.alert("管理密碼錯誤，已取消刪除。");
+      return;
+    }
+    await onDeletePhotos(photos);
+    setSelectedPhotoIds([]);
+  }
+
+  useEffect(() => { setSelectedPhotoIds([]); }, [selectedDayId]);
 
   return <section className="albumShowcase card section">
-    <div className="albumHeader">
-      <div className="albumHeroCopy">
-        <div className="albumKicker">{mark("album")} Tokyo 2026 Memory Book</div>
-        <h2>旅程相簿</h2>
-        <p>用每日頁籤切換整頁內容，讓每一天都有自己的照片故事。</p>
-        <div className="albumStats">
-          <span><b>{total}</b> 張照片</span>
-          <span><b>{unlockedCount}</b>/7 大吉籤</span>
-        </div>
-      </div>
-      <button className="button primary albumSync" type="button" onClick={onRefresh} disabled={loading}>{loading ? "同步中..." : "同步相簿"}</button>
-    </div>
-
     <div className="albumTabs" role="tablist" aria-label="每日相簿頁籤">
       {DAYS.map((day) => {
         const photos = sortPhotosNewestFirst(photosByDay[day.id] || []);
@@ -847,6 +872,7 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool }) {
             <span>{selectedPhotos.length}/{target}</span>
             <span>{dayFortuneUnlocked(selectedDay.id, selectedPhotos.length) ? "大吉籤已解鎖" : "照片蒐集中"}</span>
             <button className="albumUploadButton" type="button" aria-disabled={!selectedAvailable} onClick={openSelectedUpload}>上傳照片</button>
+            {selectedPhotos.length > 0 && <button className="albumDeleteButton" type="button" disabled={deleting || selectedPhotoIds.length === 0} onClick={requestDeleteSelected}>{deleting ? "刪除中..." : `刪除所選 ${selectedPhotoIds.length}`}</button>}
           </div>
         </div>
       </div>
@@ -856,11 +882,16 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool }) {
         <b>這一天還沒有照片</b>
         <p>從每日相機按鈕上傳照片後，這一整頁會切換成當天的回憶內容。</p>
       </div> : <div className="albumGrid">
-        {selectedPhotos.map((photo, index) => <figure className={index === 0 ? "albumPhoto featured" : "albumPhoto"} key={photo.id}>
+        {selectedPhotos.map((photo, index) => <figure className={`${index === 0 ? "albumPhoto featured" : "albumPhoto"}${selectedPhotoIds.includes(photo.id) ? " selected" : ""}`} key={photo.id}>
+          <label className="photoSelect"><input type="checkbox" checked={selectedPhotoIds.includes(photo.id)} onChange={() => togglePhoto(photo.id)} />選取</label>
           <img src={photo.url} alt={photo.name} />
           <figcaption><b>{photo.itemTitle}</b><span>{photo.name}</span></figcaption>
         </figure>)}
       </div>}
+    </div>
+    <div className="albumFooterActions">
+      <div className="albumFooterStats"><b>{total}</b> 張照片｜<b>{unlockedCount}</b>/7 大吉籤</div>
+      <button className="button primary albumSync" type="button" onClick={onRefresh} disabled={loading}>{loading ? "同步中..." : "同步相簿"}</button>
     </div>
   </section>;
 }
@@ -926,6 +957,7 @@ export default function App() {
   const [photosByDay, setPhotosByDay] = useState(() => loadObjectFromStorage(STORAGE_KEYS.photosByDay, emptyPhotosByDay()));
   const [albumLoading, setAlbumLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [deletingPhotos, setDeletingPhotos] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
   const [syncError, setSyncError] = useState("");
   const [viewMode, setViewMode] = useState("itinerary");
@@ -966,6 +998,27 @@ export default function App() {
   }
 
   useEffect(() => { refreshGitHubAlbum(); }, []);
+  useEffect(() => {
+    if (viewMode === "album") refreshGitHubAlbum();
+  }, [viewMode]);
+
+  async function deleteAlbumPhotos(photos) {
+    if (!photos.length) return;
+    setDeletingPhotos(true);
+    setSyncError("");
+    try {
+      await testGitHubApiAccess(token);
+      await deletePhotosFromGitHub(photos, token);
+      await refreshGitHubAlbum();
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      setSyncError(msg);
+      if (isTokenError(error)) setTokenSettingsOpen(true);
+      window.alert(`刪除照片失敗：${msg}`);
+    } finally {
+      setDeletingPhotos(false);
+    }
+  }
 
   async function uploadPhotos(dayId, item, files) {
     if (!files.length) return;
@@ -1031,10 +1084,10 @@ export default function App() {
     <MainHeader photosByDay={photosByDay} />
     <div className="toolbar">
       <button className={`tab${viewMode === "itinerary" ? " active" : ""}`} type="button" onClick={() => setViewMode("itinerary")}>行程</button>
-      <button className={`tab${viewMode === "album" ? " active" : ""}`} type="button" onClick={() => { setViewMode("album"); refreshGitHubAlbum(); }}>相簿 {totalPhotoCount(photosByDay)} 張</button>
+      <button className={`tab${viewMode === "album" ? " active" : ""}`} type="button" onClick={() => setViewMode("album")}>相簿 {totalPhotoCount(photosByDay)} 張</button>
       <span className="tab">已解鎖 {unlocked}/7</span>
     </div>
-    {viewMode === "album" ? <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} onOpenPhotoTool={setPhotoToolDay} /> : DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => Object.fromEntries(DAYS.map((candidate) => [candidate.id, candidate.id === day.id ? !prev[day.id] : false])))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
+    {viewMode === "album" ? <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} onOpenPhotoTool={setPhotoToolDay} onDeletePhotos={deleteAlbumPhotos} deleting={deletingPhotos} /> : DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => Object.fromEntries(DAYS.map((candidate) => [candidate.id, candidate.id === day.id ? !prev[day.id] : false])))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
     {syncError && <p className="status error">同步錯誤：{syncError}</p>}
     <Settings token={token} forceOpen={tokenSettingsOpen} onSaveToken={saveToken} onClearToken={clearToken} />
     {activeDay && activeItem && <DetailModal day={activeDay} item={activeItem} onClose={() => { setActiveDay(null); setActiveItem(null); }} />}
