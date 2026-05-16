@@ -550,6 +550,12 @@ function movedPhotoPath(photo, targetDay) {
   const name = String(photo.githubPath || photo.name || "photo.jpg").split("/").pop();
   return `photos/day${targetDay.dayNo}/${name}`;
 }
+function uploadSpeedTestPath(file, index) {
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  const stamp = new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
+  const randomPart = Math.random().toString(36).slice(2, 8);
+  return `photos/_upload-test/${stamp}-${index + 1}-${randomPart}-${safeFilePart(file.name)}.${ext}`;
+}
 function uniqueMovePath(path) {
   const dot = path.lastIndexOf(".");
   const stamp = new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
@@ -1103,6 +1109,79 @@ function PhotoModal({ day, photos, onUpload, onClose, uploading, uploadStatus })
   </div>;
 }
 
+function uploadTestMode() {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).get("uploadTest") === "1";
+}
+
+function formatBytes(bytes) {
+  if (!Number.isFinite(bytes)) return "-";
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+}
+
+function UploadSpeedTest({ token }) {
+  const [testing, setTesting] = useState(false);
+  const [results, setResults] = useState([]);
+  const [message, setMessage] = useState("");
+
+  async function runTest(files) {
+    if (!files.length) return;
+    setTesting(true);
+    setResults([]);
+    setMessage("測試中：會暫存到 photos/_upload-test/，完成後自動刪除，不會進入正式相簿。");
+    try {
+      await testGitHubApiAccess(token);
+      const rows = [];
+      for (let index = 0; index < files.length; index += 1) {
+        const file = files[index];
+        const compressStart = performance.now();
+        const uploadFile = await compressPhotoForUpload(file);
+        const compressMs = Math.round(performance.now() - compressStart);
+        const path = uploadSpeedTestPath(uploadFile, index);
+        const uploadStart = performance.now();
+        await uploadFileToGitHub(path, uploadFile, token);
+        const uploadMs = Math.round(performance.now() - uploadStart);
+        await deleteFileFromGitHub(path, token);
+        rows.push({
+          name: file.name,
+          originalSize: file.size,
+          uploadSize: uploadFile.size,
+          compressMs,
+          uploadMs,
+          path,
+        });
+        setResults([...rows]);
+      }
+      setMessage("測試完成，暫存檔已刪除。正式相簿沒有被寫入。");
+    } catch (error) {
+      setMessage(`測試失敗：${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setTesting(false);
+    }
+  }
+
+  return <section className="uploadTest card section">
+    <div>
+      <h2>相片上傳速度測試</h2>
+      <p className="small muted">只測試 GitHub API 上傳速度，不寫入 photos/index.json，不影響正式相簿。</p>
+    </div>
+    <label className={`uploadCta${testing ? " disabled" : ""}`}>
+      <input type="file" accept="image/*" multiple disabled={testing || !token} onChange={(event) => { const files = Array.from(event.target.files || []); runTest(files); event.target.value = ""; }} />
+      <span className="uploadCtaIcon">{mark("album")}</span>
+      <span><b>{token ? (testing ? "測試上傳中..." : "選擇照片測試") : "請先到最下方儲存 GitHub PAT"}</b><small>測完會自動刪除暫存檔</small></span>
+    </label>
+    {message && <p className={`status ${message.startsWith("測試失敗") ? "error" : ""}`}>{message}</p>}
+    {results.length > 0 && <div className="uploadTestResults">
+      {results.map((row) => <div className="uploadTestRow" key={row.path}>
+        <b>{row.name}</b>
+        <span>原始 {formatBytes(row.originalSize)} → 上傳 {formatBytes(row.uploadSize)}</span>
+        <span>壓縮 {row.compressMs}ms｜上傳 {row.uploadMs}ms</span>
+      </div>)}
+    </div>}
+  </section>;
+}
+
 function DetailModal({ item, day, onClose }) {
   return <div className="modal" onMouseDown={onClose}>
     <div className="modalCard card" onMouseDown={(event) => event.stopPropagation()}>
@@ -1144,6 +1223,7 @@ export default function App() {
   const [syncError, setSyncError] = useState("");
   const [viewMode, setViewMode] = useState("itinerary");
   const [tokenSettingsOpen, setTokenSettingsOpen] = useState(() => !localStorage.getItem(STORAGE_KEYS.token));
+  const showUploadTest = uploadTestMode();
 
   const unlocked = useMemo(() => DAYS.filter((day) => dayFortuneUnlocked(day.id, (photosByDay[day.id] || []).length)).length, [photosByDay]);
 
@@ -1306,6 +1386,7 @@ export default function App() {
       <button className={`tab${viewMode === "album" ? " active" : ""}`} type="button" onClick={() => setViewMode("album")}>相簿 {totalPhotoCount(photosByDay)} 張</button>
       <span className="tab">已解鎖 {unlocked}/7</span>
     </div>
+    {showUploadTest && <UploadSpeedTest token={token} />}
     {viewMode === "album" ? <AlbumSection photosByDay={photosByDay} loading={albumLoading} onRefresh={refreshGitHubAlbum} onOpenPhotoTool={setPhotoToolDay} onDeletePhotos={deleteAlbumPhotos} deleting={deletingPhotos} onMovePhotos={moveAlbumPhotos} moving={movingPhotos} /> : DAYS.map((day) => <DayCard key={day.id} day={day} open={expanded[day.id]} onToggle={() => setExpanded((prev) => Object.fromEntries(DAYS.map((candidate) => [candidate.id, candidate.id === day.id ? !prev[day.id] : false])))} onItemClick={(selectedDay, item) => { setActiveDay(selectedDay); setActiveItem(item); }} photoCount={(photosByDay[day.id] || []).length} onOpenFortune={setFortuneDay} onOpenPhotoTool={setPhotoToolDay} />)}
     {syncError && <p className="status error">同步錯誤：{syncError}</p>}
     <Settings token={token} forceOpen={tokenSettingsOpen} onSaveToken={saveToken} onClearToken={clearToken} />

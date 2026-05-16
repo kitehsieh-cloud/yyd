@@ -1455,6 +1455,38 @@ button {
   opacity: 0.65;
 }
 
+.uploadTest {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 16px;
+  border-color: #bae6fd;
+  background: linear-gradient(135deg, #f0f9ff, #fff7fb);
+}
+
+.uploadTest h2 {
+  margin: 0 0 4px;
+}
+
+.uploadTestResults {
+  display: grid;
+  gap: 8px;
+}
+
+.uploadTestRow {
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  background: #ffffffcc;
+  font-size: 12px;
+}
+
+.uploadTestRow span {
+  color: #64748b;
+  font-weight: 700;
+}
+
 .albumManageButton {
   display: inline-flex;
   align-items: center;
