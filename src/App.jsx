@@ -324,6 +324,10 @@ function dayDateValue(day) {
 function dayHasArrived(day) {
   return tokyoTodayValue() >= dayDateValue(day);
 }
+function defaultExpandedDayId() {
+  const todayValue = tokyoTodayValue();
+  return DAYS.find((day) => dayDateValue(day) === todayValue)?.id || DAYS[0].id;
+}
 function isReservedItem(item) {
   return /\[\d{1,2}:\d{2}\]/.test(item.title || "") || /\b\d{1,2}:\d{2}\b/.test(item.title || "");
 }
@@ -948,7 +952,8 @@ function FortuneModal({ day, onClose }) {
 }
 
 function getDefaultExpanded() {
-  return Object.fromEntries(DAYS.map((day, index) => [day.id, index === 0]));
+  const todayId = defaultExpandedDayId();
+  return Object.fromEntries(DAYS.map((day) => [day.id, day.id === todayId]));
 }
 
 export default function App() {
