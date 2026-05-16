@@ -37,14 +37,14 @@ function partnerImageUrl(dayNo) {
 }
 
 const HEADER_COMPANION_LAYOUT = {
-  0: { left: 50, top: 65, width: 26, label: "古本" },
-  1: { left: 80, top: 74, width: 22, label: "小桃" },
-  2: { left: 36, top: 82, width: 19, label: "吉依卡哇" },
-  3: { left: 17, top: 67, width: 22, label: "大強" },
-  4: { left: 50, top: 45, width: 24, label: "兔兔" },
-  5: { left: 65, top: 82, width: 21, label: "小八" },
-  6: { left: 70, top: 47, width: 18, label: "風獅爺" },
-  7: { left: 31, top: 51, width: 19, label: "栗子饅頭" },
+  0: { left: 50, top: 65, width: 27, label: "古本" },
+  1: { left: 80, top: 72, width: 23, label: "小桃" },
+  2: { left: 36, top: 82, width: 21, label: "吉依卡哇" },
+  3: { left: 17, top: 67, width: 24, label: "大強" },
+  4: { left: 50, top: 45, width: 25, label: "兔兔" },
+  5: { left: 65, top: 82, width: 22, label: "小八" },
+  6: { left: 70, top: 47, width: 20, label: "風獅爺" },
+  7: { left: 31, top: 51, width: 20, label: "栗子饅頭" },
 };
 
 const DEFAULT_DAY_BG = Object.fromEntries(Object.keys(TABS).map((id, index) => [id, `${ASSET_BASE_URL}/D${index + 1}.png`]));
@@ -815,12 +815,12 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
   const firstPhotoDay = DAYS.find((day) => (photosByDay[day.id] || []).length > 0) || DAYS[0];
   const [selectedDayId, setSelectedDayId] = useState(firstPhotoDay.id);
   const [selectedPhotoIds, setSelectedPhotoIds] = useState([]);
+  const [deleteMode, setDeleteMode] = useState(false);
   const selectedDay = DAYS.find((day) => day.id === selectedDayId) || firstPhotoDay;
   const selectedPhotos = sortPhotosNewestFirst(photosByDay[selectedDay.id] || []);
   const unlockedCount = DAYS.filter((day) => dayFortuneUnlocked(day.id, (photosByDay[day.id] || []).length)).length;
   const target = dayPhotoTarget(selectedDay.id);
   const progress = Math.min(100, Math.round((selectedPhotos.length / target) * 100));
-  const coverPhoto = selectedPhotos[0] || null;
   const selectedAvailable = dayHasArrived(selectedDay);
   function openSelectedUpload() {
     if (selectedAvailable) {
@@ -844,7 +844,7 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
     setSelectedPhotoIds([]);
   }
 
-  useEffect(() => { setSelectedPhotoIds([]); }, [selectedDayId]);
+  useEffect(() => { setSelectedPhotoIds([]); setDeleteMode(false); }, [selectedDayId]);
 
   return <section className="albumShowcase card section">
     <div className="albumTabs" role="tablist" aria-label="每日相簿頁籤">
@@ -861,7 +861,7 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
     <div className="albumPage" role="tabpanel" aria-label={`Day${selectedDay.dayNo} ${selectedDay.title}`}>
       <div className="albumPageHero">
         <div className="albumCover">
-          {coverPhoto ? <img src={coverPhoto.url} alt={coverPhoto.name} /> : <img src={DEFAULT_DAY_BG[selectedDay.id]} alt={`Day${selectedDay.dayNo} ${selectedDay.title}`} />}
+          <img src={DEFAULT_DAY_BG[selectedDay.id]} alt={`Day${selectedDay.dayNo} ${selectedDay.title}`} />
           <div className="albumCoverBadge">Day{selectedDay.dayNo}｜{selectedDay.title}</div>
         </div>
         <div>
@@ -872,7 +872,7 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
             <span>{selectedPhotos.length}/{target}</span>
             <span>{dayFortuneUnlocked(selectedDay.id, selectedPhotos.length) ? "大吉籤已解鎖" : "照片蒐集中"}</span>
             <button className="albumUploadButton" type="button" aria-disabled={!selectedAvailable} onClick={openSelectedUpload}>上傳照片</button>
-            {selectedPhotos.length > 0 && <button className="albumDeleteButton" type="button" disabled={deleting || selectedPhotoIds.length === 0} onClick={requestDeleteSelected}>{deleting ? "刪除中..." : `刪除所選 ${selectedPhotoIds.length}`}</button>}
+            {selectedPhotos.length > 0 && <button className={`albumManageButton${deleteMode ? " active" : ""}`} type="button" onClick={() => { setDeleteMode((value) => !value); setSelectedPhotoIds([]); }}>{deleteMode ? "結束管理" : "管理照片"}</button>}
           </div>
         </div>
       </div>
@@ -881,14 +881,18 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
         <img src={partnerImageUrl(selectedDay.dayNo)} alt={`Day${selectedDay.dayNo} 小可愛`} />
         <b>這一天還沒有照片</b>
         <p>從每日相機按鈕上傳照片後，這一整頁會切換成當天的回憶內容。</p>
-      </div> : <div className="albumGrid">
+      </div> : <div className={`albumGrid${deleteMode ? " deleteMode" : ""}`}>
         {selectedPhotos.map((photo, index) => <figure className={`${index === 0 ? "albumPhoto featured" : "albumPhoto"}${selectedPhotoIds.includes(photo.id) ? " selected" : ""}`} key={photo.id}>
-          <label className="photoSelect"><input type="checkbox" checked={selectedPhotoIds.includes(photo.id)} onChange={() => togglePhoto(photo.id)} />選取</label>
+          {deleteMode && <label className="photoSelect"><input type="checkbox" checked={selectedPhotoIds.includes(photo.id)} onChange={() => togglePhoto(photo.id)} />選取</label>}
           <img src={photo.url} alt={photo.name} />
           <figcaption><b>{photo.itemTitle}</b><span>{photo.name}</span></figcaption>
         </figure>)}
       </div>}
     </div>
+    {deleteMode && selectedPhotoIds.length > 0 && <button className="floatingDeleteButton" type="button" disabled={deleting} onClick={requestDeleteSelected}>
+      <span>{deleting ? "刪" : selectedPhotoIds.length}</span>
+      <small>{deleting ? "除中" : "刪除"}</small>
+    </button>}
     <div className="albumFooterActions">
       <div className="albumFooterStats"><b>{total}</b> 張照片｜<b>{unlockedCount}</b>/7 大吉籤</div>
       <button className="button primary albumSync" type="button" onClick={onRefresh} disabled={loading}>{loading ? "同步中..." : "同步相簿"}</button>
