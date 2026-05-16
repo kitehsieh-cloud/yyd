@@ -107,24 +107,24 @@ button {
 .heroCompanion-4::before {
   content: "";
   position: absolute;
-  inset: -30%;
+  inset: -10%;
   z-index: 0;
   border-radius: 999px;
   background:
-    repeating-conic-gradient(from 0deg, #ffe58acc 0deg 8deg, transparent 8deg 18deg),
-    radial-gradient(circle, #fff9c4dd 0 26%, #ffd16680 44%, transparent 70%);
+    repeating-conic-gradient(from 0deg, #ffe58a88 0deg 7deg, transparent 7deg 20deg),
+    radial-gradient(circle, #fff9c499 0 22%, #ffd16644 42%, transparent 66%);
   filter: blur(0.2px);
-  opacity: 0.95;
-  animation: blessingHaloSpin 16s linear infinite;
+  opacity: 0.58;
+  animation: blessingHaloSpin 22s linear infinite;
 }
 
 .heroCompanion-4::after {
   content: "";
   position: absolute;
-  inset: -8%;
+  inset: 3%;
   z-index: 0;
   border-radius: 999px;
-  background: radial-gradient(circle, #fff7ad99 0 18%, #facc1544 42%, transparent 66%);
+  background: radial-gradient(circle, #fff7ad77 0 18%, #facc1528 42%, transparent 64%);
   animation: blessingGlowPulse 9.4s ease-in-out infinite;
 }
 
