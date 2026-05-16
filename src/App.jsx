@@ -25,6 +25,7 @@ const GITHUB_REPO = "yyd";
 const GITHUB_BRANCH = "main";
 const GITHUB_RAW_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}`;
 const ALBUM_MANIFEST_PATH = "photos/index.json";
+const UPLOAD_TEST_DELETE_DELAY_MS = 10 * 60 * 1000;
 const PUBLIC_ALBUM_MANIFEST_URL = `${import.meta.env.BASE_URL}${ALBUM_MANIFEST_PATH}`;
 const STORAGE_KEYS = {
   token: "tokyoTrip.githubToken",
@@ -1124,12 +1125,32 @@ function UploadSpeedTest({ token }) {
   const [testing, setTesting] = useState(false);
   const [results, setResults] = useState([]);
   const [message, setMessage] = useState("");
+  const cleanupTimers = useMemo(() => new Map(), []);
+
+  function scheduleTestCleanup(path) {
+    if (!path || cleanupTimers.has(path)) return;
+    const timer = window.setTimeout(async () => {
+      cleanupTimers.delete(path);
+      try {
+        await deleteFileFromGitHub(path, token);
+        setResults((prev) => prev.map((row) => row.path === path ? { ...row, deleted: true } : row));
+      } catch (error) {
+        setResults((prev) => prev.map((row) => row.path === path ? { ...row, cleanupError: error instanceof Error ? error.message : String(error) } : row));
+      }
+    }, UPLOAD_TEST_DELETE_DELAY_MS);
+    cleanupTimers.set(path, timer);
+  }
+
+  useEffect(() => () => {
+    cleanupTimers.forEach((timer) => window.clearTimeout(timer));
+    cleanupTimers.clear();
+  }, [cleanupTimers]);
 
   async function runTest(files) {
     if (!files.length) return;
     setTesting(true);
     setResults([]);
-    setMessage("測試中：會暫存到 photos/_upload-test/，完成後自動刪除，不會進入正式相簿。");
+    setMessage("測試中：會暫存到 photos/_upload-test/，不會進入正式相簿；上傳完成後保留 10 分鐘再自動刪除。");
     try {
       await testGitHubApiAccess(token);
       const rows = [];
@@ -1142,7 +1163,7 @@ function UploadSpeedTest({ token }) {
         const uploadStart = performance.now();
         await uploadFileToGitHub(path, uploadFile, token);
         const uploadMs = Math.round(performance.now() - uploadStart);
-        await deleteFileFromGitHub(path, token);
+        const url = photoUrlFromGitHubPath(path);
         rows.push({
           name: file.name,
           originalSize: file.size,
@@ -1150,10 +1171,14 @@ function UploadSpeedTest({ token }) {
           compressMs,
           uploadMs,
           path,
+          url,
+          deleted: false,
+          cleanupError: "",
         });
         setResults([...rows]);
+        scheduleTestCleanup(path);
       }
-      setMessage("測試完成，暫存檔已刪除。正式相簿沒有被寫入。");
+      setMessage("測試完成。測試照片會保留 10 分鐘讓你檢查畫質，之後自動刪除；正式相簿沒有被寫入。");
     } catch (error) {
       setMessage(`測試失敗：${error instanceof Error ? error.message : String(error)}`);
     } finally {
@@ -1164,19 +1189,23 @@ function UploadSpeedTest({ token }) {
   return <section className="uploadTest card section">
     <div>
       <h2>相片上傳速度測試</h2>
-      <p className="small muted">只測試 GitHub API 上傳速度，不寫入 photos/index.json，不影響正式相簿。</p>
+      <p className="small muted">只測試 GitHub API 上傳速度，不寫入 photos/index.json；測試照片保留 10 分鐘後自動刪除。</p>
     </div>
     <label className={`uploadCta${testing ? " disabled" : ""}`}>
       <input type="file" accept="image/*" multiple disabled={testing || !token} onChange={(event) => { const files = Array.from(event.target.files || []); runTest(files); event.target.value = ""; }} />
       <span className="uploadCtaIcon">{mark("album")}</span>
-      <span><b>{token ? (testing ? "測試上傳中..." : "選擇照片測試") : "請先到最下方儲存 GitHub PAT"}</b><small>測完會自動刪除暫存檔</small></span>
+        <span><b>{token ? (testing ? "測試上傳中..." : "選擇照片測試") : "請先到最下方儲存 GitHub PAT"}</b><small>可查看壓縮後畫質，10 分鐘後刪除</small></span>
     </label>
     {message && <p className={`status ${message.startsWith("測試失敗") ? "error" : ""}`}>{message}</p>}
     {results.length > 0 && <div className="uploadTestResults">
       {results.map((row) => <div className="uploadTestRow" key={row.path}>
-        <b>{row.name}</b>
-        <span>原始 {formatBytes(row.originalSize)} → 上傳 {formatBytes(row.uploadSize)}</span>
-        <span>壓縮 {row.compressMs}ms｜上傳 {row.uploadMs}ms</span>
+        <img src={row.url} alt={row.name} />
+        <div>
+          <b>{row.name}</b>
+          <span>原始 {formatBytes(row.originalSize)} → 上傳 {formatBytes(row.uploadSize)}</span>
+          <span>壓縮 {row.compressMs}ms｜上傳 {row.uploadMs}ms</span>
+          <span>{row.deleted ? "暫存檔已刪除" : "暫存檔保留 10 分鐘"}{row.cleanupError ? `｜刪除失敗：${row.cleanupError}` : ""}</span>
+        </div>
       </div>)}
     </div>}
   </section>;
