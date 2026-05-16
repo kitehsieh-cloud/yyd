@@ -1043,10 +1043,20 @@ function AlbumSection({ photosByDay, loading, onRefresh, onOpenPhotoTool, onDele
   </section>;
 }
 
+function isMobilePhotoViewer() {
+  return typeof window !== "undefined" && window.matchMedia("(max-width: 720px), (pointer: coarse)").matches;
+}
+
 function PhotoViewerModal({ photo, onClose }) {
   const [zoom, setZoom] = useState(1);
-  useEffect(() => { setZoom(1); }, [photo?.id]);
-  return <div className="photoViewer" onMouseDown={onClose}>
+  const [landscape, setLandscape] = useState(false);
+  const mobileViewer = useMemo(isMobilePhotoViewer, []);
+  const imageTransform = mobileViewer ? (landscape ? "rotate(90deg)" : "none") : `scale(${zoom})`;
+  useEffect(() => {
+    setZoom(1);
+    setLandscape(false);
+  }, [photo?.id]);
+  return <div className={`photoViewer${mobileViewer ? " mobile" : ""}${mobileViewer && landscape ? " landscape" : ""}`} onMouseDown={onClose}>
     <div className="photoViewerTop" onMouseDown={(event) => event.stopPropagation()}>
       <div>
         <b>{photo.itemTitle}</b>
@@ -1055,14 +1065,14 @@ function PhotoViewerModal({ photo, onClose }) {
       <button className="button" type="button" onClick={onClose}>關閉</button>
     </div>
     <div className="photoViewerStage" onMouseDown={(event) => event.stopPropagation()}>
-      <img src={photo.url} alt={photo.name} style={{ transform: `scale(${zoom})` }} />
+      <img src={photo.url} alt={photo.name} style={{ transform: imageTransform }} onLoad={(event) => setLandscape(event.currentTarget.naturalWidth > event.currentTarget.naturalHeight)} onClick={(event) => { if (mobileViewer) { event.stopPropagation(); onClose(); } }} />
     </div>
-    <div className="photoViewerControls" onMouseDown={(event) => event.stopPropagation()}>
+    {!mobileViewer && <div className="photoViewerControls" onMouseDown={(event) => event.stopPropagation()}>
       <button className="button" type="button" onClick={() => setZoom((value) => Math.max(1, Number((value - 0.25).toFixed(2))))}>-</button>
       <input type="range" min="1" max="3" step="0.05" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} aria-label="照片縮放" />
       <button className="button" type="button" onClick={() => setZoom((value) => Math.min(3, Number((value + 0.25).toFixed(2))))}>+</button>
       <button className="button" type="button" onClick={() => setZoom(1)}>1x</button>
-    </div>
+    </div>}
   </div>;
 }
 
@@ -1238,19 +1248,21 @@ export default function App() {
       const uploaded = [];
       for (let index = 0; index < files.length; index += 1) {
         const file = files[index];
-        const path = buildGitHubPhotoPath(dayId, item, file, index);
+        setUploadStatus(`正在處理第 ${index + 1}/${files.length} 張照片：${file.name}`);
+        const uploadFile = await compressPhotoForUpload(file);
+        const path = buildGitHubPhotoPath(dayId, item, uploadFile, index);
         setUploadStatus(`正在上傳第 ${index + 1}/${files.length} 張：${file.name}\n${path}`);
-        await uploadFileToGitHub(path, file, token);
-        uploaded.push({ file, path });
+        await uploadFileToGitHub(path, uploadFile, token);
+        uploaded.push({ file, uploadFile, path });
       }
 
-      const newPhotos = uploaded.map(({ file, path }) => ({
+      const newPhotos = uploaded.map(({ file, uploadFile, path }) => ({
         id: `github-${dayId}-${path}`,
         dayId,
         itemId: item.id,
         itemTitle: item.title,
         type: item.type,
-        name: file.name,
+        name: uploadFile.name || file.name,
         githubPath: path,
         url: photoUrlFromGitHubPath(path),
         createdAt: createdAtFromGitHubName(path),

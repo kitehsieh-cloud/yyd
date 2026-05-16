@@ -1372,6 +1372,35 @@ button {
   width: min(360px, 46vw);
 }
 
+.photoViewer.mobile {
+  grid-template-rows: 1fr;
+  gap: 0;
+  padding: 0;
+  background: #020617;
+}
+
+.photoViewer.mobile .photoViewerTop,
+.photoViewer.mobile .photoViewerControls {
+  display: none;
+}
+
+.photoViewer.mobile .photoViewerStage {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.photoViewer.mobile .photoViewerStage img {
+  max-width: 100vw;
+  max-height: 100vh;
+  cursor: zoom-out;
+}
+
+.photoViewer.mobile.landscape .photoViewerStage img {
+  max-width: 96vh;
+  max-height: 96vw;
+}
+
 .albumMoveBar {
   position: sticky;
   bottom: 12px;
