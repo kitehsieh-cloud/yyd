@@ -47,6 +47,27 @@ const HEADER_COMPANION_LAYOUT = {
   7: { left: 31, top: 51, width: 20, label: "栗子饅頭" },
 };
 
+const HEADER_COMPANION_SCALE = 1.265;
+const HEADER_COMPANION_POSITION_ADJUSTMENTS = {
+  0: { top: 1 },
+  1: { left: 2, top: 2 },
+  2: { left: -1, top: 2 },
+  3: { left: -2, top: 1 },
+  4: { top: -2 },
+  5: { left: 1, top: 2 },
+  6: { left: 2, top: 1 },
+  7: { left: -2 },
+};
+
+function adjustedHeaderCompanionPosition(dayNo, pos) {
+  const adjust = HEADER_COMPANION_POSITION_ADJUSTMENTS[dayNo] || {};
+  return {
+    ...pos,
+    left: pos.left + (adjust.left || 0),
+    top: pos.top + (adjust.top || 0),
+  };
+}
+
 const DEFAULT_DAY_BG = Object.fromEntries(Object.keys(TABS).map((id, index) => [id, `${ASSET_BASE_URL}/D${index + 1}.png`]));
 const DEFAULT_FORTUNE_BG = Object.fromEntries(Object.keys(TABS).map((id) => [id, `${ASSET_BASE_URL}/7BG.png`]));
 const DAY_MY_MAPS = {
@@ -721,8 +742,9 @@ function MainHeader({ photosByDay }) {
     <div style={{ position: "relative" }}>
       <img src={DEFAULT_COMMON_HEADER_BG} alt="2026 東京自由行" />
       {[...new Set(companionIds)].map((dayNo) => {
-        const pos = HEADER_COMPANION_LAYOUT[dayNo];
-        return pos ? <span key={dayNo} className={`heroCompanion heroCompanion-${dayNo}`} style={{ left: `${pos.left}%`, top: `${pos.top}%`, width: `${pos.width * 1.1}%` }}><img src={partnerImageUrl(dayNo)} alt={pos.label} /></span> : null;
+        const basePos = HEADER_COMPANION_LAYOUT[dayNo];
+        const pos = basePos ? adjustedHeaderCompanionPosition(dayNo, basePos) : null;
+        return pos ? <span key={dayNo} className={`heroCompanion heroCompanion-${dayNo}`} style={{ left: `${pos.left}%`, top: `${pos.top}%`, width: `${pos.width * HEADER_COMPANION_SCALE}%` }}><img src={partnerImageUrl(dayNo)} alt={pos.label} /></span> : null;
       })}
     </div>
   </header>;
