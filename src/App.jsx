@@ -722,7 +722,7 @@ function MainHeader({ photosByDay }) {
       <img src={DEFAULT_COMMON_HEADER_BG} alt="2026 東京自由行" />
       {[...new Set(companionIds)].map((dayNo) => {
         const pos = HEADER_COMPANION_LAYOUT[dayNo];
-        return pos ? <span key={dayNo} className={`heroCompanion heroCompanion-${dayNo}`} style={{ left: `${pos.left}%`, top: `${pos.top}%`, width: `${pos.width}%` }}><img src={partnerImageUrl(dayNo)} alt={pos.label} /></span> : null;
+        return pos ? <span key={dayNo} className={`heroCompanion heroCompanion-${dayNo}`} style={{ left: `${pos.left}%`, top: `${pos.top}%`, width: `${pos.width * 1.1}%` }}><img src={partnerImageUrl(dayNo)} alt={pos.label} /></span> : null;
       })}
     </div>
   </header>;
