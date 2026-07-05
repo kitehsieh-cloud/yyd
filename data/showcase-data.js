@@ -5152,7 +5152,7 @@ window.SHOWCASE_DATA = {
                     "name": "SSR_八柱遺骨_玉笏斷譜_元素錦.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\SSR_八柱遺骨_玉笏斷譜_元素錦.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\SSR_八柱遺骨_玉笏斷譜_元素錦.png",
-                    "relativePath": "??????_v01/SSR_八柱遺骨_玉笏斷譜_元素錦.png",
+                    "relativePath": "採用人設重繪_v01/SSR_八柱遺骨_玉笏斷譜_元素錦.png",
                     "updatedAt": "1782909156"
                 },
                 {
@@ -5160,7 +5160,7 @@ window.SHOWCASE_DATA = {
                     "name": "SSR_關隴舊貴獨孤氏_毛領重劍_獨孤寒_v03_fullcard.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\SSR_關隴舊貴獨孤氏_毛領重劍_獨孤寒_v03_fullcard.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\SSR_關隴舊貴獨孤氏_毛領重劍_獨孤寒_v03_fullcard.png",
-                    "relativePath": "??????_v01/SSR_關隴舊貴獨孤氏_毛領重劍_獨孤寒_v03_fullcard.png",
+                    "relativePath": "採用人設重繪_v01/SSR_關隴舊貴獨孤氏_毛領重劍_獨孤寒_v03_fullcard.png",
                     "updatedAt": "1782791915"
                 },
                 {
@@ -5168,7 +5168,7 @@ window.SHOWCASE_DATA = {
                     "name": "SSR_海商祆祠_潮音歌后_阿瀾珠_v04_stylelock.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\SSR_海商祆祠_潮音歌后_阿瀾珠_v04_stylelock.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\SSR_海商祆祠_潮音歌后_阿瀾珠_v04_stylelock.png",
-                    "relativePath": "??????_v01/SSR_海商祆祠_潮音歌后_阿瀾珠_v04_stylelock.png",
+                    "relativePath": "採用人設重繪_v01/SSR_海商祆祠_潮音歌后_阿瀾珠_v04_stylelock.png",
                     "updatedAt": "1782812798"
                 },
                 {
@@ -5176,7 +5176,7 @@ window.SHOWCASE_DATA = {
                     "name": "SR_飛錢鏢局_機輪護送_尹飛錢.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\SR_飛錢鏢局_機輪護送_尹飛錢.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\SR_飛錢鏢局_機輪護送_尹飛錢.png",
-                    "relativePath": "??????_v01/SR_飛錢鏢局_機輪護送_尹飛錢.png",
+                    "relativePath": "採用人設重繪_v01/SR_飛錢鏢局_機輪護送_尹飛錢.png",
                     "updatedAt": "1782909363"
                 },
                 {
@@ -5184,7 +5184,7 @@ window.SHOWCASE_DATA = {
                     "name": "SR_晶玉宮_丹核鎖月_柳夜雨_v03_fullcard.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\SR_晶玉宮_丹核鎖月_柳夜雨_v03_fullcard.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\SR_晶玉宮_丹核鎖月_柳夜雨_v03_fullcard.png",
-                    "relativePath": "??????_v01/SR_晶玉宮_丹核鎖月_柳夜雨_v03_fullcard.png",
+                    "relativePath": "採用人設重繪_v01/SR_晶玉宮_丹核鎖月_柳夜雨_v03_fullcard.png",
                     "updatedAt": "1782791116"
                 },
                 {
@@ -5192,7 +5192,7 @@ window.SHOWCASE_DATA = {
                     "name": "SR_大理寺狄仁傑組_銀針驗痕_白玉衡.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\SR_大理寺狄仁傑組_銀針驗痕_白玉衡.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\SR_大理寺狄仁傑組_銀針驗痕_白玉衡.png",
-                    "relativePath": "??????_v01/SR_大理寺狄仁傑組_銀針驗痕_白玉衡.png",
+                    "relativePath": "採用人設重繪_v01/SR_大理寺狄仁傑組_銀針驗痕_白玉衡.png",
                     "updatedAt": "1782909782"
                 },
                 {
@@ -5200,7 +5200,7 @@ window.SHOWCASE_DATA = {
                     "name": "SR_關中星槓武館_星鐵柱槓_辛星槓.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\SR_關中星槓武館_星鐵柱槓_辛星槓.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\SR_關中星槓武館_星鐵柱槓_辛星槓.png",
-                    "relativePath": "??????_v01/SR_關中星槓武館_星鐵柱槓_辛星槓.png",
+                    "relativePath": "採用人設重繪_v01/SR_關中星槓武館_星鐵柱槓_辛星槓.png",
                     "updatedAt": "1782697232"
                 },
                 {
@@ -5208,7 +5208,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_義風遊俠_雙刀義風_夏義刃.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_義風遊俠_雙刀義風_夏義刃.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_義風遊俠_雙刀義風_夏義刃.png",
-                    "relativePath": "??????_v01/R_義風遊俠_雙刀義風_夏義刃.png",
+                    "relativePath": "採用人設重繪_v01/R_義風遊俠_雙刀義風_夏義刃.png",
                     "updatedAt": "1782813624"
                 },
                 {
@@ -5216,7 +5216,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_宮廷樂坊_柔弦標記_姚愛弦_v03_fullcard.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_宮廷樂坊_柔弦標記_姚愛弦_v03_fullcard.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_宮廷樂坊_柔弦標記_姚愛弦_v03_fullcard.png",
-                    "relativePath": "??????_v01/R_宮廷樂坊_柔弦標記_姚愛弦_v03_fullcard.png",
+                    "relativePath": "採用人設重繪_v01/R_宮廷樂坊_柔弦標記_姚愛弦_v03_fullcard.png",
                     "updatedAt": "1782790446"
                 },
                 {
@@ -5224,7 +5224,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_南詔藥林獵女_藤矛獵棘_巫棘蘭.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_南詔藥林獵女_藤矛獵棘_巫棘蘭.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_南詔藥林獵女_藤矛獵棘_巫棘蘭.png",
-                    "relativePath": "??????_v01/R_南詔藥林獵女_藤矛獵棘_巫棘蘭.png",
+                    "relativePath": "採用人設重繪_v01/R_南詔藥林獵女_藤矛獵棘_巫棘蘭.png",
                     "updatedAt": "1782695474"
                 },
                 {
@@ -5232,7 +5232,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_貓奴結社_鈴匕傳訊_方鈴娘.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_貓奴結社_鈴匕傳訊_方鈴娘.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_貓奴結社_鈴匕傳訊_方鈴娘.png",
-                    "relativePath": "??????_v01/R_貓奴結社_鈴匕傳訊_方鈴娘.png",
+                    "relativePath": "採用人設重繪_v01/R_貓奴結社_鈴匕傳訊_方鈴娘.png",
                     "updatedAt": "1782909583"
                 },
                 {
@@ -5240,7 +5240,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_西市龍舞護衛_舞獅護場_方龍綾.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_西市龍舞護衛_舞獅護場_方龍綾.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_西市龍舞護衛_舞獅護場_方龍綾.png",
-                    "relativePath": "??????_v01/R_西市龍舞護衛_舞獅護場_方龍綾.png",
+                    "relativePath": "採用人設重繪_v01/R_西市龍舞護衛_舞獅護場_方龍綾.png",
                     "updatedAt": "1782735865"
                 },
                 {
@@ -5248,7 +5248,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_火井機衡院_鉚槌烈匠_段鈞梨.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_火井機衡院_鉚槌烈匠_段鈞梨.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_火井機衡院_鉚槌烈匠_段鈞梨.png",
-                    "relativePath": "??????_v01/R_火井機衡院_鉚槌烈匠_段鈞梨.png",
+                    "relativePath": "採用人設重繪_v01/R_火井機衡院_鉚槌烈匠_段鈞梨.png",
                     "updatedAt": "1782696336"
                 },
                 {
@@ -5256,7 +5256,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_鬼市惡人幫_破幡號惡_烏惡幡.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_鬼市惡人幫_破幡號惡_烏惡幡.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_鬼市惡人幫_破幡號惡_烏惡幡.png",
-                    "relativePath": "??????_v01/R_鬼市惡人幫_破幡號惡_烏惡幡.png",
+                    "relativePath": "採用人設重繪_v01/R_鬼市惡人幫_破幡號惡_烏惡幡.png",
                     "updatedAt": "1782696855"
                 },
                 {
@@ -5264,7 +5264,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_西市獵場_獵索奔襲_獵奔絮.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_西市獵場_獵索奔襲_獵奔絮.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_西市獵場_獵索奔襲_獵奔絮.png",
-                    "relativePath": "??????_v01/R_西市獵場_獵索奔襲_獵奔絮.png",
+                    "relativePath": "採用人設重繪_v01/R_西市獵場_獵索奔襲_獵奔絮.png",
                     "updatedAt": "1782697446"
                 },
                 {
@@ -5272,7 +5272,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_鬼市面具戲師_驚面刀盾_秦驚面.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_鬼市面具戲師_驚面刀盾_秦驚面.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_鬼市面具戲師_驚面刀盾_秦驚面.png",
-                    "relativePath": "??????_v01/R_鬼市面具戲師_驚面刀盾_秦驚面.png",
+                    "relativePath": "採用人設重繪_v01/R_鬼市面具戲師_驚面刀盾_秦驚面.png",
                     "updatedAt": "1782696128"
                 },
                 {
@@ -5280,7 +5280,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_火井機衡院_連碼環刃_程連璧.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_火井機衡院_連碼環刃_程連璧.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_火井機衡院_連碼環刃_程連璧.png",
-                    "relativePath": "??????_v01/R_火井機衡院_連碼環刃_程連璧.png",
+                    "relativePath": "採用人設重繪_v01/R_火井機衡院_連碼環刃_程連璧.png",
                     "updatedAt": "1782697057"
                 },
                 {
@@ -5288,7 +5288,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_胡旋舞孃工會_鈴刃舞鞋_胡婉梨_v03_fullcard.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_胡旋舞孃工會_鈴刃舞鞋_胡婉梨_v03_fullcard.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_胡旋舞孃工會_鈴刃舞鞋_胡婉梨_v03_fullcard.png",
-                    "relativePath": "??????_v01/R_胡旋舞孃工會_鈴刃舞鞋_胡婉梨_v03_fullcard.png",
+                    "relativePath": "採用人設重繪_v01/R_胡旋舞孃工會_鈴刃舞鞋_胡婉梨_v03_fullcard.png",
                     "updatedAt": "1782791614"
                 },
                 {
@@ -5296,7 +5296,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_遣唐使館影侍_袖刃影櫻_賀薄櫻.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_遣唐使館影侍_袖刃影櫻_賀薄櫻.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_遣唐使館影侍_袖刃影櫻_賀薄櫻.png",
-                    "relativePath": "??????_v01/R_遣唐使館影侍_袖刃影櫻_賀薄櫻.png",
+                    "relativePath": "採用人設重繪_v01/R_遣唐使館影侍_袖刃影櫻_賀薄櫻.png",
                     "updatedAt": "1782695180"
                 },
                 {
@@ -5304,7 +5304,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_沉舟會_霧壺遊醫_馮半夏_v13_cropped_pants.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_沉舟會_霧壺遊醫_馮半夏_v13_cropped_pants.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_沉舟會_霧壺遊醫_馮半夏_v13_cropped_pants.png",
-                    "relativePath": "??????_v01/R_沉舟會_霧壺遊醫_馮半夏_v13_cropped_pants.png",
+                    "relativePath": "採用人設重繪_v01/R_沉舟會_霧壺遊醫_馮半夏_v13_cropped_pants.png",
                     "updatedAt": "1782836884"
                 },
                 {
@@ -5312,7 +5312,7 @@ window.SHOWCASE_DATA = {
                     "name": "R_西市麵坊_麵刀護灶_麥芷圓.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\R_西市麵坊_麵刀護灶_麥芷圓.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\R_西市麵坊_麵刀護灶_麥芷圓.png",
-                    "relativePath": "??????_v01/R_西市麵坊_麵刀護灶_麥芷圓.png",
+                    "relativePath": "採用人設重繪_v01/R_西市麵坊_麵刀護灶_麥芷圓.png",
                     "updatedAt": "1782696571"
                 },
                 {
@@ -5320,7 +5320,7 @@ window.SHOWCASE_DATA = {
                     "name": "N_粟特香料商會_酒盤傳鈴_商會酒肆跑堂.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\N_粟特香料商會_酒盤傳鈴_商會酒肆跑堂.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\N_粟特香料商會_酒盤傳鈴_商會酒肆跑堂.png",
-                    "relativePath": "??????_v01/N_粟特香料商會_酒盤傳鈴_商會酒肆跑堂.png",
+                    "relativePath": "採用人設重繪_v01/N_粟特香料商會_酒盤傳鈴_商會酒肆跑堂.png",
                     "updatedAt": "1782698360"
                 },
                 {
@@ -5328,7 +5328,7 @@ window.SHOWCASE_DATA = {
                     "name": "N_大理寺狄仁傑組_護臂角抵_大理寺角抵捕快.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\N_大理寺狄仁傑組_護臂角抵_大理寺角抵捕快.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\N_大理寺狄仁傑組_護臂角抵_大理寺角抵捕快.png",
-                    "relativePath": "??????_v01/N_大理寺狄仁傑組_護臂角抵_大理寺角抵捕快.png",
+                    "relativePath": "採用人設重繪_v01/N_大理寺狄仁傑組_護臂角抵_大理寺角抵捕快.png",
                     "updatedAt": "1782698633"
                 },
                 {
@@ -5336,7 +5336,7 @@ window.SHOWCASE_DATA = {
                     "name": "N_尚食局暗部_銀盞試毒_尚食試毒宮女.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\N_尚食局暗部_銀盞試毒_尚食試毒宮女.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\N_尚食局暗部_銀盞試毒_尚食試毒宮女.png",
-                    "relativePath": "??????_v01/N_尚食局暗部_銀盞試毒_尚食試毒宮女.png",
+                    "relativePath": "採用人設重繪_v01/N_尚食局暗部_銀盞試毒_尚食試毒宮女.png",
                     "updatedAt": "1782698062"
                 },
                 {
@@ -5344,7 +5344,7 @@ window.SHOWCASE_DATA = {
                     "name": "N_胡旋舞孃工會_鈴踏護場_胡旋樂工.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\N_胡旋舞孃工會_鈴踏護場_胡旋樂工.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\N_胡旋舞孃工會_鈴踏護場_胡旋樂工.png",
-                    "relativePath": "??????_v01/N_胡旋舞孃工會_鈴踏護場_胡旋樂工.png",
+                    "relativePath": "採用人設重繪_v01/N_胡旋舞孃工會_鈴踏護場_胡旋樂工.png",
                     "updatedAt": "1782726606"
                 },
                 {
@@ -5352,7 +5352,7 @@ window.SHOWCASE_DATA = {
                     "name": "N_西市商隊_餌包衝陣_西市餌騎包卒.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\N_西市商隊_餌包衝陣_西市餌騎包卒.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\N_西市商隊_餌包衝陣_西市餌騎包卒.png",
-                    "relativePath": "??????_v01/N_西市商隊_餌包衝陣_西市餌騎包卒.png",
+                    "relativePath": "採用人設重繪_v01/N_西市商隊_餌包衝陣_西市餌騎包卒.png",
                     "updatedAt": "1782698869"
                 },
                 {
@@ -5360,7 +5360,7 @@ window.SHOWCASE_DATA = {
                     "name": "N_鬼市煙行_亂視熏球_鬼市亂視煙卒.png",
                     "source": "D:\\USER\\Documents\\Codex\\男性向R18提案\\[01]女俠請躺好\\輸出文件\\04_美術\\立繪\\採用人設重繪_v01\\N_鬼市煙行_亂視熏球_鬼市亂視煙卒.png",
                     "publicPath": "D:\\USER\\Documents\\Codex\\男性向R18提案\\github-pages-public\\assets\\女俠請躺好\\立繪\\採用人設重繪_v01\\N_鬼市煙行_亂視熏球_鬼市亂視煙卒.png",
-                    "relativePath": "??????_v01/N_鬼市煙行_亂視熏球_鬼市亂視煙卒.png",
+                    "relativePath": "採用人設重繪_v01/N_鬼市煙行_亂視熏球_鬼市亂視煙卒.png",
                     "updatedAt": "1782699251"
                 }
             ],
