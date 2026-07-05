@@ -1,0 +1,26 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256' role='img' aria-label='煉丹事故處理小組 icon'>
+  <defs>
+    <linearGradient id='bg' x1='20' y1='20' x2='232' y2='232' gradientUnits='userSpaceOnUse'>
+      <stop offset='0' stop-color='#fff0f3'/>
+      <stop offset='.28' stop-color='#ffc1ca'/>
+      <stop offset='1' stop-color='#ad4f5d'/>
+    </linearGradient>
+    <radialGradient id='glow' cx='50%' cy='42%' r='58%'>
+      <stop offset='0' stop-color='#ffffff' stop-opacity='.62'/>
+      <stop offset='.62' stop-color='#ffffff' stop-opacity='.08'/>
+      <stop offset='1' stop-color='#000000' stop-opacity='.18'/>
+    </radialGradient>
+  </defs>
+  <rect width='256' height='256' rx='42' fill='url(#bg)'/>
+  <rect width='256' height='256' rx='42' fill='url(#glow)'/>
+  <g opacity='.28' stroke='#ffffff' stroke-width='2' fill='none' transform='rotate(340 128 128)'>
+    <circle cx='128' cy='128' r='96' stroke-dasharray='9 10'/>
+    <circle cx='128' cy='128' r='70' stroke-dasharray='4 13'/>
+    <path d='M38 128h180M128 38v180'/>
+  </g>
+  <circle cx='128' cy='128' r='74' fill='#2d1219' fill-opacity='.22' stroke='#ffffff' stroke-opacity='.72' stroke-width='3'/>
+  <g transform='translate(64 64) scale(2)' fill='none' stroke='#ffffff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'>
+    <path d='M22 13h18M31 13v13L18 49c-2 4 1 7 5 7h26c4 0 7-3 5-7L40 26V13'/><path d='M23 43h26M32 36h8M36 32v16'/>
+  </g>
+  <text x='128' y='226' text-anchor='middle' font-family='Microsoft JhengHei, Noto Sans TC, sans-serif' font-size='24' font-weight='800' fill='#ffffff' opacity='.88'>20</text>
+</svg>

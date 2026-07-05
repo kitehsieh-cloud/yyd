@@ -1,0 +1,1936 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>提案展示總控台</title>
+  <style>
+    :root {
+      --bg: #f3f6f8;
+      --panel: #ffffff;
+      --ink: #17202b;
+      --muted: #667389;
+      --line: #dbe1ea;
+      --soft: #f8fafc;
+      --blue: #2f6fac;
+      --green: #2f7d64;
+      --gold: #b8832f;
+      --rose: #ad4f5d;
+      --violet: #6e5a88;
+      --org-color: #2f6fac;
+      --shadow: 0 12px 30px rgba(23, 32, 43, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft JhengHei", "Noto Sans TC", "PingFang TC", "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0;
+      line-height: 1.55;
+    }
+    button, select, input { font: inherit; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, .94);
+      backdrop-filter: blur(12px);
+    }
+    .topbar-inner {
+      width: min(1480px, calc(100% - 28px));
+      min-height: 62px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-weight: 900;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #1f2d3d;
+      color: #fff;
+      font-size: 14px;
+      flex: 0 0 auto;
+    }
+    .proposal-picker {
+      display: grid;
+      grid-template-columns: auto minmax(220px, 360px);
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .proposal-picker select {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 36px 0 12px;
+      color: var(--ink);
+      background: var(--panel);
+      box-shadow: 0 4px 14px rgba(23, 32, 43, .06);
+    }
+
+    .layout {
+      width: min(1480px, calc(100% - 28px));
+      margin: 18px auto 42px;
+      display: grid;
+      grid-template-columns: minmax(270px, 330px) minmax(0, 1fr);
+      gap: 16px;
+    }
+    .sidebar,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .sidebar {
+      position: sticky;
+      top: 80px;
+      align-self: start;
+      max-height: calc(100vh - 100px);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    .sidebar-head {
+      padding: 15px;
+      border-bottom: 1px solid var(--line);
+    }
+    .sidebar-head h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+    .sidebar-head p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .proposal-nav {
+      overflow: auto;
+      padding: 12px 10px 16px;
+      display: grid;
+      gap: 12px;
+    }
+    .nav-section b {
+      display: block;
+      margin: 0 6px 7px;
+      color: var(--ink);
+      font-size: 13px;
+    }
+    .nav-link,
+    .nav-subtitle {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 30px;
+      border-radius: 8px;
+      padding: 6px 8px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .nav-link:hover,
+    .nav-link:focus {
+      outline: none;
+      background: #eef5fb;
+      color: var(--blue);
+    }
+    .nav-link.indent { margin-left: 12px; }
+    .nav-link.small {
+      min-height: 26px;
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+    .nav-subtitle {
+      color: var(--ink);
+      font-weight: 800;
+      padding-bottom: 2px;
+    }
+
+    main {
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      padding: 18px;
+      overflow: hidden;
+      scroll-margin-top: 86px;
+    }
+    .anchor-target {
+      scroll-margin-top: 86px;
+    }
+    .anchor-target:target,
+    .organization-page:target,
+    .character-card:target,
+    .chapter-detail:target {
+      outline: 2px solid rgba(47, 111, 172, .45);
+      outline-offset: 3px;
+    }
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--blue);
+      font-weight: 900;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.25;
+    }
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.3;
+    }
+    p {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+    .summary {
+      color: var(--ink);
+      font-size: 16px;
+      max-width: 850px;
+    }
+    .section-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .section-title p {
+      max-width: 620px;
+      font-size: 14px;
+    }
+    .chip-row,
+    .status-row,
+    .character-meta,
+    .org-tags,
+    .story-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 9px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 12px;
+      text-decoration: none;
+    }
+    .chip.blue { border-color: rgba(47, 111, 172, .28); color: var(--blue); background: #eef5fb; }
+    .chip.green { border-color: rgba(47, 125, 100, .28); color: var(--green); background: #eef8f5; }
+    .chip.gold { border-color: rgba(184, 131, 47, .32); color: var(--gold); background: #fbf6ea; }
+    .chip.rose { border-color: rgba(173, 79, 93, .28); color: var(--rose); background: #fcf0f2; }
+    .chip.violet { border-color: rgba(110, 90, 136, .28); color: var(--violet); background: #f5f2fb; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+      gap: 18px;
+      align-items: stretch;
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .metric {
+      min-height: 78px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent, var(--blue));
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--soft);
+    }
+    .metric b {
+      display: block;
+      color: var(--ink);
+      font-size: 24px;
+      line-height: 1;
+    }
+    .metric span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .cover {
+      margin: 0;
+      min-height: 280px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #e9eef4;
+      display: grid;
+      place-items: center;
+    }
+    .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, .95fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .full-band {
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      margin-top: 16px;
+    }
+    .text-list {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    .text-list li + li { margin-top: 4px; }
+    .empty {
+      min-height: 70px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      background: var(--soft);
+      text-align: center;
+    }
+
+    .location-grid,
+    .chapter-grid,
+    .org-pages,
+    .character-group-list {
+      display: grid;
+      gap: 12px;
+    }
+    .location-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .location-card,
+    .chapter-card,
+    .node-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--soft);
+    }
+    .location-card strong,
+    .chapter-card strong,
+    .node-card strong {
+      display: block;
+      color: var(--ink);
+    }
+    .location-card span,
+    .chapter-card span,
+    .node-card span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .organization-map {
+      position: relative;
+      min-height: 420px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(47, 111, 172, .08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(47, 111, 172, .08) 1px, transparent 1px),
+        #eef3f7;
+      background-size: 48px 48px;
+    }
+    .organization-map img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .28;
+    }
+    .map-region-label {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(23, 32, 43, .12);
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: rgba(255, 255, 255, .82);
+      color: #334155;
+      font-size: 12px;
+      pointer-events: none;
+    }
+    .org-marker {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      transform: translate(-50%, -50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      max-width: 170px;
+      border: 1px solid color-mix(in srgb, var(--org-color) 45%, white);
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: rgba(255, 255, 255, .92);
+      color: var(--org-color);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 800;
+      box-shadow: 0 6px 18px rgba(23, 32, 43, .12);
+    }
+    .org-marker span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .org-marker:hover,
+    .org-marker:focus {
+      z-index: 3;
+      outline: none;
+      background: #fff;
+      box-shadow: 0 10px 28px rgba(23, 32, 43, .18);
+    }
+    .org-icon {
+      width: 56px;
+      height: 56px;
+      color: var(--org-color);
+      flex: 0 0 auto;
+    }
+    .org-icon.small {
+      width: 22px;
+      height: 22px;
+    }
+
+    .organization-page {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      scroll-margin-top: 86px;
+    }
+    .org-concept {
+      position: relative;
+      min-height: 236px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 160px;
+      gap: 16px;
+      align-items: end;
+      padding: 18px;
+      color: #fff;
+      overflow: hidden;
+      background:
+        linear-gradient(120deg, color-mix(in srgb, var(--org-color) 86%, #121826), #17202b);
+    }
+    .org-concept::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--org-header-image);
+      background-size: cover;
+      background-position: center;
+      opacity: 1;
+      z-index: 0;
+    }
+    .org-concept::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(9, 14, 22, .62), rgba(9, 14, 22, .12) 58%, rgba(9, 14, 22, .04)),
+        linear-gradient(180deg, rgba(9, 14, 22, .02), rgba(9, 14, 22, .48));
+      z-index: 1;
+      pointer-events: none;
+    }
+    .org-concept > :not(.org-header-img) {
+      position: relative;
+      z-index: 2;
+    }
+    .org-header-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 0;
+    }
+    .org-concept .eyebrow,
+    .org-concept p { color: rgba(255, 255, 255, .78); }
+    .org-concept h3 { font-size: 24px; }
+    .org-concept-figure {
+      margin: 0;
+      min-height: 126px;
+      border: 1px solid rgba(255, 255, 255, .28);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, .12);
+    }
+    .org-concept-figure .org-icon {
+      width: 88px;
+      height: 88px;
+      color: #fff;
+    }
+    .org-icon-img {
+      object-fit: contain;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .24));
+    }
+    .org-body {
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .detail-block {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+    .detail-block b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+    .timeline-list,
+    .relation-grid,
+    .member-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .timeline-item {
+      border-left: 3px solid var(--org-color);
+      padding: 8px 0 8px 10px;
+      color: var(--muted);
+      background: var(--soft);
+    }
+    .timeline-item strong { color: var(--ink); }
+    .relation-grid,
+    .member-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .relation-card,
+    .member-card {
+      min-height: 74px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      background: var(--soft);
+    }
+    .relation-card span,
+    .member-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      background: #eef3f7;
+      flex: 0 0 auto;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+    }
+
+    .character-group {
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+    .character-group h3 {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .character-card {
+      display: grid;
+      grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+      gap: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+      scroll-margin-top: 86px;
+    }
+    .portrait {
+      margin: 0;
+      width: 100%;
+      max-width: 340px;
+      align-self: start;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #eef3f7;
+      display: grid;
+      place-items: center;
+    }
+    .portrait img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+    }
+    .profile-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .profile-section {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+    .profile-section b {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ink);
+    }
+    .dialogue-strip {
+      border-color: rgba(184, 131, 47, .45);
+      background: #fbf6ea;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .relation-map {
+      display: grid;
+      gap: 8px;
+    }
+    .relation-node {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      color: var(--muted);
+      background: var(--soft);
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .relation-node strong {
+      display: block;
+      color: var(--ink);
+    }
+    .mini-media-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .asset-card {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--soft);
+    }
+    .asset-card img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+    }
+    .asset-card span {
+      display: block;
+      padding: 7px 8px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ultimate-section {
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+    .ultimate-section > b {
+      display: block;
+      margin-bottom: 8px;
+    }
+    .ultimate-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .ultimate-card + .ultimate-card { margin-top: 10px; }
+    .ultimate-head {
+      padding: 10px 12px;
+      background: var(--soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .ultimate-head strong {
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .ultimate-body {
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .ultimate-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .ultimate-note {
+      border-left: 3px solid var(--gold);
+      background: #fffaf0;
+      padding: 8px 10px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: pre-line;
+    }
+    .ultimate-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .ultimate-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      font-size: 12px;
+    }
+    .ultimate-table th,
+    .ultimate-table td {
+      padding: 7px 8px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+    .ultimate-table th {
+      background: #f4f7fa;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .ultimate-table tr:last-child td { border-bottom: 0; }
+
+    .chapter-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .chapter-card {
+      min-height: 150px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .chapter-detail {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fff;
+      scroll-margin-top: 86px;
+    }
+    .chapter-detail + .chapter-detail { margin-top: 12px; }
+    .node-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .node-card {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+    .node-cg {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 96px;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      background: #eef3f7;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+    .node-cg img {
+      width: 100%;
+      height: 100%;
+      min-height: 130px;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    @supports not (color: color-mix(in srgb, #000, #fff)) {
+      .org-marker { border-color: var(--org-color); }
+      .org-concept { background: var(--org-color); }
+    }
+    @media (max-width: 1120px) {
+      .split-grid,
+      .hero,
+      .detail-grid,
+      .profile-columns,
+      .character-card {
+        grid-template-columns: 1fr;
+      }
+      .layout {
+        grid-template-columns: minmax(230px, 280px) minmax(0, 1fr);
+      }
+      .portrait {
+        justify-self: center;
+      }
+      .metric-grid,
+      .chapter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 720px) {
+      .topbar-inner,
+      .proposal-picker {
+        grid-template-columns: 1fr;
+      }
+      .topbar-inner {
+        align-items: stretch;
+        padding: 10px 0;
+      }
+      .proposal-picker select { width: 100%; }
+      .section-title {
+        display: block;
+      }
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+      .metric-grid,
+      .location-grid,
+      .relation-grid,
+      .member-grid,
+      .mini-media-grid,
+      .chapter-grid,
+      .node-list,
+      .org-concept {
+        grid-template-columns: 1fr;
+      }
+      .organization-map { min-height: 540px; }
+      .panel { padding: 14px; }
+      .portrait { max-width: min(100%, 300px); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">提案</span>
+        <span>提案展示總控台</span>
+      </div>
+      <label class="proposal-picker">
+        <span>切換提案</span>
+        <select id="proposalSelect" aria-label="切換提案"></select>
+      </label>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="提案內目錄">
+      <div class="sidebar-head">
+        <h1 id="sidebarTitle">提案目錄</h1>
+        <p id="sidebarMeta">載入中</p>
+      </div>
+      <nav id="proposalNav" class="proposal-nav"></nav>
+    </aside>
+
+    <main>
+      <section id="overview" class="panel hero anchor-target">
+        <div>
+          <p class="eyebrow" id="proposalId">Proposal</p>
+          <h2 id="proposalTitle">載入中</h2>
+          <p class="summary" id="proposalSummary"></p>
+          <div id="tagRow" class="chip-row"></div>
+          <div id="statusRow" class="status-row"></div>
+          <div class="metric-grid">
+            <div class="metric" style="--accent: var(--blue)"><b id="metricCharacters">0</b><span>角色資訊頁</span></div>
+            <div class="metric" style="--accent: var(--green)"><b id="metricOrganizations">0</b><span>組織資訊頁</span></div>
+            <div class="metric" style="--accent: var(--gold)"><b id="metricChapters">0</b><span>主線章節</span></div>
+            <div class="metric" style="--accent: var(--rose)"><b id="metricNodes">0</b><span>已展開節點</span></div>
+            <div class="metric" style="--accent: var(--violet)"><b id="metricAssets">0</b><span>整合素材</span></div>
+          </div>
+        </div>
+        <figure id="coverFigure" class="cover">
+          <div class="empty">尚未選擇提案</div>
+        </figure>
+      </section>
+
+      <section id="world" class="panel anchor-target">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Worldview</p>
+            <h2>世界觀</h2>
+          </div>
+          <p>地圖、組織位置與世界背景放在同一條脈絡中展示，讓舞台不是素材庫，而是能通往組織與劇情的入口。</p>
+        </div>
+        <div class="split-grid">
+          <section id="world-background" class="anchor-target">
+            <h3>背景故事介紹</h3>
+            <p id="worldSummary"></p>
+            <div id="worldTags" class="chip-row"></div>
+          </section>
+          <section id="world-setting" class="anchor-target">
+            <h3>世界背景介紹</h3>
+            <div id="locationList" class="location-grid"></div>
+          </section>
+        </div>
+        <section id="world-organizations-map" class="full-band anchor-target">
+          <h3>重要組織地圖</h3>
+          <p>點擊地圖上的組織名稱可前往該組織資訊頁。</p>
+          <div id="organizationMap" class="organization-map"></div>
+        </section>
+        <section id="opening-story" class="full-band anchor-target">
+          <h3>開場故事銜接</h3>
+          <p id="openingSummary"></p>
+          <div id="openingBeatList" class="location-grid"></div>
+          <div id="openingBridgeList" class="relation-grid"></div>
+        </section>
+      </section>
+
+      <section id="organizations" class="panel anchor-target">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Organizations</p>
+            <h2>重要組織</h2>
+          </div>
+          <p>每個組織頁都包含形象標頭、形象 icon、源起到現況、歷史年表、對外關係與旗下角色。</p>
+        </div>
+        <div id="organizationPages" class="org-pages"></div>
+      </section>
+
+      <section id="characters" class="panel anchor-target">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Characters</p>
+            <h2>角色介紹</h2>
+          </div>
+          <p>角色素材會跟劇情設定、組織關係、情感關係與遊戲定位一起展示。</p>
+        </div>
+        <div id="characterGroups" class="character-group-list"></div>
+      </section>
+
+      <section id="story" class="panel anchor-target">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Main Story</p>
+            <h2>主線劇情</h2>
+          </div>
+          <p>章節大綱與節點 CG 整合在同一頁，CG 會依附在對應節點，不再獨立成素材展示。</p>
+        </div>
+        <section id="story-overview" class="anchor-target">
+          <h3>章節大綱</h3>
+          <div id="chapterOverview" class="chapter-grid"></div>
+        </section>
+        <section class="full-band">
+          <h3>章節內容</h3>
+          <div id="chapterDetails"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="./data/showcase-data.js?v=20260610-world-opening"></script>
+  <script>
+    const state = {
+      proposals: [],
+      details: {},
+      storyboardPatch: {},
+      currentSummary: null,
+      currentDetail: null
+    };
+
+    const el = {
+      proposalSelect: document.getElementById("proposalSelect"),
+      sidebarTitle: document.getElementById("sidebarTitle"),
+      sidebarMeta: document.getElementById("sidebarMeta"),
+      proposalNav: document.getElementById("proposalNav"),
+      proposalId: document.getElementById("proposalId"),
+      proposalTitle: document.getElementById("proposalTitle"),
+      proposalSummary: document.getElementById("proposalSummary"),
+      tagRow: document.getElementById("tagRow"),
+      statusRow: document.getElementById("statusRow"),
+      metricCharacters: document.getElementById("metricCharacters"),
+      metricOrganizations: document.getElementById("metricOrganizations"),
+      metricChapters: document.getElementById("metricChapters"),
+      metricNodes: document.getElementById("metricNodes"),
+      metricAssets: document.getElementById("metricAssets"),
+      coverFigure: document.getElementById("coverFigure"),
+      worldSummary: document.getElementById("worldSummary"),
+      worldTags: document.getElementById("worldTags"),
+      openingSummary: document.getElementById("openingSummary"),
+      openingBeatList: document.getElementById("openingBeatList"),
+      openingBridgeList: document.getElementById("openingBridgeList"),
+      locationList: document.getElementById("locationList"),
+      organizationMap: document.getElementById("organizationMap"),
+      organizationPages: document.getElementById("organizationPages"),
+      characterGroups: document.getElementById("characterGroups"),
+      chapterOverview: document.getElementById("chapterOverview"),
+      chapterDetails: document.getElementById("chapterDetails")
+    };
+
+    function asArray(value) {
+      if (!value) return [];
+      return Array.isArray(value) ? value : [value];
+    }
+
+    function text(value, fallback = "待補") {
+      if (value === null || value === undefined || value === "") return fallback;
+      return String(value);
+    }
+
+    function escapeHtml(value) {
+      return text(value, "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function truncate(value, length = 110) {
+      const raw = text(value, "");
+      return raw.length > length ? `${raw.slice(0, length)}...` : raw;
+    }
+
+    function compactName(value, length = 18) {
+      const raw = text(value, "");
+      return raw.length > length ? `${raw.slice(0, length)}...` : raw;
+    }
+
+    function stableToken(value, index) {
+      const raw = text(value, `item-${index + 1}`);
+      const encoded = Array.from(raw).map((char) => char.codePointAt(0).toString(36)).join("-");
+      return `${index + 1}-${encoded.slice(0, 72)}`;
+    }
+
+    function organizationId(org, index) {
+      return `org-${stableToken(org?.name, index)}`;
+    }
+
+    function characterId(character, index) {
+      return `character-${stableToken(character?.name, index)}`;
+    }
+
+    function chapterNumberFrom(value, fallbackIndex = 0) {
+      const raw = text(value, "");
+      const match = raw.match(/\d+/);
+      return match ? Number(match[0]) : fallbackIndex + 1;
+    }
+
+    function chapterId(item, index) {
+      return `chapter-${chapterNumberFrom(item?.["章"] || item, index)}`;
+    }
+
+    function allCharacters() {
+      return asArray(state.currentDetail?.storyShowcase?.characters);
+    }
+
+    function allOrganizations() {
+      return asArray(state.currentDetail?.storyShowcase?.organizations);
+    }
+
+    function allAssets() {
+      return asArray(state.currentDetail?.assets);
+    }
+
+    function assetUrl(asset) {
+      const detail = state.currentDetail;
+      if (!detail || !asset) return "";
+      const version = asset.updatedAt || asset.version || "20260609";
+      return encodeURI(`./assets/${detail.name}/${asset.group}/${asset.relativePath}?v=${version}`);
+    }
+
+    function linesFrom(value, limit = 4) {
+      const seen = new Set();
+      return text(value, "")
+        .split(/\r?\n/)
+        .map((line) => line.trim().replace(/^[-*]\s*/, ""))
+        .filter((line) => line && !line.startsWith("|"))
+        .filter((line) => {
+          if (seen.has(line)) return false;
+          seen.add(line);
+          return true;
+        })
+        .slice(0, limit);
+    }
+
+    function renderTextBlock(value, limit = 4) {
+      const lines = linesFrom(value, limit);
+      if (!lines.length) return `<p>待補。</p>`;
+      if (lines.length === 1) return `<p>${escapeHtml(lines[0])}</p>`;
+      return `<ul class="text-list">${lines.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>`;
+    }
+
+    function renderProfileSection(title, value, limit = 4, className = "") {
+      return `
+        <section class="profile-section ${className}">
+          <b>${escapeHtml(title)}</b>
+          ${renderTextBlock(value, limit)}
+        </section>
+      `;
+    }
+
+    function organizationAliases(name) {
+      const raw = text(name, "");
+      const aliases = new Set([raw]);
+      const quoted = raw.match(/「(.+?)」/);
+      if (quoted) {
+        aliases.add(quoted[1]);
+        aliases.add(raw.replace(/「.+?」/g, "").trim());
+      }
+      raw.split(/[\/／·]/).forEach((part) => {
+        if (part.trim()) aliases.add(part.trim());
+      });
+      return [...aliases].filter(Boolean);
+    }
+
+    function findOrganizationIndexByName(name) {
+      const target = text(name, "");
+      return allOrganizations().findIndex((org) => {
+        if (org.name === target) return true;
+        return organizationAliases(org.name).some((alias) => alias && target.includes(alias));
+      });
+    }
+
+    function findOrganizationByName(name) {
+      const index = findOrganizationIndexByName(name);
+      return index >= 0 ? allOrganizations()[index] : null;
+    }
+
+    function organizationHref(name) {
+      const index = findOrganizationIndexByName(name);
+      if (index < 0) return "";
+      return `#${organizationId(allOrganizations()[index], index)}`;
+    }
+
+    function findCharacterIndexByName(name) {
+      const target = text(name, "");
+      return allCharacters().findIndex((character) => character.name === target || target.includes(character.name));
+    }
+
+    function characterHref(name) {
+      const index = findCharacterIndexByName(name);
+      if (index < 0) return "";
+      return `#${characterId(allCharacters()[index], index)}`;
+    }
+
+    function organizationTheme(org) {
+      if (org?.visual?.color) {
+        return { color: org.visual.color, key: org.visual.themeKey || "scroll" };
+      }
+      const haystack = `${org?.name || ""} ${org?.tier || ""} ${org?.map?.type || ""} ${asArray(org?.profile?.visualKeywords).join(" ")}`;
+      if (/採補司|宮廷|內廷|掖庭|尚食|紅妝|大明宮/.test(haystack)) return { color: "#7f5d32", key: "palace" };
+      if (/大理寺|金吾|官方|官署|夜巡/.test(haystack)) return { color: "#2f6fac", key: "badge" };
+      if (/晶玉|冰心|江湖|宗門|月紋|女修/.test(haystack)) return { color: "#2f7d64", key: "moon" };
+      if (/鬼市|黑市|地下|面罩|排水渠|八柱|碎玉班/.test(haystack)) return { color: "#6e5a88", key: "mask" };
+      if (/醫|藥|食|煉丹|萬花|推拿|銀針/.test(haystack)) return { color: "#ad4f5d", key: "medicine" };
+      if (/粟特|波斯|拜火|香料|異域|聖火|胡旋/.test(haystack)) return { color: "#b35c2f", key: "flame" };
+      return { color: "#2f6fac", key: "scroll" };
+    }
+
+    function organizationIcon(org, className = "") {
+      const iconAsset = org?.visual?.iconAsset;
+      if (iconAsset?.group && iconAsset?.relativePath) {
+        return `<img class="org-icon org-icon-img ${className}" src="${assetUrl(iconAsset)}" alt="${escapeHtml(org?.name || "組織")} icon">`;
+      }
+      const theme = organizationTheme(org);
+      const symbols = {
+        palace: `<path d="M14 52h38M18 48V28h28v20M14 28h38L32 14 14 28Z"/><path d="M25 48V34h14v14M22 26V16h6v7M42 26V16h-6v7"/>`,
+        badge: `<path d="M32 10 50 18v14c0 12-7 20-18 24-11-4-18-12-18-24V18l18-8Z"/><path d="M22 32h20M26 24h12M26 40h12"/>`,
+        moon: `<path d="M42 12c-12 2-21 11-21 23 0 8 4 15 11 19-12-1-22-11-22-23 0-13 10-24 23-24 3 0 6 1 9 3Z"/><path d="M39 33 50 29l-7 10 1 12-9-7-12 3 7-10-1-12 9 7Z"/>`,
+        mask: `<path d="M14 22c8-5 15-5 22 0 6-5 13-5 20 0l-4 20c-4 7-12 8-16 2-4 6-12 5-16-2l-6-20Z"/><path d="M22 33h10M42 33h10M29 43c3 2 8 2 11 0"/>`,
+        medicine: `<path d="M22 13h18M31 13v13L18 49c-2 4 1 7 5 7h26c4 0 7-3 5-7L40 26V13"/><path d="M23 43h26M32 36h8M36 32v16"/>`,
+        flame: `<path d="M34 10c4 9-3 12 5 21 2-5 6-8 9-10 1 8 7 15 7 24 0 10-8 17-19 17s-19-7-19-17c0-11 10-16 17-35Z"/><path d="M34 38c4 5 0 7 4 12 2-3 4-4 6-5 0 7-4 11-10 11s-10-4-10-10c0-6 5-9 10-18Z"/>`,
+        scroll: `<path d="M18 14h30c4 0 7 3 7 7v31H24c-4 0-7-3-7-7V14Z"/><path d="M24 20h24M24 29h18M24 38h22M17 45c0-4 3-7 7-7h31"/>`
+      };
+      return `
+        <svg class="org-icon ${className}" style="--org-color:${theme.color}" viewBox="0 0 64 64" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+            ${symbols[theme.key] || symbols.scroll}
+          </g>
+        </svg>
+      `;
+    }
+
+    function rarityOf(character) {
+      const raw = `${text(character?.system?.rarity, "")} ${text(character?.story?.identity, "")}`;
+      const match = raw.match(/\b(UR|SSR|SR|R|N)\b/);
+      return match ? match[1] : "";
+    }
+
+    function ownerForAsset(asset) {
+      const haystack = `${asset?.name || ""} ${asset?.relativePath || ""}`;
+      const characters = allCharacters().slice().sort((a, b) => b.name.length - a.name.length);
+      const owner = characters.find((character) => haystack.includes(character.name));
+      return owner?.name || "";
+    }
+
+    function assetsForCharacter(character, group = "") {
+      return allAssets()
+        .filter((asset) => ownerForAsset(asset) === character.name)
+        .filter((asset) => !group || asset.group === group)
+        .sort((a, b) => assetPriority(b) - assetPriority(a));
+    }
+
+    function assetPriority(asset) {
+      const name = `${asset?.name || ""} ${asset?.relativePath || ""}`;
+      if (name.includes("正式立繪")) return 40;
+      if (name.includes("人設基準")) return 30;
+      if (name.includes("立繪") && !name.includes("暫代")) return 20;
+      if (name.includes("暫代")) return 10;
+      return 0;
+    }
+
+    function storyboardsForCharacter(character) {
+      return asArray(state.currentDetail?.systemShowcase?.battle?.storyboards)
+        .filter((item) => item.characterName === character.name);
+    }
+
+    function characterIdentity(character) {
+      const identityLine = linesFrom(character?.story?.storySetting, 6).find((line) => line.startsWith("身份："));
+      if (identityLine) return identityLine.replace(/^身份：/, "");
+      return truncate(character?.story?.identity, 60);
+    }
+
+    function charactersForOrganization(org) {
+      const aliases = organizationAliases(org?.name || "");
+      return allCharacters().filter((character) => {
+        const haystack = `${character?.story?.organization || ""} ${character?.story?.identity || ""} ${character?.story?.storySetting || ""}`;
+        return aliases.some((alias) => alias && haystack.includes(alias));
+      });
+    }
+
+    function markerBackdropAsset() {
+      const maps = allAssets().filter((asset) => asset.group === "地圖");
+      return maps.find((asset) => asset.name.includes("重要組織位置"))
+        || maps.find((asset) => asset.name.includes("標註"))
+        || maps[0];
+    }
+
+    function mapPositionForOrganization(org, index = 0) {
+      const raw = text(org?.map?.marker, "");
+      const key = (raw.match(/[A-Z]\d/) || ["C1"])[0];
+      const bases = {
+        W1: { x: 15, y: 50 },
+        W2: { x: 24, y: 38 },
+        C1: { x: 48, y: 52 },
+        C2: { x: 54, y: 20 },
+        S1: { x: 52, y: 84 },
+        E1: { x: 84, y: 48 },
+        M1: { x: 38, y: 70 }
+      };
+      const base = bases[key] || bases.C1;
+      const angle = (index * 137.5) * Math.PI / 180;
+      const radius = 4 + (index % 4) * 2.4;
+      return {
+        x: Math.max(8, Math.min(92, base.x + Math.cos(angle) * radius)),
+        y: Math.max(10, Math.min(90, base.y + Math.sin(angle) * radius))
+      };
+    }
+
+    function cgAssetFor(code) {
+      const cgCode = text(code, "").trim();
+      if (!cgCode) return null;
+      return allAssets()
+        .filter((asset) => asset.group === "劇情CG")
+        .find((asset) => `${asset.name} ${asset.relativePath}`.includes(cgCode)) || null;
+    }
+
+    function chapterNodeCount() {
+      return asArray(state.currentDetail?.storyShowcase?.chapterNodes)
+        .reduce((total, group) => total + asArray(group.nodes).length, 0);
+    }
+
+    function outlineRows() {
+      const rows = asArray(state.currentDetail?.storyShowcase?.chapterOutlines);
+      if (rows.length) return rows;
+      return asArray(state.currentDetail?.storyShowcase?.chapters).map((chapter, index) => ({
+        "章": String(index + 1),
+        "單元事件與舞台": chapter,
+        "本章大綱": "章節大綱待同步。",
+        "主線 / 暗線推進": "",
+        "章尾如何銜接下一章": ""
+      }));
+    }
+
+    function nodeGroupForChapterNumber(number) {
+      return asArray(state.currentDetail?.storyShowcase?.chapterNodes)
+        .find((group) => chapterNumberFrom(group.chapter) === Number(number));
+    }
+
+    function navLink(label, href, className = "") {
+      return `<a class="nav-link ${className}" href="${href}" title="${escapeHtml(label)}">${escapeHtml(compactName(label, 28))}</a>`;
+    }
+
+    function renderProposalNav() {
+      const organizations = allOrganizations();
+      const characters = allCharacters();
+      const outlines = outlineRows();
+      const protagonist = characters.find((character) => character.name === "陸三") || characters.find((character) => !rarityOf(character));
+      const rarityGroups = ["UR", "SSR", "SR", "R", "N"].map((rarity) => ({
+        rarity,
+        items: characters.filter((character) => rarityOf(character) === rarity)
+      }));
+
+      const orgLinks = organizations.map((org, index) => navLink(org.name, `#${organizationId(org, index)}`, "small indent")).join("");
+      const characterLinks = [
+        protagonist ? navLink("主角介紹", `#${characterId(protagonist, characters.indexOf(protagonist))}`, "small indent") : "",
+        ...rarityGroups.map((group) => group.items.length
+          ? `<span class="nav-subtitle indent">[${group.rarity}]</span>${group.items.map((character) => navLink(character.name, `#${characterId(character, characters.indexOf(character))}`, "small indent")).join("")}`
+          : "")
+      ].join("");
+      const chapterLinks = outlines.map((item, index) => {
+        const number = chapterNumberFrom(item["章"], index);
+        const label = number === 27 ? "最終章" : `第${number}章`;
+        return navLink(label, `#${chapterId(item, index)}`, "small indent");
+      }).join("");
+
+      el.proposalNav.innerHTML = `
+        <section class="nav-section">
+          <b>◎ 總覽</b>
+          ${navLink("提案總覽", "#overview")}
+        </section>
+        <section class="nav-section">
+          <b>◎ 世界觀</b>
+          ${navLink("背景故事介紹", "#world-background", "indent")}
+          ${navLink("重要組織地圖", "#world-organizations-map", "indent")}
+          ${navLink("開場故事銜接", "#opening-story", "indent")}
+          ${navLink("世界背景介紹", "#world-setting", "indent")}
+        </section>
+        <section class="nav-section">
+          <b>◎ 重要組織</b>
+          ${orgLinks || `<span class="nav-subtitle indent">組織待補</span>`}
+        </section>
+        <section class="nav-section">
+          <b>◎ 角色介紹</b>
+          ${characterLinks || `<span class="nav-subtitle indent">角色待補</span>`}
+        </section>
+        <section class="nav-section">
+          <b>◎ 主線劇情</b>
+          ${navLink("章節大綱", "#story-overview", "indent")}
+          ${chapterLinks}
+        </section>
+      `;
+    }
+
+    function renderOverview() {
+      const summary = state.currentSummary;
+      const detail = state.currentDetail;
+      const counts = summary?.counts || {};
+      const organizations = allOrganizations();
+      const chapters = outlineRows();
+      const nodeCount = chapterNodeCount();
+      const coverAsset = allAssets().find((asset) => asset.group === "立繪") || allAssets()[0];
+
+      el.sidebarTitle.textContent = detail.name;
+      el.sidebarMeta.textContent = `同步：${text(detail.lastSyncedAt, "待同步")}`;
+      el.proposalId.textContent = `[${detail.id}]`;
+      el.proposalTitle.textContent = detail.name;
+      el.proposalSummary.textContent = text(detail.summary);
+      el.tagRow.innerHTML = asArray(detail.tags).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("");
+      el.statusRow.innerHTML = [
+        `<span class="chip green">劇情：${escapeHtml(text(detail.status?.storyReadiness))}</span>`,
+        `<span class="chip blue">系統：${escapeHtml(text(detail.status?.systemReadiness))}</span>`,
+        `<span class="chip gold">美術：${escapeHtml(text(detail.status?.artReadiness))}</span>`,
+        `<span class="chip rose">缺漏：${asArray(detail.status?.missingItems).length}</span>`
+      ].join("");
+      el.metricCharacters.textContent = text(counts.characters || allCharacters().length, "0");
+      el.metricOrganizations.textContent = text(counts.organizations || organizations.length, "0");
+      el.metricChapters.textContent = text(counts.chapters || chapters.length, "0");
+      el.metricNodes.textContent = text(counts.chapterNodes || nodeCount, "0");
+      el.metricAssets.textContent = text(counts.assets || allAssets().length, "0");
+      el.coverFigure.innerHTML = coverAsset
+        ? `<img src="${assetUrl(coverAsset)}" alt="${escapeHtml(coverAsset.name)}">`
+        : `<div class="empty">尚無展示素材</div>`;
+    }
+
+    function renderWorld() {
+      const detail = state.currentDetail;
+      const summaryLines = [
+        detail.storyShowcase?.worldview?.summary,
+        detail.systemShowcase?.coreLoop?.playerPosition,
+        detail.systemShowcase?.coreLoop?.collectionFantasy,
+        detail.storyShowcase?.abilitySystem?.summary
+      ].filter(Boolean);
+      el.worldSummary.textContent = summaryLines.map((line) => text(line, "")).join(" ");
+      el.worldTags.innerHTML = [
+        ...asArray(detail.storyShowcase?.timeline).slice(0, 4),
+        ...asArray(detail.storyShowcase?.locations).slice(0, 4)
+      ].map((tag) => `<span class="chip blue">${escapeHtml(tag)}</span>`).join("");
+
+      const locations = asArray(detail.storyShowcase?.mapLocations).slice(0, 12);
+      el.locationList.innerHTML = locations.length
+        ? locations.map((item) => `
+            <article class="location-card">
+              <strong>${escapeHtml(item["地點"])}</strong>
+              <span>${escapeHtml(truncate(item["位置設計"], 96))}</span>
+              <span>活躍組織：${escapeHtml(truncate(item["活躍組織"], 92))}</span>
+              <span>場景印象：${escapeHtml(truncate(item["第一眼場景印象"], 80))}</span>
+            </article>
+          `).join("")
+        : `<div class="empty">尚無地點與舞台資料。</div>`;
+
+      renderOrganizationMap();
+      renderOpeningStory();
+    }
+
+    function renderOpeningStory() {
+      const opening = state.currentDetail?.storyShowcase?.openingStory || {};
+      const beats = asArray(opening.beats);
+      const bridgeRows = asArray(opening.worldBridge);
+      const summaryText = [
+        opening.title,
+        opening.summary,
+        opening.situation
+      ].filter(Boolean).map((item) => text(item, "")).join(" ");
+
+      el.openingSummary.textContent = summaryText || "開場故事待同步。";
+      el.openingBeatList.innerHTML = beats.length
+        ? beats.map((beat) => `
+            <article class="location-card">
+              <strong>${escapeHtml(beat.title)}</strong>
+              <span>${escapeHtml(truncate(beat.summary, 150))}</span>
+            </article>
+          `).join("")
+        : `<div class="empty">開場幕次待補。</div>`;
+      el.openingBridgeList.innerHTML = bridgeRows.length
+        ? bridgeRows.slice(0, 8).map((row) => `
+            <article class="relation-card">
+              <div>
+                <strong>${escapeHtml(row["開場事件"] || "開場事件")}</strong>
+                <span>世界觀：${escapeHtml(truncate(row["對應世界觀"], 76))}</span>
+                <span>功能：${escapeHtml(truncate(row["劇情功能"], 76))}</span>
+                <span>後續：${escapeHtml(truncate(row["後續鉤子"], 76))}</span>
+              </div>
+            </article>
+          `).join("")
+        : `<div class="empty">世界觀銜接表待補。</div>`;
+    }
+
+    function renderOrganizationMap() {
+      const organizations = allOrganizations();
+      const backdrop = markerBackdropAsset();
+      const regionLabels = [
+        { label: "宮廷高權力圈", x: 52, y: 9 },
+        { label: "西市核心", x: 48, y: 43 },
+        { label: "地下暗面", x: 32, y: 82 },
+        { label: "秦嶺山門", x: 57, y: 93 },
+        { label: "西域商路", x: 15, y: 30 }
+      ];
+
+      if (!organizations.length) {
+        el.organizationMap.innerHTML = `<div class="empty">尚無組織位置資料。</div>`;
+        return;
+      }
+
+      el.organizationMap.innerHTML = `
+        ${backdrop ? `<img src="${assetUrl(backdrop)}" alt="${escapeHtml(backdrop.name)}">` : ""}
+        ${regionLabels.map((item) => `<span class="map-region-label" style="left:${item.x}%;top:${item.y}%">${escapeHtml(item.label)}</span>`).join("")}
+        ${organizations.map((org, index) => {
+          const theme = organizationTheme(org);
+          const pos = mapPositionForOrganization(org, index);
+          return `
+            <a class="org-marker" href="#${organizationId(org, index)}" style="--x:${pos.x}%;--y:${pos.y}%;--org-color:${theme.color}" title="${escapeHtml(org.map?.currentPosition || org.name)}">
+              ${organizationIcon(org, "small")}
+              <span>${escapeHtml(org.name)}</span>
+            </a>
+          `;
+        }).join("")}
+      `;
+    }
+
+    function renderOrganizations() {
+      const organizations = allOrganizations();
+      if (!organizations.length) {
+        el.organizationPages.innerHTML = `<div class="empty">尚無組織資訊頁。</div>`;
+        return;
+      }
+
+      el.organizationPages.innerHTML = organizations.map((org, index) => {
+        const theme = organizationTheme(org);
+        const visualTags = [
+          org.tier,
+          org.scale,
+          org.map?.type,
+          ...asArray(org.profile?.visualKeywords).slice(0, 4)
+        ].filter(Boolean);
+        const timelineItems = [
+          ["源起", org.history?.origin || org.profile?.publicFace],
+          ["現況", org.profile?.originToCurrent || org.map?.activity],
+          ["重大事件", org.history?.majorEvent],
+          ["關鍵人物", org.history?.keyPeople],
+          ["因果鉤子", org.history?.causality]
+        ].filter((item) => item[1]);
+        const relations = asArray(org.relations);
+        const members = charactersForOrganization(org);
+        const headerAsset = org.visual?.headerAsset;
+        const headerStyle = headerAsset?.group && headerAsset?.relativePath
+          ? `--org-header-image:url("${assetUrl(headerAsset)}");`
+          : "";
+        const headerImage = headerAsset?.group && headerAsset?.relativePath
+          ? `<img class="org-header-img" src="${assetUrl(headerAsset)}" alt="${escapeHtml(org.name)} 組織標頭">`
+          : "";
+
+        return `
+          <article id="${organizationId(org, index)}" class="organization-page" style="--org-color:${theme.color};${headerStyle}">
+            <header class="org-concept">
+              ${headerImage}
+              <div>
+                <p class="eyebrow">Organization Page</p>
+                <h3>${escapeHtml(org.name)}</h3>
+                <p>${escapeHtml(org.profile?.roleUse || org.characterValue || org.map?.activity || "組織定位待補。")}</p>
+                <div class="org-tags">
+                  ${visualTags.slice(0, 7).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}
+                </div>
+              </div>
+              <figure class="org-concept-figure">
+                ${organizationIcon(org)}
+              </figure>
+            </header>
+            <div class="org-body">
+              <div class="detail-grid">
+                <section class="detail-block">
+                  <b>組織緣起到現況</b>
+                  ${renderTextBlock(org.profile?.originToCurrent || org.profile?.publicFace, 4)}
+                </section>
+                <section class="detail-block">
+                  <b>地圖位置</b>
+                  ${renderTextBlock(`${org.map?.currentPosition || ""}\n${org.map?.activity || ""}`, 4)}
+                </section>
+                <section class="detail-block">
+                  <b>表面身份 / 真實利益</b>
+                  ${renderTextBlock(`${org.profile?.publicFace || ""}\n${org.profile?.trueInterest || ""}`, 4)}
+                </section>
+                <section class="detail-block">
+                  <b>與主角關係</b>
+                  ${renderTextBlock(org.profile?.protagonistRelation, 3)}
+                </section>
+              </div>
+
+              <section class="detail-block">
+                <b>歷史年表與大事記</b>
+                <div class="timeline-list">
+                  ${timelineItems.length
+                    ? timelineItems.map((item) => `<div class="timeline-item"><strong>${escapeHtml(item[0])}</strong>：${escapeHtml(item[1])}</div>`).join("")
+                    : `<div class="empty">此組織的歷史年表待補。</div>`}
+                </div>
+              </section>
+
+              <section class="detail-block">
+                <b>與其他組織的關係</b>
+                ${relations.length
+                  ? `<div class="relation-grid">
+                      ${relations.slice(0, 8).map((relation) => {
+                        const related = findOrganizationByName(relation.name) || { name: relation.name };
+                        const relationTheme = organizationTheme(related);
+                        const href = organizationHref(relation.name) || "#organizations";
+                        return `
+                          <a class="relation-card" href="${href}" style="--org-color:${relationTheme.color}">
+                            ${organizationIcon(related, "small")}
+                            <div>
+                              <strong>${escapeHtml(relation.name)}</strong>
+                              <span>${escapeHtml(truncate(relation.summary, 74))}</span>
+                            </div>
+                          </a>
+                        `;
+                      }).join("")}
+                    </div>`
+                  : `<div class="empty">關係節點待補。</div>`}
+              </section>
+
+              <section class="detail-block">
+                <b>組織內的人物</b>
+                ${members.length
+                  ? `<div class="member-grid">
+                      ${members.map((character) => {
+                        const characterIndex = allCharacters().indexOf(character);
+                        const portrait = assetsForCharacter(character, "立繪")[0];
+                        return `
+                          <a class="member-card" href="#${characterId(character, characterIndex)}">
+                            <figure class="avatar">
+                              ${portrait ? `<img src="${assetUrl(portrait)}" alt="${escapeHtml(character.name)}">` : organizationIcon(org, "small")}
+                            </figure>
+                            <div>
+                              <strong>${escapeHtml(character.name)}</strong>
+                              <span>${escapeHtml(characterIdentity(character))}</span>
+                            </div>
+                          </a>
+                        `;
+                      }).join("")}
+                    </div>`
+                  : `<div class="empty">此組織的角色卡尚未接入。</div>`}
+              </section>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function relationNode(item) {
+      const href = characterHref(item.with) || organizationHref(item.with);
+      const inner = `
+        <strong>${escapeHtml(item.with || "關係對象")}</strong>
+        <span>${escapeHtml(item.summary || "待補關係摘要")}</span>
+        ${item.tension ? `<span>${escapeHtml(item.tension)}</span>` : ""}
+      `;
+      return href
+        ? `<a class="relation-node" href="${href}">${inner}</a>`
+        : `<div class="relation-node">${inner}</div>`;
+    }
+
+    function renderRelationMap(character) {
+      const relations = asArray(character?.story?.relationshipGraph).slice(0, 6);
+      if (!relations.length) return `<div class="empty">待補與其他角色的關係節點。</div>`;
+      return `<div class="relation-map">${relations.map(relationNode).join("")}</div>`;
+    }
+
+    function renderStoryboardPanel(storyboards) {
+      if (!storyboards.length) {
+        return `
+          <section class="ultimate-section">
+            <b>必殺技分鏡</b>
+            <div class="empty">必殺技分鏡待接入。</div>
+          </section>
+        `;
+      }
+
+      return `
+        <section class="ultimate-section">
+          <b>必殺技分鏡</b>
+          ${storyboards.map((item) => {
+            const shots = asArray(item.shots).filter((shot) => shot.action || shot.combatFocus || shot.appealFocus).slice(0, 7);
+            const shotRows = shots.map((shot) => `
+              <tr>
+                <td>${escapeHtml(shot.shot || "")}</td>
+                <td>${escapeHtml(shot.time || "")}</td>
+                <td>${escapeHtml(shot.scale || "")}</td>
+                <td>${escapeHtml(shot.action || "")}</td>
+                <td>${escapeHtml(shot.appealFocus || "")}</td>
+                <td>${escapeHtml(shot.combatFocus || "")}</td>
+                <td>${escapeHtml(shot.vfx || "")}</td>
+              </tr>
+            `).join("");
+            return `
+              <article class="ultimate-card">
+                <div class="ultimate-head">
+                  <strong>${escapeHtml(item.skillName || item.title || item.characterName)}</strong>
+                  <span class="chip gold">${escapeHtml(item.totalLength || "5 秒")}</span>
+                </div>
+                <div class="ultimate-body">
+                  <div class="story-tags">
+                    ${item.rarity ? `<span class="chip blue">稀有度：${escapeHtml(item.rarity)}</span>` : ""}
+                    ${item.shotCount ? `<span class="chip">鏡頭數：${escapeHtml(item.shotCount)}</span>` : ""}
+                    <span class="chip" title="${escapeHtml(item.fileName)}">${escapeHtml(item.fileName)}</span>
+                  </div>
+                  ${item.coreSummary ? `<div class="ultimate-note">${escapeHtml(item.coreSummary)}</div>` : ""}
+                  <div class="ultimate-grid">
+                    ${renderProfileSection("武器/道具玩法核心", item.weaponCore || item.combatAxis, 4)}
+                    ${renderProfileSection("男性向魅力保留點", item.charm || item.appealAxis, 4)}
+                    ${renderProfileSection("最後定格", item.finalFrame, 3)}
+                    ${renderProfileSection("4 頭身銜接交接", item.chibiHandoff, 5)}
+                  </div>
+                  ${shots.length
+                    ? `<div class="ultimate-table-wrap">
+                        <table class="ultimate-table">
+                          <thead>
+                            <tr><th>鏡頭</th><th>秒數</th><th>景別</th><th>動作/構圖</th><th>魅力焦點</th><th>戰鬥焦點</th><th>特效</th></tr>
+                          </thead>
+                          <tbody>${shotRows}</tbody>
+                        </table>
+                      </div>`
+                    : `<div class="empty">分鏡表待補。</div>`}
+                  <div class="ultimate-grid">
+                    ${renderProfileSection("vidu q3 指示摘要", item.vidu, 4)}
+                    ${renderProfileSection("Seedance 2.0 指示摘要", item.seedance, 4)}
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join("")}
+        </section>
+      `;
+    }
+
+    function renderCharacterCard(character, index) {
+      const portrait = assetsForCharacter(character, "立繪")[0];
+      const battleAssets = assetsForCharacter(character, "戰鬥人物").slice(0, 3);
+      const storyboards = storyboardsForCharacter(character);
+      const rarity = rarityOf(character) || "主角";
+      const organization = character.story?.organization || "組織待補";
+      const orgHref = organizationHref(organization);
+
+      return `
+        <article id="${characterId(character, index)}" class="character-card">
+          <figure class="portrait">
+            ${portrait ? `<img src="${assetUrl(portrait)}" alt="${escapeHtml(character.name)} 立繪">` : `<div class="empty">尚無立繪</div>`}
+          </figure>
+          <div>
+            <h3>${escapeHtml(character.name)}</h3>
+            <div class="character-meta">
+              <span class="chip blue">稀有度：${escapeHtml(rarity)}</span>
+              ${orgHref ? `<a class="chip green" href="${orgHref}">所屬組織：${escapeHtml(organization)}</a>` : `<span class="chip green">所屬組織：${escapeHtml(organization)}</span>`}
+              <span class="chip gold">素材：${assetsForCharacter(character).length}</span>
+              <span class="chip rose">關係節點：${asArray(character.story?.relationshipGraph).length}</span>
+            </div>
+
+            <div class="profile-columns">
+              <div>
+                ${renderProfileSection("角色介紹與核心目標", character.story?.storySetting || character.story?.identity, 5)}
+                ${renderProfileSection("與主角情感關係", character.story?.protagonistRelationship || character.story?.relationship, 5)}
+                <section class="profile-section">
+                  <b>與他人或組織關係</b>
+                  ${renderRelationMap(character)}
+                </section>
+              </div>
+              <div>
+                ${renderProfileSection("代表人物的設計對白", character.story?.coreDialogue, 4, "dialogue-strip")}
+                ${renderProfileSection("性格吸引點", character.story?.personality, 4)}
+                ${renderProfileSection("角色遊戲定位", character.system?.role || character.system?.rarity, 4)}
+              </div>
+            </div>
+
+            ${renderStoryboardPanel(storyboards)}
+            <div class="mini-media-grid">
+              ${battleAssets.length
+                ? battleAssets.map((asset) => `
+                    <figure class="asset-card">
+                      <img src="${assetUrl(asset)}" alt="${escapeHtml(asset.name)}">
+                      <span title="${escapeHtml(asset.name)}">${escapeHtml(asset.name)}</span>
+                    </figure>
+                  `).join("")
+                : `<div class="empty">尚無戰鬥人物素材</div>`}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderCharacters() {
+      const characters = allCharacters();
+      if (!characters.length) {
+        el.characterGroups.innerHTML = `<div class="empty">尚無角色資訊。</div>`;
+        return;
+      }
+
+      const protagonist = characters.filter((character) => character.name === "陸三" || !rarityOf(character));
+      const groups = [
+        { label: "主角介紹", items: protagonist },
+        ...["UR", "SSR", "SR", "R", "N"].map((rarity) => ({
+          label: `[${rarity}]`,
+          items: characters.filter((character) => rarityOf(character) === rarity)
+        }))
+      ].filter((group) => group.items.length);
+
+      el.characterGroups.innerHTML = groups.map((group) => `
+        <section class="character-group">
+          <h3>${escapeHtml(group.label)}<span class="chip">${group.items.length} 人</span></h3>
+          <div class="character-group-list">
+            ${group.items.map((character) => renderCharacterCard(character, characters.indexOf(character))).join("")}
+          </div>
+        </section>
+      `).join("");
+    }
+
+    function renderStory() {
+      const outlines = outlineRows();
+      if (!outlines.length) {
+        el.chapterOverview.innerHTML = `<div class="empty">尚無主線章節資料。</div>`;
+        el.chapterDetails.innerHTML = "";
+        return;
+      }
+
+      el.chapterOverview.innerHTML = outlines.map((item, index) => {
+        const number = chapterNumberFrom(item["章"], index);
+        return `
+          <a class="chapter-card" href="#${chapterId(item, index)}">
+            <strong>${number === 27 ? "最終章" : `第 ${number} 章`}</strong>
+            <span>${escapeHtml(item["單元事件與舞台"] || "章節舞台待補")}</span>
+            <span>${escapeHtml(truncate(item["本章大綱"], 96))}</span>
+          </a>
+        `;
+      }).join("");
+
+      el.chapterDetails.innerHTML = outlines.map((item, index) => {
+        const number = chapterNumberFrom(item["章"], index);
+        const nodeGroup = nodeGroupForChapterNumber(number);
+        const nodes = asArray(nodeGroup?.nodes);
+        return `
+          <article id="${chapterId(item, index)}" class="chapter-detail">
+            <h3>${number === 27 ? "最終章" : `第 ${number} 章`}｜${escapeHtml(item["單元事件與舞台"] || "章節舞台待補")}</h3>
+            <div class="story-tags">
+              <span class="chip blue">節點數：${escapeHtml(item["節點數"] || String(nodes.length || "待補"))}</span>
+              ${nodes.length ? `<span class="chip green">已展開 ${nodes.length} 個節點</span>` : `<span class="chip">節點表待同步</span>`}
+            </div>
+            ${renderProfileSection("整體故事解說", item["本章大綱"], 3)}
+            ${renderProfileSection("主線 / 暗線推進", item["主線 / 暗線推進"], 3)}
+            ${renderProfileSection("章尾銜接", item["章尾如何銜接下一章"], 3)}
+            ${nodes.length
+              ? `<div class="node-list">
+                  ${nodes.map((node) => {
+                    const cgCode = node["節點 CG"] || "";
+                    const asset = cgAssetFor(cgCode);
+                    return `
+                      <article class="node-card">
+                        <strong>${escapeHtml(node["節點"] || "節點")}</strong>
+                        <span>場景：${escapeHtml(node["場景"] || "待補")}</span>
+                        <span>出場角色：${escapeHtml(node["出場角色"] || "待補")}</span>
+                        <span>${escapeHtml(truncate(node["AVG 對話目的"], 120))}</span>
+                        <div class="node-cg">
+                          ${asset
+                            ? `<img src="${assetUrl(asset)}" alt="${escapeHtml(cgCode)}">`
+                            : `<div><b>${escapeHtml(cgCode || "CG 待補")}</b><br>${escapeHtml(node["CG 等級"] || "CG 等級待補")}</div>`}
+                        </div>
+                      </article>
+                    `;
+                  }).join("")}
+                </div>`
+              : `<div class="empty">此章節目前只有章級大綱；節點簡述與節點 CG 會在本地文件補齊後同步進來。</div>`}
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderDetail() {
+      if (!state.currentSummary || !state.currentDetail) return;
+      renderOverview();
+      renderWorld();
+      renderOrganizations();
+      renderCharacters();
+      renderStory();
+      renderProposalNav();
+    }
+
+    async function getDetail(proposal) {
+      if (state.details[proposal.name]) return state.details[proposal.name];
+      const response = await fetch(`./${proposal.dataFile}`);
+      const detail = await response.json();
+      applyStoryboardPatch(proposal.name, detail);
+      state.details[proposal.name] = detail;
+      return detail;
+    }
+
+    function applyStoryboardPatch(proposalName, detail) {
+      const storyboards = asArray(state.storyboardPatch[proposalName]);
+      if (!detail || !storyboards.length) return;
+      detail.systemShowcase = detail.systemShowcase || {};
+      detail.systemShowcase.battle = detail.systemShowcase.battle || {};
+      detail.systemShowcase.battle.storyboards = storyboards;
+    }
+
+    async function loadStoryboardPatch() {
+      try {
+        const response = await fetch("./data/ultimate-storyboards.json");
+        if (!response.ok) return;
+        const bundle = await response.json();
+        state.storyboardPatch = Object.fromEntries(
+          asArray(bundle.proposals).map((proposal) => [proposal.name, asArray(proposal.storyboards)])
+        );
+        Object.entries(state.details).forEach(([name, detail]) => applyStoryboardPatch(name, detail));
+      } catch (error) {
+        console.warn("Ultimate storyboard patch unavailable", error);
+      }
+    }
+
+    async function selectProposal(proposal) {
+      state.currentSummary = proposal;
+      el.proposalSelect.value = proposal.name;
+      state.currentDetail = await getDetail(proposal);
+      renderDetail();
+    }
+
+    function renderProposalSelect() {
+      el.proposalSelect.innerHTML = state.proposals.map((proposal) => (
+        `<option value="${escapeHtml(proposal.name)}">${escapeHtml(proposal.name)}</option>`
+      )).join("");
+    }
+
+    async function load() {
+      try {
+        if (window.SHOWCASE_DATA) {
+          state.proposals = asArray(window.SHOWCASE_DATA.proposals);
+          state.details = window.SHOWCASE_DATA.details || {};
+        } else {
+          const response = await fetch("./data/proposals.json");
+          state.proposals = asArray(await response.json());
+        }
+
+        await loadStoryboardPatch();
+        renderProposalSelect();
+        if (state.proposals.length) {
+          await selectProposal(state.proposals[0]);
+        } else {
+          document.querySelector("main").innerHTML = `<section class="panel"><h2>尚無提案資料</h2></section>`;
+        }
+      } catch (error) {
+        document.querySelector("main").innerHTML = `
+          <section class="panel">
+            <h2>資料載入失敗</h2>
+            <p>${escapeHtml(error.message)}</p>
+          </section>
+        `;
+      }
+    }
+
+    el.proposalSelect.addEventListener("change", async () => {
+      const proposal = state.proposals.find((item) => item.name === el.proposalSelect.value);
+      if (proposal) await selectProposal(proposal);
+    });
+
+    load();
+  </script>
+</body>
+</html>

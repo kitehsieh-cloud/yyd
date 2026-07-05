@@ -1,0 +1,37 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='1280' height='420' viewBox='0 0 1280 420' role='img' aria-label='鬼市「黑市拍賣行」 header'>
+  <defs>
+    <linearGradient id='bg' x1='0' y1='0' x2='1280' y2='420' gradientUnits='userSpaceOnUse'>
+      <stop offset='0' stop-color='#1d1728'/>
+      <stop offset='.58' stop-color='#6e5a88'/>
+      <stop offset='1' stop-color='#121826'/>
+    </linearGradient>
+    <radialGradient id='sun' cx='72%' cy='38%' r='48%'>
+      <stop offset='0' stop-color='#d4b5ff' stop-opacity='.62'/>
+      <stop offset='.52' stop-color='#d4b5ff' stop-opacity='.16'/>
+      <stop offset='1' stop-color='#1d1728' stop-opacity='0'/>
+    </radialGradient>
+    <pattern id='grid' width='54' height='54' patternUnits='userSpaceOnUse'>
+      <path d='M54 0H0v54' fill='none' stroke='#ffffff' stroke-opacity='.12' stroke-width='1'/>
+    </pattern>
+  </defs>
+  <rect width='1280' height='420' fill='url(#bg)'/>
+  <rect width='1280' height='420' fill='url(#sun)'/>
+  <rect width='1280' height='420' fill='url(#grid)' opacity='.68'/>
+  <path d='M0 328 C190 286 268 374 420 324 S670 270 820 318 1038 374 1280 288 V420 H0Z' fill='#ffffff' opacity='.10'/>
+  <path d='M0 352 C180 318 324 384 496 342 S792 292 948 344 1118 372 1280 328 V420 H0Z' fill='#000000' opacity='.20'/>
+  <g opacity='.13' stroke='#ffffff' stroke-width='2' fill='none' transform='translate(770 8) rotate(130 220 200)'>
+    <circle cx='220' cy='200' r='156'/>
+    <circle cx='220' cy='200' r='178' stroke-dasharray='10 16'/>
+    <path d='M40 200h430M220 18v372'/>
+  </g>
+  <g transform='translate(828 56) scale(4.2)' fill='none' stroke='#f4edff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' opacity='.22'>
+    <path d='M14 22c8-5 15-5 22 0 6-5 13-5 20 0l-4 20c-4 7-12 8-16 2-4 6-12 5-16-2l-6-20Z'/><path d='M22 33h10M42 33h10M29 43c3 2 8 2 11 0'/>
+  </g>
+  <g opacity='.94'>
+    <text x='64' y='92' font-family='Microsoft JhengHei, Noto Sans TC, sans-serif' font-size='42' font-weight='900' fill='#ffffff'>鬼市「黑市拍賣行」</text>
+    <text x='66' y='134' font-family='Microsoft JhengHei, Noto Sans TC, sans-serif' font-size='19' font-weight='700' fill='#f4edff' opacity='.9'>西市與鄰坊間排水渠</text>
+    <text x='66' y='170' font-family='Microsoft JhengHei, Noto Sans TC, sans-serif' font-size='17' fill='#ffffff' opacity='.72'>面罩 / 燈籠 / 黑箱 / 拍賣槌</text>
+    <text x='66' y='330' font-family='Microsoft JhengHei, Noto Sans TC, sans-serif' font-size='18' fill='#ffffff' opacity='.72'>黑市、道具獲取、危險交易、N/R 敵友混雜。</text>
+  </g>
+  <rect x='60' y='214' width='330' height='3' rx='2' fill='#d4b5ff' opacity='.72'/>
+</svg>
