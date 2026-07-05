@@ -25,10 +25,18 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Prepare artifact
+        run: |
+          mkdir site-dist
+          cp index.html site-dist/
+          cp .nojekyll site-dist/
+          cp -R assets site-dist/assets
+          cp -R data site-dist/data
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: site-dist
 
   deploy:
     environment:
