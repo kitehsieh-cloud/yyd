@@ -1,0 +1,26 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256' role='img' aria-label='大理寺/狄仁傑組 icon'>
+  <defs>
+    <linearGradient id='bg' x1='20' y1='20' x2='232' y2='232' gradientUnits='userSpaceOnUse'>
+      <stop offset='0' stop-color='#e7f4ff'/>
+      <stop offset='.28' stop-color='#9bd1ff'/>
+      <stop offset='1' stop-color='#2f6fac'/>
+    </linearGradient>
+    <radialGradient id='glow' cx='50%' cy='42%' r='58%'>
+      <stop offset='0' stop-color='#ffffff' stop-opacity='.62'/>
+      <stop offset='.62' stop-color='#ffffff' stop-opacity='.08'/>
+      <stop offset='1' stop-color='#000000' stop-opacity='.18'/>
+    </radialGradient>
+  </defs>
+  <rect width='256' height='256' rx='42' fill='url(#bg)'/>
+  <rect width='256' height='256' rx='42' fill='url(#glow)'/>
+  <g opacity='.28' stroke='#ffffff' stroke-width='2' fill='none' transform='rotate(51 128 128)'>
+    <circle cx='128' cy='128' r='96' stroke-dasharray='12 10'/>
+    <circle cx='128' cy='128' r='70' stroke-dasharray='4 13'/>
+    <path d='M38 128h180M128 38v180'/>
+  </g>
+  <circle cx='128' cy='128' r='74' fill='#132238' fill-opacity='.22' stroke='#ffffff' stroke-opacity='.72' stroke-width='3'/>
+  <g transform='translate(64 64) scale(2)' fill='none' stroke='#ffffff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'>
+    <path d='M32 10 50 18v14c0 12-7 20-18 24-11-4-18-12-18-24V18l18-8Z'/><path d='M22 32h20M26 24h12M26 40h12'/>
+  </g>
+  <text x='128' y='226' text-anchor='middle' font-family='Microsoft JhengHei, Noto Sans TC, sans-serif' font-size='24' font-weight='800' fill='#ffffff' opacity='.88'>03</text>
+</svg>

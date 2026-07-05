@@ -1,0 +1,26 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256' role='img' aria-label='貓奴結社 icon'>
+  <defs>
+    <linearGradient id='bg' x1='20' y1='20' x2='232' y2='232' gradientUnits='userSpaceOnUse'>
+      <stop offset='0' stop-color='#f4edff'/>
+      <stop offset='.28' stop-color='#d4b5ff'/>
+      <stop offset='1' stop-color='#6e5a88'/>
+    </linearGradient>
+    <radialGradient id='glow' cx='50%' cy='42%' r='58%'>
+      <stop offset='0' stop-color='#ffffff' stop-opacity='.62'/>
+      <stop offset='.62' stop-color='#ffffff' stop-opacity='.08'/>
+      <stop offset='1' stop-color='#000000' stop-opacity='.18'/>
+    </radialGradient>
+  </defs>
+  <rect width='256' height='256' rx='42' fill='url(#bg)'/>
+  <rect width='256' height='256' rx='42' fill='url(#glow)'/>
+  <g opacity='.28' stroke='#ffffff' stroke-width='2' fill='none' transform='rotate(255 128 128)'>
+    <circle cx='128' cy='128' r='96' stroke-dasharray='9 10'/>
+    <circle cx='128' cy='128' r='70' stroke-dasharray='4 13'/>
+    <path d='M38 128h180M128 38v180'/>
+  </g>
+  <circle cx='128' cy='128' r='74' fill='#1d1728' fill-opacity='.22' stroke='#ffffff' stroke-opacity='.72' stroke-width='3'/>
+  <g transform='translate(64 64) scale(2)' fill='none' stroke='#ffffff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'>
+    <path d='M14 22c8-5 15-5 22 0 6-5 13-5 20 0l-4 20c-4 7-12 8-16 2-4 6-12 5-16-2l-6-20Z'/><path d='M22 33h10M42 33h10M29 43c3 2 8 2 11 0'/>
+  </g>
+  <text x='128' y='226' text-anchor='middle' font-family='Microsoft JhengHei, Noto Sans TC, sans-serif' font-size='24' font-weight='800' fill='#ffffff' opacity='.88'>15</text>
+</svg>
